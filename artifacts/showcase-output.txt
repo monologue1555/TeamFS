@@ -1,0 +1,75 @@
+TeamFS v0.2：一份报告的保存与恢复
+2026-10-07T19:59:23+0800
+
+1. 创建报告，并显式同步到 SQLite
+小组报告初稿
+我们用 Rust 与 fuse-rs 实现可恢复的资料文件系统。
+
+操作完成（模式："persistent"）
+
+2. 卸载并重新挂载：报告仍然存在
+PASS：重新挂载后的报告逐字节一致。
+
+3. 创建 before-edit 快照
+操作完成（模式："persistent"）
+[
+  {
+    "created_unix": 1791374363,
+    "name": "before-edit"
+  }
+]
+
+4. 覆盖当前报告；通过普通 cat 读取只读历史目录
+小组报告初稿
+我们用 Rust 与 fuse-rs 实现可恢复的资料文件系统。
+
+5. 恢复为 report-recovered.txt，不覆盖当前报告
+操作完成（模式："persistent"）
+文件已恢复到新路径；尚需 teamfs sync 或正常卸载才能持久保存。
+PASS：cmp 内容一致；SHA256 = 05b20312c2ce93d3d18cf7a9e4e84f945594097158f978f37fba4ab2e5ecc400
+操作完成（模式："persistent"）
+
+6. cat .teamfs/status.json：查看当前状态
+{
+  "capacity_bytes": 67108864,
+  "directories": 2,
+  "dirty": false,
+  "files": 4,
+  "filesystem": "TeamFS",
+  "last_sync_error": null,
+  "last_sync_unix": 1791374363,
+  "max_file_bytes": 16777216,
+  "mode": "persistent",
+  "read_bytes": 535,
+  "read_calls": 14,
+  "schema_version": 1,
+  "snapshot_bytes": 501,
+  "snapshot_capacity_bytes": 134217728,
+  "snapshot_count": 1,
+  "snapshot_limit": 10,
+  "snapshots": [
+    {
+      "created_unix": 1791374363,
+      "name": "before-edit"
+    }
+  ],
+  "uptime_seconds": 0,
+  "used_bytes": 520,
+  "version": "0.2.0",
+  "write_bytes": 19,
+  "write_calls": 1
+}
+
+PASS：恢复文件与快照跨重挂载保留。
+{
+  "measured_at": "2026-10-07T19:59:23+0800",
+  "mode": "persistent",
+  "fixture": "seed files plus one UTF-8 report",
+  "snapshot_command_seconds": 0.06405400199946598,
+  "report_bytes": 86,
+  "snapshot_content_bytes": 501,
+  "backend_files_bytes_before_unmount": 90336,
+  "recovered_sha256": "05b20312c2ce93d3d18cf7a9e4e84f945594097158f978f37fba4ab2e5ecc400",
+  "backend_files_bytes_after_unmount": 24576
+}
+以上是当前小文件样例的一次实测，不代表通用性能结论。演示挂载和临时存储将清理。

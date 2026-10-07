@@ -1,0 +1,18 @@
+   Compiling teamfs v0.2.0 (/mnt/d/PyProject/operating system/Teamwork)
+    Finished test [unoptimized + debuginfo] target(s) in 1.53s
+     Running unittests src/main.rs (/home/monologue/.cache/teamfs-v2/target/debug/deps/teamfs-0348e696e8b6684a)
+
+running 11 tests
+test model::tests::directories_errors_and_snapshot ... ok
+test model::tests::offsets_eof_and_sparse_writes ... ok
+test model::tests::persisted_tree_rejects_invalid_relationships ... ok
+test model::tests::persisted_tree_preserves_raw_names_and_excludes_orphans ... ok
+test model::tests::truncate_and_append ... ok
+test model::tests::seed_and_fresh_mount ... ok
+test model::tests::unlink_open_file_and_kernel_reference ... ok
+test model::tests::rename_replace_and_cycle ... ok
+test service::tests::invalid_and_oversized_control_requests_do_not_execute ... ok
+test service::tests::retired_snapshot_survives_handle_and_lookup_then_collects ... ok
+test model::tests::access_handles_and_limits ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s

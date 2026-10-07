@@ -1,0 +1,70 @@
+TeamFS：从 Rust 程序到真实文件系统
+2026-10-07T19:09:37+08:00
+运行用户：monologue
+链路：普通命令 → Linux 内核 → FUSE → Rust 回调 → 内存模型 → 返回结果
+
+【第一幕】把 Rust 程序挂载成一个目录
+/home/monologue/teamfs-showcase-V5vJSF/mnt fuse.teamfs
+下面的 ls、cat、写入、改名和删除，都操作这个真实挂载点。
+
+1. ls / cat：列出根目录，读取预置欢迎文本
+total 1
+3 drwxr-xr-x 2 monologue monologue   0 Oct  7 19:09 notes
+2 -rw-r--r-- 1 monologue monologue 277 Oct  7 19:09 welcome.txt
+欢迎来到 TeamFS！
+这是 Rust + fuse-rs 实现的可恢复资料文件系统。
+试试 ls、cat、mkdir、重定向、mv 和 rm，并观察回调日志。
+运行模式请查看 .teamfs/status.json：persistent 在同步或正常卸载时保存；memory 退出后丢失。
+
+2. mkdir / create / write：创建演示目录，写入会议笔记
+演示目录：/home/monologue/teamfs-showcase-V5vJSF/mnt/demo-HB3FA3
+第一次小组会议：先理解 FUSE。
+
+3. >>：追加内容；>：覆盖为更短的内容（触发截断）
+第一次小组会议：先理解 FUSE。
+分工：模型、目录、读写、测试、讲解。
+短笔记
+大小=10 字节；inode=6；链接数=1
+
+4. mv：名字改变，inode 保持不变
+total 1
+6 -rw-r--r-- 1 monologue monologue 10 Oct  7 19:09 renamed.txt
+
+5. rm / rmdir：删除文件及空目录
+
+6. 留下一份笔记，观察当前运行模式的保存行为
+临时文件：/home/monologue/teamfs-showcase-V5vJSF/mnt/session-gGCDU3.txt
+接下来由完整演示脚本自动卸载和重挂载，无需手动操作。
+
+【第二幕】看看 Rust 真正收到了什么请求
+以下按发生顺序，每种关键回调摘录一条；完整顺序和全部请求见日志。
+[0006] readdir    ino=1 fh=1 offset=0 => OK
+[0008] lookup     ino=1 name="notes" => OK
+[0018] open       ino=2 flags=0x8000 => OK
+[0020] read       ino=2 fh=2 offset=0 requested=131072 => OK
+[0027] mkdir      ino=1 name="demo-HB3FA3" => OK
+[0033] create     ino=5 name="meeting.txt" flags=0x8241 => OK
+[0036] write      ino=6 fh=3 offset=0 bytes=42 => OK
+[0077] setattr    ino=6 size=Some(0) mode=None => OK
+[0122] rename     ino=5 name="meeting.txt" new_parent=5 new_name="renamed.txt" => OK
+[0153] unlink     ino=5 name="renamed.txt" => OK
+[0158] rmdir      ino=1 name="demo-HB3FA3" => OK
+inode 是节点身份；fh 是打开句柄；offset 与 bytes 按字节计数。
+setattr 的 size=Some(0) 表示覆盖写入前清空原内容。
+
+【第三幕】卸载后重新启动，验证数据只在内存里
+卸载前，根目录中存在刚刚创建的 session-*.txt：
+total 1
+3 drwxr-xr-x 2 monologue monologue   0 Oct  7 19:09 notes
+7 -rw------- 1 monologue monologue  73 Oct  7 19:09 session-gGCDU3.txt
+2 -rw-r--r-- 1 monologue monologue 277 Oct  7 19:09 welcome.txt
+旧进程已经退出。现在重新挂载一个全新的 MemFs。
+PASS 01: 卸载 / 重挂载：临时文件消失，预置内容恢复
+total 1
+3 drwxr-xr-x 2 monologue monologue   0 Oct  7 19:09 notes
+2 -rw-r--r-- 1 monologue monologue 277 Oct  7 19:09 welcome.txt
+
+演示通过：普通工具读写成功，真实回调已记录，重挂载恢复初始内容。
+演示挂载已卸载；临时空目录将在脚本退出时清理。
+演示记录：/mnt/d/PyProject/operating system/Teamwork/artifacts/memory-showcase-output.txt
+完整回调：/mnt/d/PyProject/operating system/Teamwork/artifacts/memory-showcase-trace.log

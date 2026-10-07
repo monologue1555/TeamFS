@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TeamFS · 从 Rust 程序到文件系统</title>
+<style>
+:root{--paper:#f5f4ef;--surface:#fffefa;--ink:#18292d;--muted:#657575;--line:#d9dfd7;--teal:#146f64;--soft:#e4eee6;--gold:#e3bf64;--terminal:#14282b;--terminal-ink:#e6f0eb;--mono:Consolas,"Cascadia Code",monospace;--sans:"Microsoft YaHei","PingFang SC",system-ui,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:84px}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.75 var(--sans)}button,a,input{touch-action:manipulation}button{font:inherit;cursor:pointer}a{color:var(--teal);text-underline-offset:4px}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:4px}button:disabled{cursor:default;opacity:.4}h1,h2,h3,p{margin:0}h1{font-size:clamp(32px,4.6vw,58px);line-height:1.28;font-weight:650;letter-spacing:-1.6px}h2{font-size:28px;line-height:1.4;font-weight:600;letter-spacing:-.5px}h3{font-size:17px;font-weight:600}code,pre{font-family:var(--mono)}code{font-size:.92em}pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.8}nav{position:sticky;top:0;z-index:10;background:rgba(245,244,239,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}.nav-inner{max-width:1180px;margin:auto;padding:16px 28px;display:flex;align-items:center;gap:28px}.brand{font-size:20px;color:var(--ink);font-weight:700;text-decoration:none;letter-spacing:-.5px}.brand span{color:var(--teal)}.nav-links{display:flex;gap:24px;margin-left:auto}.nav-links a{font-size:13px;color:var(--muted);text-decoration:none}.nav-links a:hover{color:var(--teal)}main{max-width:1180px;margin:auto;padding:0 28px 60px}.hero{padding:66px 0 46px;display:grid;grid-template-columns:1.35fr 1fr;gap:60px;align-items:center}.eyebrow{font:12px var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:20px}.hero h1 span{display:block;color:var(--teal)}.hero-description{max-width:590px;margin-top:24px;color:var(--muted);font-size:16px}.hero-actions{display:flex;gap:14px;align-items:center;margin-top:28px}.button{display:inline-flex;justify-content:center;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 17px;border-radius:6px;text-decoration:none;font-size:13px;line-height:1.5}.button.primary{background:var(--teal);color:white;border-color:var(--teal)}.button:hover{filter:brightness(.96)}.hero-window{background:var(--terminal);color:var(--terminal-ink);border-radius:10px;overflow:hidden;box-shadow:0 16px 40px #152e2812}.window-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;font:12px var(--mono);border-bottom:1px solid #ffffff18;color:#a4bbb1}.dots{display:flex;gap:5px}.dots i{display:block;width:6px;height:6px;background:#7eaaa0;border-radius:100%}.terminal-body{padding:23px}.terminal-body .prompt{color:#85c5b0}.terminal-body .comment{color:#a4bbb1}.terminal-foot{font-size:12px;background:#1d3435;padding:12px 20px;color:#bccdc5}.intro-strip{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid var(--line);padding:22px 0;gap:32px}.intro-strip strong{display:block;font-size:15px;font-weight:600}.intro-strip p{font-size:13px;color:var(--muted);margin-top:6px}.section{padding-top:62px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:26px;margin-bottom:24px}.section-head p{color:var(--muted);font-size:14px;max-width:500px}.section-number{font:12px var(--mono);color:var(--teal);margin-bottom:8px;letter-spacing:1px}.overview{display:grid;grid-template-columns:1.1fr 1fr;gap:36px}.overview-text p{color:var(--muted);margin-top:14px}.overview-text .emphasis{color:var(--ink);border-left:3px solid var(--teal);padding-left:18px;margin-top:22px}.concepts{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}.concept{padding:14px 0;border-bottom:1px solid var(--line)}.concept strong{font-size:14px;font-weight:600}.concept p{font-size:12px;color:var(--muted);margin-top:5px}.lab{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}.lab-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding:16px 20px}.simulation-label{font-size:12px;color:var(--teal);background:var(--soft);padding:4px 10px;border-radius:4px}.step-position{font:12px var(--mono);color:var(--muted)}.lab-layout{display:grid;grid-template-columns:190px 1fr}.scenario-list{padding:15px 10px;border-right:1px solid var(--line);background:#f3f5ef}.scenario{display:flex;gap:9px;align-items:start;width:100%;text-align:left;border:0;background:transparent;border-radius:5px;padding:11px 10px;color:var(--muted);font-size:12px;line-height:1.5}.scenario span:first-child{font:11px/1.8 var(--mono);color:#89958d}.scenario.active{color:var(--ink);background:#e2ece2}.scenario.active span:first-child{color:var(--teal)}.scenario:hover{background:#e9eee5}.lab-main{padding:24px;min-width:0}.command-row{display:flex;gap:15px;justify-content:space-between;align-items:start;margin-bottom:20px}.command-row h3{margin-bottom:8px}.command{color:var(--teal);font-size:13px;overflow-wrap:anywhere}.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:20px}.flow-node{position:relative;padding:12px 5px;text-align:center;border:1px solid var(--line);border-radius:5px;color:var(--muted);font-size:12px;line-height:1.5;background:#f7f8f3}.flow-node small{display:block;font:10px var(--mono);margin-top:5px;opacity:.8}.flow-node.active{border-color:var(--teal);color:var(--teal);background:var(--soft);box-shadow:inset 0 -3px var(--teal)}.flow-node.completed{color:var(--ink);background:#eef1e9}.flow-node:not(:last-child)::after{content:'›';position:absolute;right:-7px;top:14px;z-index:1;color:var(--muted);font-size:17px}.explanation{min-height:90px;border-left:3px solid var(--teal);padding:2px 0 2px 15px;margin-bottom:20px}.explanation strong{font-size:14px;font-weight:600}.explanation p{font-size:13px;color:var(--muted);margin-top:6px}.data-panels{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px}.data-panel{border:1px solid var(--line);border-radius:6px;min-width:0;overflow:hidden}.panel-label{font:11px var(--mono);letter-spacing:.5px;border-bottom:1px solid var(--line);padding:10px 13px;color:var(--muted);background:#f6f7f1}.files{padding:10px 6px;min-height:195px}.file{display:flex;gap:7px;align-items:center;min-width:0;text-align:left;width:100%;padding:6px 8px;border:0;background:transparent;font:12px/1.55 var(--mono);color:var(--ink);border-radius:4px}.file.active{background:var(--soft);color:var(--teal)}.file small{margin-left:auto;color:var(--muted);font-size:10px;white-space:nowrap}.file .file-name{overflow-wrap:anywhere}.file-symbol{font-size:11px;color:var(--teal);width:13px;flex-shrink:0}.preview{padding:14px;min-height:195px;background:#fbfcf7}.preview-meta{font:11px var(--mono);color:var(--muted);padding-bottom:10px;border-bottom:1px dashed var(--line);margin-bottom:12px}.preview pre{font:12px/1.75 var(--mono)}.output{margin-top:16px;background:var(--terminal);color:var(--terminal-ink);padding:15px;border-radius:6px;min-height:110px}.output-label{color:#97b7a9;font:11px var(--mono);margin-bottom:8px}.output pre{font-size:12px}.lab-controls{display:flex;justify-content:space-between;gap:12px;align-items:center;border-top:1px solid var(--line);padding:16px 20px}.control-group{display:flex;gap:9px}.lab-controls .button{padding:8px 14px}.lab-controls p{font-size:11px;color:var(--muted)}.run-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.run-card{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:23px;min-width:0}.run-card h3{margin-bottom:9px}.run-card p{font-size:13px;color:var(--muted);margin-bottom:17px}.codebox{position:relative;background:#edf0e8;border-radius:5px;padding:17px 14px;min-width:0}.codebox pre{padding-right:34px;font-size:12px}.copy{position:absolute;top:8px;right:8px;border:1px solid #ccd4c8;background:var(--surface);border-radius:4px;color:var(--teal);padding:3px 7px;font-size:11px}.copy:hover{background:var(--soft)}.run-note{grid-column:1/-1;background:var(--soft);padding:15px 20px;border-radius:6px;font-size:13px;color:#2e564a}.run-note strong{font-weight:600}.manual{margin-top:24px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}th{font-weight:500;color:var(--muted);font-size:11px;letter-spacing:.5px}th,td{padding:13px 15px;border-bottom:1px solid var(--line);vertical-align:top}td:first-child{white-space:nowrap}td code{color:var(--teal)}.source-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.source-list{border-top:1px solid var(--line)}.source-row{display:grid;grid-template-columns:145px 1fr;gap:15px;padding:18px 0;border-bottom:1px solid var(--line);font-size:13px}.source-row code{color:var(--teal)}.source-row p{color:var(--muted)}.rust-code{background:var(--terminal);color:var(--terminal-ink);border-radius:8px;overflow:hidden;align-self:start}.rust-code pre{padding:20px;font-size:12px}.rust-code .comment{color:#9fbaa9}.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.team-card{border-top:2px solid var(--line);padding:18px 0}.team-card.leader{border-color:var(--teal)}.team-card .role{font:11px var(--mono);color:var(--teal);margin-bottom:8px}.team-card p{font-size:13px;color:var(--muted);margin-top:7px}.deliverable{display:block;color:var(--ink);font-size:12px;margin-top:12px}.extensions{margin-top:28px;border-block:1px solid var(--line);padding:20px 0;display:flex;gap:22px}.extensions strong{font-size:14px;flex-shrink:0}.extensions p{color:var(--muted);font-size:13px}.leader-questions{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.leader-questions details{border-bottom:1px solid var(--line);padding:12px 0}.leader-questions summary{font-size:13px;cursor:pointer;color:var(--teal)}.leader-questions p{font-size:12px;color:var(--muted);margin-top:10px}.footer{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);display:flex;gap:18px;justify-content:space-between;color:var(--muted);font-size:11px}.footer-links{display:flex;gap:18px;flex-wrap:wrap}.footer a{color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:950px){.hero{gap:30px}.lab-layout{grid-template-columns:150px 1fr}.lab-main{padding:18px}.flow{gap:5px}.flow-node{font-size:11px}.nav-links{gap:14px}.source-row{grid-template-columns:120px 1fr}.data-panels{grid-template-columns:1fr}}
+@media(max-width:680px){.nav-inner{padding:12px 18px;gap:16px}.brand{font-size:18px}.nav-links{overflow-x:auto;gap:16px;white-space:nowrap}.nav-links a{font-size:11px}main{padding:0 18px 36px}.hero{grid-template-columns:1fr;padding:38px 0 28px;gap:27px}.hero h1{letter-spacing:-.8px}.hero-description{font-size:14px;margin-top:18px}.hero-actions{margin-top:20px}.intro-strip{grid-template-columns:1fr;gap:15px;padding:20px 0}.intro-strip p{margin-top:3px}.section{padding-top:38px}.section-head{display:block;margin-bottom:18px}.section-head p{margin-top:10px;font-size:13px}h2{font-size:24px}.overview,.source-grid,.run-grid{grid-template-columns:1fr;gap:20px}.concepts{gap:0 16px}.lab-layout{display:block}.scenario-list{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);gap:6px;padding:10px}.scenario{min-width:112px;width:auto;padding:8px}.lab-main{padding:16px}.lab-bar{padding:12px 14px}.simulation-label{font-size:10px}.flow{grid-template-columns:repeat(3,1fr);gap:7px}.flow-node{font-size:12px}.flow-node:nth-child(3)::after{display:none}.command-row{display:block}.command{font-size:12px}.explanation{min-height:104px}.lab-controls{padding:13px;align-items:start;flex-wrap:wrap}.lab-controls p{width:100%}.team-grid{grid-template-columns:1fr 1fr;gap:16px}.team-card h3{font-size:15px}.extensions{display:block}.extensions p{margin-top:8px}.leader-questions{grid-template-columns:1fr;gap:0}.footer{display:block;margin-top:36px}.footer-links{margin-top:14px}.run-note{grid-column:auto}.run-card{padding:18px}.source-row{grid-template-columns:115px 1fr;gap:12px}.terminal-body{padding:18px}.hero-window pre{font-size:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<nav aria-label="页面导航"><div class="nav-inner"><a class="brand" href="#top">Team<span>FS</span><span class="sr-only"> 首页</span></a><div class="nav-links"><a href="#overview">任务概览</a><a href="#recovery">保存与恢复</a><a href="#lab">内存原理</a><a href="#quickstart">真实运行</a><a href="#source">源码导览</a><a href="#team">六人分工</a></div></div></nav>
+<main id="top">
+<header class="hero"><div><div class="eyebrow">Operating systems / Rust + FUSE</div><h1>把一个 Rust 程序，<span>变成一个目录。</span></h1><p class="hero-description">普通的 <code>ls</code>、<code>cat</code> 和文件写入，交给你们的代码处理。通过一个可保存、可恢复的小组资料文件系统，理解这次课程任务从哪里开始、怎样实现、如何演示。</p><div class="hero-actions"><a class="button primary" href="#recovery">走一遍保存与恢复 <span aria-hidden="true">→</span></a><a class="button" href="#quickstart">运行真实文件系统</a></div></div><div class="hero-window"><div class="window-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>Ubuntu · WSL2</span><span>fuse.teamfs</span></div><div class="terminal-body"><pre><span class="prompt">$ ls ~/teamfs-mount</span>
+notes/  welcome.txt
+
+<span class="prompt">$ cat ~/teamfs-mount/welcome.txt</span>
+欢迎来到 TeamFS！
+
+<span class="comment"># 另一个终端：Rust 收到了真实请求</span>
+[0012] lookup   name="welcome.txt" => OK
+[0015] read     offset=0 bytes=…   => OK</pre></div><div class="terminal-foot">示意输出 · 实际回调日志由挂载进程产生</div></div></header>
+<div class="intro-strip"><div><strong>真实挂载</strong><p>原版 fuse-rs / fuse 0.3.1，在 Linux 中由普通用户运行。</p></div><div><strong>按需持久保存</strong><p>默认通过显式同步或正常卸载保存；--memory 模式保留原理实验。</p></div><div><strong>可观察的操作</strong><p>对照终端命令、回调日志和 inode，理解每一步如何完成。</p></div></div>
+
+<section class="section" id="overview"><div class="section-head"><div><div class="section-number">01 / UNDERSTAND</div><h2>你们到底要完成什么？</h2></div><p>实现处理文件操作的 Rust 程序，并证明系统里的普通工具可以使用它。</p></div><div class="overview"><div class="overview-text"><h3>案例：可恢复的小组资料目录</h3><p>TeamFS 启动时生成 <code>welcome.txt</code> 和 <code>notes/example.txt</code>。你可以建目录、写笔记、改名和删除。目录看起来与普通目录一样，内容由 TeamFS 提供。默认模式支持 SQLite 保存、手动快照、文件恢复和虚拟状态文件。</p><p>FUSE 让内核把文件请求转给用户空间。<code>fuse-rs</code> 负责通信和请求分发；你们实现 <code>Filesystem</code> trait，决定每个请求怎样处理。</p><p class="emphasis">课程成果由三部分组成：<strong>能运行的案例、可解释的原理、可复现的演示。</strong>先理解一个读取和一个写入请求，再逐步补齐其他操作。</p></div><div class="concepts"><div class="concept"><strong>Rust</strong><p>编写文件系统逻辑的语言。所有权、类型和 Result 帮助管理数据与错误。</p></div><div class="concept"><strong>FUSE</strong><p>内核与用户空间文件系统之间的桥梁；通过 /dev/fuse 通信。</p></div><div class="concept"><strong>挂载点 Mountpoint</strong><p>访问文件系统的目录入口。程序挂载后，这个目录显示虚拟内容。</p></div><div class="concept"><strong>inode</strong><p>一个节点的身份编号。名字可以变化，重命名时身份保持不变。</p></div><div class="concept"><strong>用户空间</strong><p>TeamFS 像普通应用一样运行；内核需要它返回文件数据和属性。</p></div><div class="concept"><strong>回调 Callback</strong><p>收到请求后执行的方法，如 lookup、read、write、readdir。</p></div></div></div></section>
+
+<section class="section" id="recovery"><div class="section-head"><div><div class="section-number">02 / SAVE AND RECOVER</div><h2>一份报告，怎样保存和找回？</h2></div><p>persistent 模式原理模拟。先写入、同步、创建快照，再误改或异常重启，观察内存与保存点的区别。</p></div>
+<div class="lab"><div class="lab-bar"><span class="simulation-label">模拟，不执行本机命令</span><span id="recovery-dirty" class="step-position">dirty = false</span></div>
+<div class="lab-main"><div class="control-group" style="flex-wrap:wrap;margin-bottom:20px">
+<button class="button" type="button" data-recovery="write">写入初稿</button><button class="button" type="button" data-recovery="sync">同步保存</button><button class="button" type="button" data-recovery="snapshot">创建快照</button><button class="button" type="button" data-recovery="edit">误改报告</button><button class="button" type="button" data-recovery="restore">恢复到新文件</button><button class="button" type="button" data-recovery="remount">正常重挂载</button><button class="button" type="button" data-recovery="crash">异常退出重启</button><button class="button" type="button" data-recovery="reset">重置实验</button>
+</div><div class="data-panels"><div class="data-panel"><div class="panel-label">CURRENT / 当前内存文件</div><div class="preview"><pre id="recovery-current"></pre></div></div><div class="data-panel"><div class="panel-label">SAVED / SQLite 中的保存状态</div><div class="preview"><pre id="recovery-saved"></pre></div></div></div>
+<div class="output"><div class="output-label">操作结果</div><pre id="recovery-result" aria-live="polite">先点击“写入初稿”。快照和恢复都需要已有的文件内容。</pre></div></div></div>
+<div class="run-card" style="margin-top:20px"><h3>在真实挂载点上执行</h3><p>先用下面的启动方式运行默认 persistent 模式，然后在第二个 Ubuntu 终端执行。恢复目标必须不存在。</p><div class="codebox"><button class="copy" data-copy="recovery-code" type="button">复制</button><pre id="recovery-code">TEAMFS="$HOME/.cache/teamfs/target/debug/teamfs"
+MOUNT="$HOME/teamfs-mount"
+printf '报告初稿\n' > "$MOUNT/notes/report.txt"
+"$TEAMFS" sync "$MOUNT"
+"$TEAMFS" snapshot create "$MOUNT" before-edit
+printf '改错了\n' > "$MOUNT/notes/report.txt"
+cat "$MOUNT/.teamfs/snapshots/before-edit/notes/report.txt"
+"$TEAMFS" restore "$MOUNT" before-edit notes/report.txt notes/report-recovered.txt
+"$TEAMFS" sync "$MOUNT"
+cat "$MOUNT/.teamfs/status.json"</pre></div></div></section>
+<section class="section" id="lab"><div class="section-head"><div><div class="section-number">02 / FOLLOW A REQUEST</div><h2>一个命令，经过哪些层？</h2></div><p>点击“下一步”，观察请求前进、内存变化和返回结果。也可以直接选择操作。</p></div><div class="lab"><div class="lab-bar"><span class="simulation-label">内存模式原理模拟 · 简化目录 · 不执行本机命令</span><span class="step-position" id="position">操作 1 / 10 · 层 1 / 6</span></div><div class="lab-layout"><aside class="scenario-list" id="scenarios" aria-label="选择模拟操作"></aside><div class="lab-main"><div class="command-row"><div><h3 id="operation-title"></h3><code class="command" id="sim-command"></code></div></div><div class="flow" aria-label="请求处理层"><div class="flow-node" data-stage="0">终端命令<small>application</small></div><div class="flow-node" data-stage="1">Linux 内核<small>VFS</small></div><div class="flow-node" data-stage="2">FUSE 通信<small>fuse-rs</small></div><div class="flow-node" data-stage="3">Rust 回调<small>Filesystem</small></div><div class="flow-node" data-stage="4">内存模型<small>MemFs</small></div><div class="flow-node" data-stage="5">返回结果<small>reply</small></div></div><div class="explanation" aria-live="polite"><strong id="stage-title"></strong><p id="stage-description"></p></div><div class="data-panels"><div class="data-panel"><div class="panel-label">MEMORY / 目录与 inode</div><div class="files" id="files"></div></div><div class="data-panel"><div class="panel-label">CONTENT / 点击节点查看内容</div><div class="preview"><div class="preview-meta" id="preview-meta"></div><pre id="preview-content"></pre></div></div></div><div class="output"><div class="output-label">典型回调与命令结果 · 实际顺序由内核决定</div><pre id="sim-output" aria-live="polite"></pre></div></div></div><div class="lab-controls"><div class="control-group"><button class="button" id="previous" type="button">← 上一步</button><button class="button primary" id="next" type="button">下一步 →</button></div><button class="button" id="reset" type="button">重新开始</button><p>每次操作展示 6 层。数据在“内存模型”这一层更新。</p></div></div></section>
+
+<section class="section" id="quickstart"><div class="section-head"><div><div class="section-number">FIRST RUN / 组长先看</div><h2>一条命令，完整演示</h2></div><p>自动挂载、演示、展示真实回调、卸载并验证持久保存与快照恢复。结束后自动清理临时挂载点。</p></div><article class="run-card"><h3>在 Windows PowerShell 中运行</h3><p>使用当前电脑已有的 Ubuntu-24.04。输出保存在 artifacts/showcase-output.txt，完整回调保存在 artifacts/showcase-trace.log。</p><div class="codebox"><button class="copy" data-copy="showcase-code" type="button">复制</button><pre id="showcase-code">wsl -d Ubuntu-24.04 --cd "/mnt/d/PyProject/operating system/Teamwork" -- bash scripts/showcase.sh</pre></div><p style="margin:16px 0 0">想逐步操作并同时观察日志，可以接着使用下面的两个终端方式。上方交互实验是原理模拟；这条命令运行的是真实 Rust 文件系统。</p></article></section>
+
+<section class="section" id="run"><div class="section-head"><div><div class="section-number">03 / RUN FOR REAL</div><h2>在两个 WSL 终端中操作</h2></div><p>当前电脑的 Ubuntu 已准备好依赖。新电脑先执行 <code>bash scripts/setup.sh</code>。</p></div><div class="run-grid"><article class="run-card"><h3>终端 A · 启动并观察回调</h3><p>前台运行 TeamFS。保持这个终端打开；每次文件操作都会产生真实日志。</p><div class="codebox"><button class="copy" data-copy="start-code" type="button">复制</button><pre id="start-code">cd "/mnt/d/PyProject/operating system/Teamwork"
+bash scripts/start.sh</pre></div></article><article class="run-card"><h3>终端 B · 跟着脚本操作</h3><p>按 Enter 逐步执行。看终端 A 的 read、write、setattr、rename 等回调。</p><div class="codebox"><button class="copy" data-copy="demo-code" type="button">复制</button><pre id="demo-code">cd "/mnt/d/PyProject/operating system/Teamwork"
+bash scripts/demo.sh</pre></div></article><article class="run-card"><h3>卸载 → 重新挂载</h3><p>在终端 B 卸载。终端 A 的程序会退出；再启动后，默认模式加载保存的数据；只有 --memory 模式会恢复预置内容。</p><div class="codebox"><button class="copy" data-copy="reset-code" type="button">复制</button><pre id="reset-code">bash scripts/unmount.sh
+bash scripts/start.sh
+# 在另一个终端查看
+ls ~/teamfs-mount</pre></div></article><article class="run-card"><h3>自动验收 · 独立挂载点</h3><p>检查真实系统调用和重挂载行为。日志保存在 artifacts，自动清理测试挂载。</p><div class="codebox"><button class="copy" data-copy="test-code" type="button">复制</button><pre id="test-code">bash scripts/smoke.sh
+# 结果：artifacts/acceptance.txt
+# 回调：artifacts/fuse-trace.log</pre></div></article><div class="run-note"><strong>普通写入先进入内存，显式同步或正常卸载再保存。</strong>fsync / teamfs sync 会提交 SQLite；flush 不保证保存。--memory 没有磁盘持久化，异常退出丢失未同步修改。源码位于 Windows 的 Teamwork，实际挂载目录位于 WSL 的 Linux 文件系统。</div></div><div class="manual"><h3>手动演示：命令与典型回调</h3><div class="table-wrap"><table><thead><tr><th>操作</th><th>在终端 B 执行</th><th>观察的回调</th></tr></thead><tbody><tr><td>查看 / 读取</td><td><code>ls -li ~/teamfs-mount; cat ~/teamfs-mount/welcome.txt</code></td><td>readdir / lookup / getattr / open / read</td></tr><tr><td>建目录 / 写入</td><td><code>mkdir ~/teamfs-mount/meeting; printf '会议笔记\n' &gt; ~/teamfs-mount/meeting/a.txt</code></td><td>mkdir / create / write</td></tr><tr><td>追加 / 覆盖</td><td><code>printf '下一条\n' &gt;&gt; ~/teamfs-mount/meeting/a.txt; printf '短\n' &gt; ~/teamfs-mount/meeting/a.txt</code></td><td>open / write / setattr(size=0)</td></tr><tr><td>改名 / 删除</td><td><code>mv ~/teamfs-mount/meeting/a.txt ~/teamfs-mount/meeting/b.txt; rm ~/teamfs-mount/meeting/b.txt; rmdir ~/teamfs-mount/meeting</code></td><td>rename / unlink / rmdir</td></tr></tbody></table></div></div></section>
+
+<section class="section" id="source"><div class="section-head"><div><div class="section-number">04 / READ THE CODE</div><h2>沿着一次 read 看源码</h2></div><p>先读适配层如何收请求，再看模型如何处理字节。两个层可以分别测试。</p></div><div class="source-grid"><div class="source-list"><div class="source-row"><code>src/main.rs</code><p>解析 mount 命令，检查空挂载点，设置权限检查选项，再调用 fuse::mount。</p></div><div class="source-row"><code>src/filesystem.rs</code><p>实现 Filesystem trait。记录日志，把请求转给统一服务层，再调用 reply.data、reply.attr 或 reply.error。</p></div><div class="source-row"><code>src/model.rs</code><p>管理 inode、目录名字、字节数据、属性、句柄和引用计数；实现文件操作和模型单元测试。</p></div><div class="source-row"><code>tests/mounted.py</code><p>通过 Linux 文件 API 检查真实挂载。包括偏移读写、错误码、目录分批读取和打开后删除。</p></div><div class="source-row"><code>scripts/</code><p>环境准备、启动、保存恢复演示、内存演示、自动验收。新增 service.rs 协调快照与虚拟节点，store.rs 负责 SQLite 事务。</p></div></div><div class="rust-code"><div class="window-bar"><span>filesystem.rs · read 的处理核心</span><span>Rust</span></div><pre><span class="comment">// 1. 内核给出 inode、句柄、偏移和长度</span>
+let result = self.service.borrow_mut().read(
+    ino, fh, offset, size
+);
+
+<span class="comment">// 2. 模型检查句柄，按字节取出内容</span>
+<span class="comment">// 3. 回复内核，cat 再把内容显示到终端</span>
+match result {
+    Ok(bytes) =&gt; reply.data(&amp;bytes),
+    Err(errno) =&gt; reply.error(errno),
+}
+
+<span class="comment">// write 类似：修改 Vec&lt;u8&gt;，更新文件大小，</span>
+<span class="comment">// 最后用 reply.written 返回实际写入字节数。</span></pre></div></div></section>
+
+<section class="section" id="team"><div class="section-head"><div><div class="section-number">05 / BUILD TOGETHER</div><h2>六个人，怎样分工？</h2></div><p>以下是基于这个 demo 的分工建议。先一起跑通案例，再按接口拆分工作。</p></div><div class="team-grid"><article class="team-card leader"><div class="role">01 / 组长 · 你</div><h3>设计与集成</h3><p>确认老师的验收标准，统一接口和开发环境，组织合并与答辩。</p><span class="deliverable">产出：总体架构、集成版本、答辩主线</span></article><article class="team-card"><div class="role">02 / 模型</div><h3>Rust 与数据结构</h3><p>研究所有权、Result、inode、目录项、字节数据和节点生命周期。</p><span class="deliverable">产出：内存模型与单元测试</span></article><article class="team-card"><div class="role">03 / 目录</div><h3>名字与目录操作</h3><p>实现 lookup、readdir、mkdir、rmdir 和 rename，检查父子关系。</p><span class="deliverable">产出：目录操作与错误场景</span></article><article class="team-card"><div class="role">04 / 文件</div><h3>读写与属性</h3><p>实现 create、open、read、write、setattr 和 release，处理偏移与截断。</p><span class="deliverable">产出：文件操作与句柄管理</span></article><article class="team-card"><div class="role">05 / 验证</div><h3>环境与测试</h3><p>准备 Linux / WSL 环境、脚本和真实挂载测试，记录问题及结果。</p><span class="deliverable">产出：可复现脚本与验收记录</span></article><article class="team-card"><div class="role">06 / 讲解</div><h3>文档与演示</h3><p>绘制流程、解释关键代码、准备中文说明和现场演示材料。</p><span class="deliverable">产出：讲解页面、报告、演示步骤</span></article></div><div class="extensions"><strong>跑通首版之后</strong><p>当前已实现：持久化、手动快照与恢复、虚拟状态文件。下一步可研究增量快照或缓存优化；回收站、加密和网络存储不属于当前版本。</p></div><div class="leader-questions"><details><summary>为什么 cat 能读取 Rust 的内存？</summary><p>cat 请求内核读取挂载点里的文件。内核经 FUSE 把请求发给 TeamFS；read 回调从 Vec&lt;u8&gt; 取出字节，用 reply.data 回复，再由内核返回给 cat。</p></details><details><summary>文件名和 inode 有什么区别？</summary><p>目录项记录名字到 inode 的映射。rename 改变映射，inode 保留。unlink 去掉名字，打开句柄和内核引用仍可让节点继续存活。</p></details><details><summary>什么时候会丢失尚未保存的文件？</summary><p>默认模式正常卸载会保存；异常退出只保留最后成功同步的状态。--memory 模式不保存，重启生成预置文件。</p></details></div></section>
+<footer class="footer"><span>TeamFS · 单用户教学案例 · Rust + 原版 fuse-rs 0.3.1</span><div class="footer-links"><a href="../README.md">中文说明</a><a href="../artifacts/v2-acceptance.txt">新版验收记录</a><a href="https://github.com/zargony/fuse-rs" target="_blank" rel="noopener">fuse-rs 源码</a><a href="https://docs.kernel.org/filesystems/fuse/fuse.html" target="_blank" rel="noopener">FUSE 原理</a></div></footer>
+</main>
+<script>
+(() => {
+  'use strict';
+  const welcome = '欢迎来到 TeamFS！\n这是 Rust + fuse-rs 实现的用户空间内存文件系统。\n试试 ls、cat、mkdir、重定向、mv 和 rm，并观察另一终端的回调日志。\n文件数据只在本次挂载进程的内存中，卸载后不会保存。\n';
+  const example = '小组笔记示例\n任务：学习 Rust，使用 fuse-rs 实现用户空间文件系统。\n请在 notes 目录里创建自己的笔记。\n';
+  const base = () => ({'':{ino:1,kind:'dir',content:''},'welcome.txt':{ino:2,kind:'file',content:welcome},'notes':{ino:3,kind:'dir',content:''},'notes/example.txt':{ino:4,kind:'file',content:example}});
+  const actions = [
+    {title:'查看目录',cmd:'ls -li ~/teamfs-mount',focus:'',callbacks:'opendir → readdir → getattr',rust:'readdir 把目录项写入 ReplyDirectory；每个名字带着自己的 inode。',memory:'读取根目录的名字 → inode 映射。目录内容没有变化。',output:'notes/  welcome.txt',apply:()=>{}},
+    {title:'读取欢迎文件',cmd:'cat ~/teamfs-mount/welcome.txt',focus:'welcome.txt',callbacks:'lookup → getattr → open → read → release',rust:'read 用 inode 和文件句柄定位节点，按 offset 和 size 取出字节。',memory:'从 welcome.txt 的 Vec<u8> 读取字节；越过文件末尾返回空数据。',output:welcome,apply:()=>{}},
+    {title:'创建目录',cmd:'mkdir ~/teamfs-mount/meeting',focus:'meeting',callbacks:'lookup → mkdir',rust:'mkdir 请求模型创建目录节点，再通过 reply.entry 返回属性。',memory:'新增 inode=5，并在根目录插入 meeting → 5。新目录没有文件。',output:'成功，mkdir 不输出内容。',apply:s=>{s.meeting={ino:5,kind:'dir',content:''};}},
+    {title:'创建并写入',cmd:"printf '第一次会议\\n' > ~/teamfs-mount/meeting/a.txt",focus:'meeting/a.txt',callbacks:'lookup → create → write → flush → release',rust:'create 创建 inode 和打开句柄；write 接收终端提供的字节。',memory:'新增 inode=6，把 UTF-8 字节保存到 Vec<u8>。大小按字节计数。',output:'成功。a.txt 保存了「第一次会议」及换行。',apply:s=>{s['meeting/a.txt']={ino:6,kind:'file',content:'第一次会议\n'};}},
+    {title:'追加内容',cmd:"printf '第二条\\n' >> ~/teamfs-mount/meeting/a.txt",focus:'meeting/a.txt',callbacks:'lookup → open(O_APPEND) → write → release',rust:'打开已有文件，保留原数据；模型将 O_APPEND 写入定位到文件末尾。',memory:'inode 仍为 6。在原字节末尾追加内容，更新 size 和修改时间。',output:'第一次会议\n第二条\n',apply:s=>{s['meeting/a.txt'].content+='第二条\n';}},
+    {title:'覆盖与截断',cmd:"printf '短\\n' > ~/teamfs-mount/meeting/a.txt",focus:'meeting/a.txt',callbacks:'lookup → setattr(size=0) → open → write → release',rust:'内核把清空文件转成 setattr(size=0)，然后 write 写入较短内容。',memory:'先把 Vec<u8> 长度改为 0，再写入「短」和换行，共 4 字节。旧尾部不会残留。',output:'短\n',apply:s=>{s['meeting/a.txt'].content='短\n';}},
+    {title:'重命名',cmd:'mv ~/teamfs-mount/meeting/a.txt ~/teamfs-mount/meeting/b.txt',focus:'meeting/b.txt',callbacks:'lookup → rename',rust:'rename 更新目录项，将 a.txt → 6 改成 b.txt → 6。',memory:'名字改变，inode 仍为 6，文件内容仍为「短」和换行。',output:'成功。b.txt 的 inode 与原 a.txt 相同。',apply:s=>{s['meeting/b.txt']=s['meeting/a.txt'];delete s['meeting/a.txt'];}},
+    {title:'删除文件',cmd:'rm ~/teamfs-mount/meeting/b.txt',focus:'meeting',callbacks:'lookup → unlink → forget',rust:'unlink 先删除名字。打开句柄和内核引用全部释放后，节点才可回收。',memory:'这个模拟没有持有打开句柄，移除 b.txt 后可释放它的节点和内容。',output:'成功。meeting 变成空目录。',apply:s=>{delete s['meeting/b.txt'];}},
+    {title:'删除空目录',cmd:'rmdir ~/teamfs-mount/meeting',focus:'',callbacks:'lookup → rmdir → forget',rust:'rmdir 检查目录为空，再删除父目录中的映射。非空时返回 ENOTEMPTY。',memory:'移除 meeting → 5，更新根目录的链接数和时间。',output:'成功。根目录只剩下预置的 notes 与 welcome.txt。',apply:s=>{delete s.meeting;}},
+    {title:'卸载与重挂载',cmd:'bash scripts/unmount.sh  →  bash scripts/start.sh',focus:'welcome.txt',callbacks:'卸载连接 → 旧进程退出 → 新建 MemFs → 挂载',rust:'卸载让 fuse::mount 返回；再次启动会创建全新的 MemFs。',memory:'演示先写入临时 session.txt 并修改 welcome.txt。新挂载恢复预置模型，这两项修改都消失。',output:'重新启动后的目录：notes/  welcome.txt\nsession.txt 不在；welcome.txt 恢复初始内容。',apply:s=>{Object.keys(s).forEach(k=>delete s[k]);Object.assign(s,base());}}
+  ];
+  const labels=['终端发起操作','内核定位到挂载点','FUSE 传递请求','Rust 执行对应回调','访问 / 修改内存模型','将结果返回给命令'];
+  let index=0,stage=0,selected='';
+  const $=id=>document.getElementById(id);
+  const escape=text=>String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const size=text=>new TextEncoder().encode(text).length;
+  function state(){
+    const s=base();
+    for(let i=0;i<index;i++) actions[i].apply(s);
+    // 重挂载的前半段，显示实际可以丢失的临时修改。
+    if(index===9&&stage<4){s['session.txt']={ino:7,kind:'file',content:'本次挂载专有数据\n'};s['welcome.txt'].content='已修改的欢迎文本\n';}
+    if(stage>=4) actions[index].apply(s);
+    return s;
+  }
+  function preview(s){
+    const node=s[selected]||s[''];
+    const path=s[selected]?selected:'';
+    $('preview-meta').textContent=`${path||'teamfs-mount/'} · inode=${node.ino} · ${node.kind==='file'?size(node.content)+' 字节':'目录'}`;
+    if(node.kind==='file') $('preview-content').textContent=node.content;
+    else {
+      const children=Object.keys(s).filter(k=>k&&((k.includes('/')?k.slice(0,k.lastIndexOf('/')):'')===path));
+      $('preview-content').textContent=children.length?children.map(k=>k.split('/').pop()+(s[k].kind==='dir'?'/':'')).join('\n'):'（空目录）';
+    }
+  }
+  function render(){
+    const action=actions[index],s=state();
+    if(!(selected in s)) selected=action.focus in s?action.focus:'';
+    $('position').textContent=`操作 ${index+1} / ${actions.length} · 层 ${stage+1} / 6`;
+    $('operation-title').textContent=action.title;
+    $('sim-command').textContent='$ '+action.cmd;
+    $('stage-title').textContent=labels[stage];
+    const descriptions=[
+      '命令或 shell 调用 Linux 文件 API。浏览器这里只展示过程；真实命令请在下方的 WSL 终端执行。',
+      'Linux 的虚拟文件系统 VFS 根据路径找到 TeamFS 的挂载点，把需要处理的操作交给 FUSE。',
+      index===9?'卸载结束旧的 FUSE 会话；重新启动建立新的连接。这里展示挂载生命周期。':'内核经 /dev/fuse 与 TeamFS 通信。fuse-rs 解析请求并选择 Filesystem 中的方法。',
+      action.rust,action.memory,
+      index===9?'新的挂载可以正常访问。旧进程中的数据没有写到磁盘，所以只能看到初始内容。':'Rust 调用 reply 返回字节、属性或成功状态。内核把结果返回给应用，命令继续执行。'
+    ];
+    $('stage-description').textContent=descriptions[stage];
+    document.querySelectorAll('.flow-node').forEach((el,i)=>{el.classList.toggle('active',i===stage);el.classList.toggle('completed',i<stage);if(i===stage)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});
+    $('scenarios').innerHTML=actions.map((a,i)=>`<button type="button" class="scenario ${i===index?'active':''}" data-index="${i}" aria-pressed="${i===index}"><span>${String(i+1).padStart(2,'0')}</span><span>${escape(a.title)}</span></button>`).join('');
+    const paths=Object.keys(s).sort((a,b)=>a.localeCompare(b));
+    $('files').innerHTML=paths.map(path=>{const node=s[path],depth=path?path.split('/').length:0;return `<button type="button" class="file ${selected===path?'active':''}" data-path="${escape(path)}" style="padding-left:${8+depth*12}px" aria-pressed="${selected===path}"><span class="file-symbol" aria-hidden="true">${node.kind==='dir'?'▸':'·'}</span><span class="file-name">${escape(path?path.split('/').pop()+(node.kind==='dir'?'/':''):'teamfs-mount/')}</span><small>#${node.ino}</small></button>`;}).join('');
+    preview(s);
+    $('sim-output').textContent=stage>=5?`典型回调：${action.callbacks}\n\n${action.output}`:stage>=3?`典型回调：${action.callbacks}\n\n${stage===4?'模型处理完成，下一步回复内核。':'等待模型处理。'}`:'请求尚未完成；点“下一步”继续。';
+    $('previous').disabled=index===0&&stage===0;
+    $('next').disabled=index===actions.length-1&&stage===5;
+    $('next').textContent=stage===5&&index<actions.length-1?'下一条操作 →':'下一步 →';
+  }
+  $('next').addEventListener('click',()=>{if(stage<5)stage++;else if(index<actions.length-1){index++;stage=0;}selected=actions[index].focus;render();});
+  $('previous').addEventListener('click',()=>{if(stage>0)stage--;else if(index>0){index--;stage=5;}selected=actions[index].focus;render();});
+  $('reset').addEventListener('click',()=>{index=0;stage=0;selected='';render();});
+  $('scenarios').addEventListener('click',event=>{const button=event.target.closest('button[data-index]');if(!button)return;index=Number(button.dataset.index);stage=0;selected=actions[index].focus;render();});
+  $('files').addEventListener('click',event=>{const button=event.target.closest('button[data-path]');if(!button)return;selected=button.dataset.path;render();});
+  document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
+    const text=$(button.dataset.copy).textContent;
+    try{
+      let ok=false;
+      if(navigator.clipboard){try{await navigator.clipboard.writeText(text);ok=true;}catch(error){/* 本地文件使用选择复制回退。 */}}
+      if(!ok){const area=document.createElement('textarea');area.value=text;area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();ok=document.execCommand('copy');area.remove();}
+      button.textContent=ok?'已复制':'请手动选择';
+    }catch(error){button.textContent='请手动选择';}
+    setTimeout(()=>button.textContent='复制',1800);
+  }));
+  render();
+})();
+</script>
+<script>
+(() => {
+  let current = null, recovered = null, snapshot = null, saved = {current:null,recovered:null,snapshot:null}, dirty = false;
+  const get = id => document.getElementById(id);
+  const content = value => value === null ? '（不存在）' : value;
+  function render(message) {
+    get('recovery-current').textContent = 'report.txt: ' + content(current) + '\nreport-recovered.txt: ' + content(recovered) + '\n快照 before-edit: ' + content(snapshot);
+    get('recovery-saved').textContent = 'report.txt: ' + content(saved.current) + '\nreport-recovered.txt: ' + content(saved.recovered) + '\n快照 before-edit: ' + content(saved.snapshot);
+    get('recovery-dirty').textContent = 'dirty = ' + dirty;
+    if (message) get('recovery-result').textContent = message;
+  }
+  function sync() { saved = {current,recovered,snapshot}; dirty = false; }
+  document.querySelectorAll('[data-recovery]').forEach(button => button.addEventListener('click', () => {
+    let message;
+    switch (button.dataset.recovery) {
+      case 'write': current = '报告初稿'; dirty = true; message = '写入成功，但尚未同步到 SQLite。'; break;
+      case 'sync': sync(); message = '同步成功。重启可以恢复这次提交。'; break;
+      case 'snapshot':
+        if (current === null) { message = '请先写入报告。'; break; }
+        if (snapshot !== null) { message = '快照同名：拒绝覆盖已有历史。'; break; }
+        snapshot = current; sync(); message = '已创建 before-edit 快照，同时保存当前文件树。'; break;
+      case 'edit':
+        if (current === null) { message = '请先写入报告。'; break; }
+        current = '改错了'; dirty = true; message = '当前内容已改变，历史快照不变。'; break;
+      case 'restore':
+        if (snapshot === null) { message = '尚未创建快照，无法找回历史。'; break; }
+        if (recovered !== null) { message = '目标已存在：恢复命令拒绝覆盖。'; break; }
+        recovered = snapshot; dirty = true; message = '恢复为新文件。当前报告保留，恢复结果仍需同步。'; break;
+      case 'remount': sync(); current = saved.current; recovered = saved.recovered; snapshot = saved.snapshot; message = '正常卸载先保存，再重新加载数据。'; break;
+      case 'crash': current = saved.current; recovered = saved.recovered; snapshot = saved.snapshot; dirty = false; message = '异常退出后重新加载最后一次提交，未同步修改丢失。'; break;
+      case 'reset': current = recovered = snapshot = null; saved = {current:null,recovered:null,snapshot:null}; dirty = false; message = '实验已重置。'; break;
+    }
+    render(message);
+  }));
+  render();
+})();
+</script>
+</body>
+</html>

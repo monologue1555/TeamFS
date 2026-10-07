@@ -1,0 +1,23 @@
+TeamFS 实际验收
+2026-10-07T19:01:27+08:00
+6.6.114.1-microsoft-standard-WSL2
+rustc 1.75.0 (82e1608df 2023-12-21) (built from a source tarball)
+cargo 1.75.0
+libfuse: 2.9.9
+uid=1000(monologue) gid=1000(monologue) groups=1000(monologue),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),1001(docker)
+/home/monologue/teamfs-check-WCtzXM/mnt fuse.teamfs
+PASS 01: 真实挂载与预置中文文件
+PASS 02: mkdir / create / write / read：中文名称、内容与字节大小
+PASS 03: 追加与覆盖截断：更短的内容没有残留尾部
+PASS 04: pread / pwrite / ftruncate：偏移、EOF、补零及内存同步
+PASS 05: rename 覆盖目标：源 inode 保留，旧目标的已打开句柄仍可读
+PASS 06: unlink 后继续读写：数据直到句柄关闭才可回收
+PASS 07: 错误码：缺失、重复、非空目录、类型冲突及目录循环
+PASS 08: 跨目录移动：父目录、.. 与目录链接数正确更新
+PASS 09: 180 个长目录项：超过单次 readdir 缓冲区，offset 续读无遗漏
+PASS 10: 属性修改、时间更新、单文件容量限制和 statfs
+PASS 11: 删除文件及空目录，完整清理演示操作
+PASS 12: 为重挂载检查准备临时文件和修改后的预置文件
+Mounted syscall scenarios: 12 passed
+PASS 01: 卸载 / 重挂载：临时文件消失，预置内容恢复
+ALL PASS — 已完成真实挂载、读写、卸载和重挂载，测试挂载已清理。

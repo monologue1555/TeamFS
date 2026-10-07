@@ -1,0 +1,9 @@
+/target/
+/artifacts/*.log
+/artifacts/*.png
+/artifacts/*.jpg
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+store.lock
+__pycache__/

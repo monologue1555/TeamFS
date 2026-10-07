@@ -1,0 +1,5 @@
+2026-10-07 · Codex in-app Chromium
+PASS: 新版实验的未同步异常退出、快照、恢复、同步和正常重挂载
+PASS: 恢复不覆盖与重复快照拒绝
+PASS: 原内存实验覆盖截断仍显示 UTF-8 4 字节
+PASS: 当前窗口无横向溢出，未观察到 JavaScript 错误

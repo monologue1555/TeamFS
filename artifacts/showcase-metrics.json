@@ -1,0 +1,11 @@
+{
+  "measured_at": "2026-10-07T19:59:23+0800",
+  "mode": "persistent",
+  "fixture": "seed files plus one UTF-8 report",
+  "snapshot_command_seconds": 0.06405400199946598,
+  "report_bytes": 86,
+  "snapshot_content_bytes": 501,
+  "backend_files_bytes_before_unmount": 90336,
+  "recovered_sha256": "05b20312c2ce93d3d18cf7a9e4e84f945594097158f978f37fba4ab2e5ecc400",
+  "backend_files_bytes_after_unmount": 24576
+}
