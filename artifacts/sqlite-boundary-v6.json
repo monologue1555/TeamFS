@@ -1,0 +1,12 @@
+{
+  "direct": {
+    "committed_rows": 30,
+    "recovered_rows": 0,
+    "matches_committed": false
+  },
+  "cached": {
+    "committed_rows": 30,
+    "recovered_rows": 0,
+    "matches_committed": false
+  }
+}

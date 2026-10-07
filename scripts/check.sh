@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+source "$(dirname -- "${BASH_SOURCE[0]}")/common.sh"
+mkdir -p -- "$TEAMFS_ROOT/artifacts"
+(cd -- "$TEAMFS_ROOT" && cargo test --locked) 2>&1 | tee "$TEAMFS_ROOT/artifacts/model-tests.txt"
+bash "$TEAMFS_ROOT/scripts/smoke.sh"
+bash "$TEAMFS_ROOT/scripts/test-v2.sh"
+bash "$TEAMFS_ROOT/scripts/test-v3.sh"
+bash "$TEAMFS_ROOT/scripts/test-v4.sh"
+bash "$TEAMFS_ROOT/scripts/test-v5.sh"
+bash "$TEAMFS_ROOT/scripts/test-v6.sh"

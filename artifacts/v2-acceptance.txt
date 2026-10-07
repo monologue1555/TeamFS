@@ -1,11 +1,11 @@
 TeamFS v0.2 实际验收
-2026-10-07T19:13:05+0800
-binary: /home/monologue/.cache/teamfs-v2/target/debug/teamfs
+2026-10-07T22:00:48+0800
+binary: /home/monologue/.cache/teamfs/target/debug/teamfs
 PASS 01: 显式同步后 SIGKILL：中文/非 UTF-8 名称、二进制、权限、mtime、inode 保留
 PASS 02: 未同步版本 B 在异常退出后丢失，恢复到已同步版本 A
 PASS 03: 正常卸载保存：创建、删除和改名跨重挂载保留
 PASS 04: 普通文件 fsync 与目录 fsync 都提交业务文件树
-PASS 05: 快照创建即保存、重启可读、inode 隔离、180 项目录续读；创建耗时 0.072449s
+PASS 05: 快照创建即保存、重启可读、inode 隔离、180 项目录续读；创建耗时 0.103097s
 PASS 06: 当前文件覆盖/删除不改变历史，快照全部写操作受保护
 恢复 SHA256: 4a2a4a92f1ff5a3a0d21b87483e1228df75c77d560380b6eb189072495c145b6
 PASS 07: 恢复中文/原始字节名称、二进制与空文件；拒绝覆盖、越界、目录源和缺失父目录

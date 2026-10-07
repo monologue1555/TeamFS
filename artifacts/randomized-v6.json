@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-10-07T22:03:28+0800",
+  "suite": "randomized-v6",
+  "environment": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "uid": 1000
+  },
+  "context": {
+    "oracle": "native directory syscall outcomes + independent checkpoint copies",
+    "notes": "mtime/atime/inode numbers excluded; raw paths and bytes compared"
+  },
+  "summary": {
+    "pass": 6
+  },
+  "cases": [
+    {
+      "name": "direct seed=1555 steps=180",
+      "status": "pass",
+      "seconds": 10.054538826000226,
+      "detail": {
+        "seed": 1555,
+        "steps": 180,
+        "mode": "direct",
+        "crashes": 6,
+        "trace": "random-1555-direct.jsonl"
+      }
+    },
+    {
+      "name": "direct seed=20261007 steps=180",
+      "status": "pass",
+      "seconds": 7.833604225000272,
+      "detail": {
+        "seed": 20261007,
+        "steps": 180,
+        "mode": "direct",
+        "crashes": 6,
+        "trace": "random-20261007-direct.jsonl"
+      }
+    },
+    {
+      "name": "direct seed=42 steps=180",
+      "status": "pass",
+      "seconds": 7.34299855800009,
+      "detail": {
+        "seed": 42,
+        "steps": 180,
+        "mode": "direct",
+        "crashes": 6,
+        "trace": "random-42-direct.jsonl"
+      }
+    },
+    {
+      "name": "cached seed=1555 steps=180",
+      "status": "pass",
+      "seconds": 9.876730650999889,
+      "detail": {
+        "seed": 1555,
+        "steps": 180,
+        "mode": "cached",
+        "crashes": 6,
+        "trace": "random-1555-cached.jsonl"
+      }
+    },
+    {
+      "name": "cached seed=20261007 steps=180",
+      "status": "pass",
+      "seconds": 7.693597968999711,
+      "detail": {
+        "seed": 20261007,
+        "steps": 180,
+        "mode": "cached",
+        "crashes": 6,
+        "trace": "random-20261007-cached.jsonl"
+      }
+    },
+    {
+      "name": "cached seed=42 steps=180",
+      "status": "pass",
+      "seconds": 7.510460212999988,
+      "detail": {
+        "seed": 42,
+        "steps": 180,
+        "mode": "cached",
+        "crashes": 6,
+        "trace": "random-42-cached.jsonl"
+      }
+    }
+  ]
+}

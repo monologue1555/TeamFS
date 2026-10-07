@@ -1,0 +1,669 @@
+{
+  "session_id": "1791381737-874463912-12025",
+  "events": [
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "committed_content_bytes": 415,
+        "mode": "persistent",
+        "storage_error": null,
+        "trigger": "initialize"
+      },
+      "caller": null,
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": false,
+      "duration_us": 9630,
+      "errno": null,
+      "error_message": null,
+      "inode": null,
+      "operation": "commit",
+      "path_bytes": null,
+      "path_display": null,
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 1,
+      "session_id": "1791381737-874463912-12025",
+      "source": "sync",
+      "timestamp_unix_ms": 1791381737884
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "mode": "persistent"
+      },
+      "caller": null,
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": false,
+      "duration_us": 0,
+      "errno": null,
+      "error_message": null,
+      "inode": null,
+      "operation": "mount",
+      "path_bytes": null,
+      "path_display": null,
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 2,
+      "session_id": "1791381737-874463912-12025",
+      "source": "lifecycle",
+      "timestamp_unix_ms": 1791381737888
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "name_bytes": [
+          110,
+          111,
+          116,
+          101,
+          45,
+          255,
+          10
+        ],
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 4,
+          "total_us": 19
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": false,
+      "duration_us": 19,
+      "errno": 2,
+      "error_message": "No such file or directory (os error 2)",
+      "inode": 1,
+      "operation": "lookup",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "error",
+      "schema_version": 1,
+      "seq": 3,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737894
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "flags": 33345,
+        "name_bytes": [
+          110,
+          111,
+          116,
+          101,
+          45,
+          255,
+          10
+        ],
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 28,
+          "total_us": 33
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 33,
+      "errno": null,
+      "error_message": null,
+      "inode": 5,
+      "operation": "create",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 4,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737897
+    },
+    {
+      "actual_bytes": 38,
+      "arguments": {
+        "fh": 1,
+        "offset": 0,
+        "requested_bytes": 38,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 9,
+          "total_us": 18
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 18,
+      "errno": null,
+      "error_message": null,
+      "inode": 5,
+      "operation": "write",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 5,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737906
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "fh": 1,
+        "sync_point": false,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 1,
+          "total_us": 10
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 10,
+      "errno": null,
+      "error_message": null,
+      "inode": 5,
+      "operation": "flush",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 6,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737909
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "fh": 1,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 6,
+          "total_us": 13
+        }
+      },
+      "caller": {
+        "gid": 0,
+        "pid": 0,
+        "uid": 0
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 13,
+      "errno": null,
+      "error_message": null,
+      "inode": 5,
+      "operation": "release",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 7,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737911
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "flags": 32768,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 4,
+          "total_us": 12
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 12,
+      "errno": null,
+      "error_message": null,
+      "inode": 5,
+      "operation": "open",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 8,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737919
+    },
+    {
+      "actual_bytes": 38,
+      "arguments": {
+        "fh": 2,
+        "offset": 0,
+        "requested_bytes": 39,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 4,
+          "total_us": 11
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 11,
+      "errno": null,
+      "error_message": null,
+      "inode": 5,
+      "operation": "read",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 9,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737923
+    },
+    {
+      "actual_bytes": 0,
+      "arguments": {
+        "fh": 2,
+        "offset": 38,
+        "requested_bytes": 1,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 3,
+          "total_us": 11
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 11,
+      "errno": null,
+      "error_message": null,
+      "inode": 5,
+      "operation": "read",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 10,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737926
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "fh": 2,
+        "sync_point": false,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 1,
+          "total_us": 10
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 10,
+      "errno": null,
+      "error_message": null,
+      "inode": 5,
+      "operation": "flush",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 11,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737929
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "fh": 2,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 6,
+          "total_us": 15
+        }
+      },
+      "caller": {
+        "gid": 0,
+        "pid": 0,
+        "uid": 0
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 15,
+      "errno": null,
+      "error_message": null,
+      "inode": 5,
+      "operation": "release",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 12,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737931
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "name_bytes": [
+          114,
+          101,
+          110,
+          97,
+          109,
+          101,
+          100,
+          46,
+          116,
+          120,
+          116
+        ],
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 0,
+          "service_us": 2,
+          "total_us": 8
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 8,
+      "errno": 2,
+      "error_message": "No such file or directory (os error 2)",
+      "inode": 1,
+      "operation": "lookup",
+      "path_bytes": [
+        114,
+        101,
+        110,
+        97,
+        109,
+        101,
+        100,
+        46,
+        116,
+        120,
+        116
+      ],
+      "path_display": "renamed.txt",
+      "result": "error",
+      "schema_version": 1,
+      "seq": 13,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737939
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "name_bytes": [
+          110,
+          111,
+          116,
+          101,
+          45,
+          255,
+          10
+        ],
+        "new_name_bytes": [
+          114,
+          101,
+          110,
+          97,
+          109,
+          101,
+          100,
+          46,
+          116,
+          120,
+          116
+        ],
+        "new_parent": 1,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 1,
+          "service_us": 17,
+          "total_us": 26
+        }
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": [
+        114,
+        101,
+        110,
+        97,
+        109,
+        101,
+        100,
+        46,
+        116,
+        120,
+        116
+      ],
+      "destination_display": "renamed.txt",
+      "dirty_after": true,
+      "duration_us": 26,
+      "errno": null,
+      "error_message": null,
+      "inode": 1,
+      "operation": "rename",
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        45,
+        255,
+        10
+      ],
+      "path_display": "note-\\xff\\n",
+      "result": "ok",
+      "schema_version": 1,
+      "seq": 14,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737946
+    },
+    {
+      "actual_bytes": null,
+      "arguments": {
+        "gid": null,
+        "mode": null,
+        "size": 17825792,
+        "timing_us": {
+          "commit_us": 0,
+          "lock_wait_us": 1,
+          "service_us": 0,
+          "total_us": 10
+        },
+        "uid": null
+      },
+      "caller": {
+        "gid": 1000,
+        "pid": 12023,
+        "uid": 1000
+      },
+      "destination_bytes": null,
+      "destination_display": null,
+      "dirty_after": true,
+      "duration_us": 10,
+      "errno": 27,
+      "error_message": "File too large (os error 27)",
+      "inode": 5,
+      "operation": "setattr",
+      "path_bytes": [
+        114,
+        101,
+        110,
+        97,
+        109,
+        101,
+        100,
+        46,
+        116,
+        120,
+        116
+      ],
+      "path_display": "renamed.txt",
+      "result": "error",
+      "schema_version": 1,
+      "seq": 15,
+      "session_id": "1791381737-874463912-12025",
+      "source": "fuse",
+      "timestamp_unix_ms": 1791381737958
+    }
+  ]
+}

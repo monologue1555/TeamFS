@@ -1,0 +1,34 @@
+PASS: direct / Git workflow
+PASS: direct / rsync round trip
+PASS: direct / repeated Vim saves
+PASS: direct / atomic replace under concurrent reads
+PASS: direct / local POSIX record locks
+PASS: direct / SQLite PERSIST commit, rollback and daemon crash
+PASS: direct / SQLite DELETE plus explicit sync
+UNSUPPORTED: direct / SQLite DELETE without explicit sync
+Reproduced DELETE-mode durability boundary: committed 30 rows, recovered 0. Use explicit TeamFS sync or validated PERSIST mode.
+PASS: direct / error contracts and unlinked open handles
+UNSUPPORTED: direct / mmap then snapshot
+default direct_io intentionally does not offer shared mmap
+UNSUPPORTED: direct / hardlink capability
+hardlink is explicitly unsupported, errno=1
+UNSUPPORTED: direct / xattr capability
+xattr is explicitly unsupported, errno=95
+PASS: direct / clean unmount
+PASS: cached / Git workflow
+PASS: cached / rsync round trip
+PASS: cached / repeated Vim saves
+PASS: cached / atomic replace under concurrent reads
+PASS: cached / local POSIX record locks
+PASS: cached / SQLite PERSIST commit, rollback and daemon crash
+PASS: cached / SQLite DELETE plus explicit sync
+UNSUPPORTED: cached / SQLite DELETE without explicit sync
+Reproduced DELETE-mode durability boundary: committed 30 rows, recovered 0. Use explicit TeamFS sync or validated PERSIST mode.
+PASS: cached / error contracts and unlinked open handles
+PASS: cached / mmap then snapshot
+UNSUPPORTED: cached / hardlink capability
+hardlink is explicitly unsupported, errno=1
+UNSUPPORTED: cached / xattr capability
+xattr is explicitly unsupported, errno=95
+PASS: cached / clean unmount
+RESULT {'pass': 19, 'unsupported': 7}; report: /mnt/d/PyProject/operating system/Teamwork/artifacts/compatibility-v6.json

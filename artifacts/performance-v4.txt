@@ -1,0 +1,51 @@
+{
+  "measured_at": "2026-10-07T20:58:49+0800",
+  "fixture": "4 x 8MiB files, one 4KiB file, seed files, two complete snapshots; modify only the 4KiB file",
+  "notes": "Three local samples including CLI overhead. SQL payload bytes are not physical device-write bytes. RSS includes process and SQLite overhead.",
+  "before": {
+    "version": "0.3",
+    "format": 2,
+    "startup_rss_bytes": 134352896,
+    "startup_content_fetched_bytes": null,
+    "startup_cache_bytes": null,
+    "samples": [
+      {
+        "sync_command_seconds": 0.6384945329999709,
+        "sql_payload_insert_bytes": 100676829
+      },
+      {
+        "sync_command_seconds": 0.5537936359999662,
+        "sql_payload_insert_bytes": 100676829
+      },
+      {
+        "sync_command_seconds": 0.5325847350000004,
+        "sql_payload_insert_bytes": 100676829
+      }
+    ],
+    "median_sync_seconds": 0.5537936359999662,
+    "backend_bytes_after_unmount": 100818944
+  },
+  "after": {
+    "version": "0.4",
+    "format": 3,
+    "startup_rss_bytes": 9064448,
+    "startup_content_fetched_bytes": 0,
+    "startup_cache_bytes": 0,
+    "samples": [
+      {
+        "sync_command_seconds": 0.07667676900001652,
+        "sql_payload_insert_bytes": 4096
+      },
+      {
+        "sync_command_seconds": 0.0767602399999987,
+        "sql_payload_insert_bytes": 4096
+      },
+      {
+        "sync_command_seconds": 0.08129056100000298,
+        "sql_payload_insert_bytes": 4096
+      }
+    ],
+    "median_sync_seconds": 0.0767602399999987,
+    "backend_bytes_after_unmount": 33763936
+  }
+}

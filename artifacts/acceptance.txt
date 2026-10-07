@@ -1,11 +1,11 @@
 TeamFS 实际验收
-2026-10-07T19:01:27+08:00
+2026-10-07T22:00:24+08:00
 6.6.114.1-microsoft-standard-WSL2
 rustc 1.75.0 (82e1608df 2023-12-21) (built from a source tarball)
 cargo 1.75.0
 libfuse: 2.9.9
 uid=1000(monologue) gid=1000(monologue) groups=1000(monologue),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),1001(docker)
-/home/monologue/teamfs-check-WCtzXM/mnt fuse.teamfs
+/home/monologue/teamfs-check-G5YwDF/mnt fuse.teamfs
 PASS 01: 真实挂载与预置中文文件
 PASS 02: mkdir / create / write / read：中文名称、内容与字节大小
 PASS 03: 追加与覆盖截断：更短的内容没有残留尾部

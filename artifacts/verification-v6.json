@@ -1,0 +1,23 @@
+{
+  "version": "0.6.0",
+  "unit_tests": 20,
+  "previous_regression_scenario_groups": 62,
+  "new_diagnostics_and_fault_groups": 14,
+  "compatibility": {
+    "pass": 19,
+    "unsupported": 7
+  },
+  "randomized": {
+    "groups": 6,
+    "generated_operations": 1080,
+    "daemon_crash_remounts": 36
+  },
+  "performance_groups": {
+    "pass": 14
+  },
+  "fio_version": "fio-3.39",
+  "verification": "scripts/check.sh followed by scripts/benchmark-v6.sh; exit code 0",
+  "cloud_ci": "workflow configured; no GitHub run claimed",
+  "sqlite_boundary": "PERSIST/FULL and DELETE with explicit TeamFS sync validated; DELETE without explicit sync is unsupported for immediate daemon-crash durability",
+  "scope": "isolated temporary mountpoints; bounded workloads, not power-loss or full POSIX certification"
+}

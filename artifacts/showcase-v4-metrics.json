@@ -1,0 +1,17 @@
+{
+  "measured_at": "2026-10-07T21:05:28+0800",
+  "restored_sha256": "b57b64b198d5d59ce5a22a9b9f25e72a7d081476d432051aa923f3dbebb90934",
+  "startup_cache_bytes": 0,
+  "startup_content_fetched_bytes": 0,
+  "changed_file_bytes": 10,
+  "commit_content_bytes": 10,
+  "commit_rows": 2,
+  "cache_bytes": 256027,
+  "backup": {
+    "format": 1,
+    "teamfs": "0.4.0",
+    "created_unix": 1791378328,
+    "database_bytes": 294912,
+    "sha256": "9ae77bdbcf1195a21cbfbdc95657f430109d9701c496062983ad27151327202e"
+  }
+}

@@ -1,0 +1,18 @@
+TeamFS v0.3 actual mounted acceptance 2026-10-07T22:01:12+0800
+binary: /home/monologue/.cache/teamfs/target/debug/teamfs
+PASS 01: unlink keeps immutable bytes, raw attributes and separate inode; restore is non-overwriting
+PASS 02: Chinese/non-UTF8/control names, empty file and repeated deletions retain distinct IDs
+PASS 03: rename overwrite is protected; no-op/failed rename and direct truncate do not add records
+PASS 04: current tree and trash commit together across sync, crash and normal unmount
+PASS 05: purge persists, held historical descriptor survives, committed IDs are not reused
+PASS 06: trash INSERT/DELETE failure rolls back all tables and visible purge; retry succeeds
+PASS 07: trash index is frozen per open and refreshed on reopen
+PASS 08: 1024-record/64MiB limits refuse unlink and replacement without changing either file
+PASS 09: diff reports byte/content, metadata, type, paths and recursive additions; ignores atime
+PASS 10: diff result is frozen per descriptor and survives deletion of its snapshot
+PASS 11: idle timer commits; clean ticks skip; failures retry; stop wakes without waiting interval
+PASS 12: optional timer arguments validated; default still loses unsynced state on crash
+PASS 13: v1 migration preserves all stored rows; migration failure rolls back schema and version
+PASS 14: authentic 0.2 executable's v1 store migrates with raw names, attributes and snapshots
+PASS 15: combined auto-sync/snapshot/trash/diff operations serialize correctly; memory resets
+ALL PASS: 15 v3 mounted scenarios

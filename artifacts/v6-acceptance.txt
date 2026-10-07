@@ -1,0 +1,15 @@
+PASS: phase metrics, frozen reads, read-only and no self-observation
+PASS: busy store rejection and environment/mount diagnostics
+PASS: offline integrity, corrupt/unknown/missing-reference refusal, no data mutation
+PASS: transaction fault blobs / sync
+PASS: transaction fault blobs / snapshot
+PASS: transaction fault blobs / purge
+PASS: transaction fault nodes / sync
+PASS: transaction fault nodes / snapshot
+PASS: transaction fault nodes / purge
+PASS: transaction fault metadata / sync
+PASS: transaction fault metadata / snapshot
+PASS: transaction fault metadata / purge
+PASS: SQLite writer contention waits, timeout retains dirty and retry saves
+PASS: 120 lifecycle rounds: open/unlink/purge/close and retired-content reclamation
+RESULT {'pass': 14}; report: /mnt/d/PyProject/operating system/Teamwork/artifacts/v6-acceptance.json

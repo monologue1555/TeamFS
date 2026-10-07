@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-10-07T22:02:34+0800",
+  "suite": "v6-acceptance",
+  "environment": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "uid": 1000
+  },
+  "context": {},
+  "summary": {
+    "pass": 14
+  },
+  "cases": [
+    {
+      "name": "phase metrics, frozen reads, read-only and no self-observation",
+      "status": "pass",
+      "seconds": 0.17598444199984442,
+      "detail": null
+    },
+    {
+      "name": "busy store rejection and environment/mount diagnostics",
+      "status": "pass",
+      "seconds": 0.20880584899987298,
+      "detail": null
+    },
+    {
+      "name": "offline integrity, corrupt/unknown/missing-reference refusal, no data mutation",
+      "status": "pass",
+      "seconds": 0.07858439599976919,
+      "detail": null
+    },
+    {
+      "name": "transaction fault blobs / sync",
+      "status": "pass",
+      "seconds": 0.25721680600008767,
+      "detail": {
+        "failure_point": "blobs",
+        "command": "sync",
+        "failed_commit": "rolled back",
+        "retry": "persisted across SIGKILL"
+      }
+    },
+    {
+      "name": "transaction fault blobs / snapshot",
+      "status": "pass",
+      "seconds": 0.2680381239997587,
+      "detail": {
+        "failure_point": "blobs",
+        "command": "snapshot",
+        "failed_commit": "rolled back",
+        "retry": "persisted across SIGKILL"
+      }
+    },
+    {
+      "name": "transaction fault blobs / purge",
+      "status": "pass",
+      "seconds": 0.2587383260001843,
+      "detail": {
+        "failure_point": "blobs",
+        "command": "purge",
+        "failed_commit": "rolled back",
+        "retry": "persisted across SIGKILL"
+      }
+    },
+    {
+      "name": "transaction fault nodes / sync",
+      "status": "pass",
+      "seconds": 0.26979921000020113,
+      "detail": {
+        "failure_point": "nodes",
+        "command": "sync",
+        "failed_commit": "rolled back",
+        "retry": "persisted across SIGKILL"
+      }
+    },
+    {
+      "name": "transaction fault nodes / snapshot",
+      "status": "pass",
+      "seconds": 0.2568866460001118,
+      "detail": {
+        "failure_point": "nodes",
+        "command": "snapshot",
+        "failed_commit": "rolled back",
+        "retry": "persisted across SIGKILL"
+      }
+    },
+    {
+      "name": "transaction fault nodes / purge",
+      "status": "pass",
+      "seconds": 0.26322973700007424,
+      "detail": {
+        "failure_point": "nodes",
+        "command": "purge",
+        "failed_commit": "rolled back",
+        "retry": "persisted across SIGKILL"
+      }
+    },
+    {
+      "name": "transaction fault metadata / sync",
+      "status": "pass",
+      "seconds": 0.256409905000055,
+      "detail": {
+        "failure_point": "metadata",
+        "command": "sync",
+        "failed_commit": "rolled back",
+        "retry": "persisted across SIGKILL"
+      }
+    },
+    {
+      "name": "transaction fault metadata / snapshot",
+      "status": "pass",
+      "seconds": 0.2590733669999281,
+      "detail": {
+        "failure_point": "metadata",
+        "command": "snapshot",
+        "failed_commit": "rolled back",
+        "retry": "persisted across SIGKILL"
+      }
+    },
+    {
+      "name": "transaction fault metadata / purge",
+      "status": "pass",
+      "seconds": 0.25793570800033194,
+      "detail": {
+        "failure_point": "metadata",
+        "command": "purge",
+        "failed_commit": "rolled back",
+        "retry": "persisted across SIGKILL"
+      }
+    },
+    {
+      "name": "SQLite writer contention waits, timeout retains dirty and retry saves",
+      "status": "pass",
+      "seconds": 2.9036842340001385,
+      "detail": [
+        {
+          "writer_lock_seconds": 0.2,
+          "sync_succeeded": true,
+          "seconds_including_release_wait": 0.2428059930002746
+        },
+        {
+          "writer_lock_seconds": 2.5,
+          "sync_succeeded": false,
+          "seconds_including_release_wait": 2.50038229699976
+        }
+      ]
+    },
+    {
+      "name": "120 lifecycle rounds: open/unlink/purge/close and retired-content reclamation",
+      "status": "pass",
+      "seconds": 2.9321571770001356,
+      "detail": {
+        "iterations": 120,
+        "samples": [
+          {
+            "iteration": 0,
+            "runtime": {
+              "live": {
+                "kernel_lookup_refs": 0,
+                "nodes": 4,
+                "open_handles": 0,
+                "unlinked_nodes": 0
+              },
+              "open_handles": 0,
+              "retired_snapshots": 0,
+              "retired_trash": 1
+            },
+            "resident_unsaved_content_bytes": 4096
+          },
+          {
+            "iteration": 20,
+            "runtime": {
+              "live": {
+                "kernel_lookup_refs": 0,
+                "nodes": 4,
+                "open_handles": 0,
+                "unlinked_nodes": 0
+              },
+              "open_handles": 0,
+              "retired_snapshots": 0,
+              "retired_trash": 21
+            },
+            "resident_unsaved_content_bytes": 86016
+          },
+          {
+            "iteration": 40,
+            "runtime": {
+              "live": {
+                "kernel_lookup_refs": 0,
+                "nodes": 4,
+                "open_handles": 0,
+                "unlinked_nodes": 0
+              },
+              "open_handles": 0,
+              "retired_snapshots": 0,
+              "retired_trash": 41
+            },
+            "resident_unsaved_content_bytes": 167936
+          },
+          {
+            "iteration": 60,
+            "runtime": {
+              "live": {
+                "kernel_lookup_refs": 0,
+                "nodes": 4,
+                "open_handles": 0,
+                "unlinked_nodes": 0
+              },
+              "open_handles": 0,
+              "retired_snapshots": 0,
+              "retired_trash": 61
+            },
+            "resident_unsaved_content_bytes": 249856
+          },
+          {
+            "iteration": 80,
+            "runtime": {
+              "live": {
+                "kernel_lookup_refs": 0,
+                "nodes": 4,
+                "open_handles": 0,
+                "unlinked_nodes": 0
+              },
+              "open_handles": 0,
+              "retired_snapshots": 0,
+              "retired_trash": 81
+            },
+            "resident_unsaved_content_bytes": 331776
+          },
+          {
+            "iteration": 100,
+            "runtime": {
+              "live": {
+                "kernel_lookup_refs": 0,
+                "nodes": 4,
+                "open_handles": 0,
+                "unlinked_nodes": 0
+              },
+              "open_handles": 0,
+              "retired_snapshots": 0,
+              "retired_trash": 101
+            },
+            "resident_unsaved_content_bytes": 413696
+          }
+        ],
+        "unreferenced_bytes_before_restart": 0,
+        "unreferenced_bytes_after_restart": 0,
+        "scope": "bounded lifecycle exercise, not a long-term reliability claim"
+      }
+    }
+  ]
+}

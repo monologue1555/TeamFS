@@ -1,0 +1,158 @@
+TeamFS 0.4：整目录恢复、独立备份与按需读取 2026-10-07T21:05:27+0800
+$ teamfs snapshot diff /home/monologue/teamfs-showcase-v4-f8kdp62y/mnt draft
+内容修改	report/text.txt	属性=["mtime"]
+变化汇总：{"added":0,"modified":1,"removed":0,"type_changed":0}
+$ teamfs restore-tree /home/monologue/teamfs-showcase-v4-f8kdp62y/mnt draft report report-recovered --dry-run
+恢复预览：文件 2，目录 2，软链接 1，内容 256027 字节；可恢复=true；冲突/限制 errno=null
+"Directory"	report-recovered
+"Directory"	report-recovered/figures
+"File"	report-recovered/text.txt
+"Symlink"	report-recovered/latest
+"File"	report-recovered/figures/data.bin
+$ teamfs restore-tree /home/monologue/teamfs-showcase-v4-f8kdp62y/mnt draft report report-recovered
+恢复完成：文件 2，目录 2，软链接 1，内容 256027 字节；可恢复=true；冲突/限制 errno=null
+"Directory"	report-recovered
+"Directory"	report-recovered/figures
+"File"	report-recovered/text.txt
+"Symlink"	report-recovered/latest
+"File"	report-recovered/figures/data.bin
+已恢复到新目录，等待下一次成功同步；原目录和历史保持不变。
+PASS：整个目录恢复完成，二进制 SHA256 = b57b64b198d5d59ce5a22a9b9f25e72a7d081476d432051aa923f3dbebb90934
+$ teamfs backup create /home/monologue/teamfs-showcase-v4-f8kdp62y/mnt /home/monologue/teamfs-showcase-v4-f8kdp62y/independent-backup
+操作完成（模式："persistent"）
+备份完成：/home/monologue/teamfs-showcase-v4-f8kdp62y/independent-backup
+{
+  "format": 1,
+  "teamfs": "0.4.0",
+  "created_unix": 1791378328,
+  "database_bytes": 294912,
+  "sha256": "9ae77bdbcf1195a21cbfbdc95657f430109d9701c496062983ad27151327202e"
+}
+$ teamfs backup verify /home/monologue/teamfs-showcase-v4-f8kdp62y/independent-backup
+{
+  "format": 1,
+  "teamfs": "0.4.0",
+  "created_unix": 1791378328,
+  "database_bytes": 294912,
+  "sha256": "9ae77bdbcf1195a21cbfbdc95657f430109d9701c496062983ad27151327202e"
+}
+$ teamfs backup import /home/monologue/teamfs-showcase-v4-f8kdp62y/independent-backup --store /home/monologue/teamfs-showcase-v4-f8kdp62y/imported-store
+已导入新的存储目录，可通过 mount --store 挂载。
+PASS：从独立备份挂载，启动尚未读取文件内容。
+{
+  "auto_sync_attempts": 0,
+  "auto_sync_interval_seconds": null,
+  "auto_sync_successes": 0,
+  "cache_bytes": 256027,
+  "cache_limit_bytes": 8388608,
+  "capacity_bytes": 67108864,
+  "content_fetched_bytes": 256027,
+  "directories": 6,
+  "dirty": false,
+  "files": 8,
+  "filesystem": "TeamFS",
+  "last_commit_content_bytes": 10,
+  "last_commit_rows": 2,
+  "last_sync_error": null,
+  "last_sync_unix": 1791378328,
+  "max_file_bytes": 16777216,
+  "mode": "persistent",
+  "read_bytes": 256019,
+  "read_calls": 5,
+  "resident_unsaved_content_bytes": 0,
+  "schema_version": 1,
+  "snapshot_bytes": 256442,
+  "snapshot_capacity_bytes": 134217728,
+  "snapshot_count": 1,
+  "snapshot_limit": 10,
+  "snapshots": [
+    {
+      "created_unix": 1791378328,
+      "name": "draft"
+    }
+  ],
+  "store_path_bytes": [
+    47,
+    104,
+    111,
+    109,
+    101,
+    47,
+    109,
+    111,
+    110,
+    111,
+    108,
+    111,
+    103,
+    117,
+    101,
+    47,
+    116,
+    101,
+    97,
+    109,
+    102,
+    115,
+    45,
+    115,
+    104,
+    111,
+    119,
+    99,
+    97,
+    115,
+    101,
+    45,
+    118,
+    52,
+    45,
+    102,
+    56,
+    107,
+    100,
+    112,
+    54,
+    50,
+    121,
+    47,
+    105,
+    109,
+    112,
+    111,
+    114,
+    116,
+    101,
+    100,
+    45,
+    115,
+    116,
+    111,
+    114,
+    101,
+    47,
+    115,
+    116,
+    97,
+    116,
+    101,
+    46,
+    115,
+    113,
+    108,
+    105,
+    116,
+    101,
+    51
+  ],
+  "trash_bytes": 0,
+  "trash_capacity_bytes": 67108864,
+  "trash_count": 0,
+  "trash_limit": 1024,
+  "uptime_seconds": 0,
+  "used_bytes": 512454,
+  "version": "0.4.0",
+  "write_bytes": 10,
+  "write_calls": 1
+}
+ALL PASS：目录恢复、链接保留、备份校验、新存储导入、按需读取、增量提交。

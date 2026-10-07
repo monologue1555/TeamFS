@@ -1,0 +1,89 @@
+{
+  "captured_unix": 1791378326,
+  "changes": [
+    {
+      "after": {
+        "atime": [
+          1791378326,
+          859390825
+        ],
+        "crtime": [
+          1791378325,
+          722408049
+        ],
+        "ctime": [
+          1791378326,
+          924322546
+        ],
+        "gid": 1000,
+        "ino": 5,
+        "kind": "File",
+        "mode": 420,
+        "mtime": [
+          1791378326,
+          924322546
+        ],
+        "nlink": 1,
+        "size": 19,
+        "uid": 1000
+      },
+      "before": {
+        "atime": [
+          1791378326,
+          859390825
+        ],
+        "crtime": [
+          1791378325,
+          722408049
+        ],
+        "ctime": [
+          1791378325,
+          726608459
+        ],
+        "gid": 1000,
+        "ino": 5,
+        "kind": "File",
+        "mode": 420,
+        "mtime": [
+          1791378325,
+          726608459
+        ],
+        "nlink": 1,
+        "size": 76,
+        "uid": 1000
+      },
+      "change": "modified",
+      "content_changed": true,
+      "metadata_changed": [
+        "mtime"
+      ],
+      "path_bytes": [
+        110,
+        111,
+        116,
+        101,
+        115,
+        47,
+        114,
+        101,
+        112,
+        111,
+        114,
+        116,
+        46,
+        116,
+        120,
+        116
+      ],
+      "path_display": "notes/report.txt"
+    }
+  ],
+  "schema_version": 1,
+  "snapshot": "before-edit",
+  "summary": {
+    "added": 0,
+    "modified": 1,
+    "removed": 0,
+    "type_changed": 0
+  }
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TeamFS · 真实运行监控</title><link rel="stylesheet" href="/monitor.css"></head><body>
+<header><a class="brand" href="/">Team<span>FS</span></a><span class="badge">真实挂载 · 只读监控</span><span id="connection" class="connection waiting" role="status">正在连接</span></header>
+<main>
+<section class="heading"><div><p class="eyebrow">OBSERVE / 让文件操作可见</p><h1>文件系统此刻发生了什么？</h1><p id="mountpoint">等待挂载信息…</p></div><div class="sample"><span id="sample-time">尚未采样</span><span id="session">尚无会话</span></div></section>
+<div id="notice" class="notice" role="status" hidden></div>
+<section class="metrics" aria-label="实际运行指标">
+<article><p>保存状态</p><strong id="sync-state">—</strong><small id="last-sync">等待实际数据</small></article>
+<article><p>业务内容占用</p><strong id="used">—</strong><small id="files">—</small></article>
+<article><p>实际读取 / 秒</p><strong id="read-rate">—</strong><small id="read-total">—</small></article>
+<article><p>实际写入 / 秒</p><strong id="write-rate">—</strong><small id="write-total">—</small></article>
+<article><p>当前读取缓存</p><strong id="cache">—</strong><small id="unsaved">—</small></article>
+<article><p>历史与恢复</p><strong id="history">—</strong><small id="history-size">—</small></article>
+</section>
+<section class="panel"><div class="panel-head"><div><h2>请求耗时与等待</h2><p>每类操作最近 256 次的分位数；累计值覆盖本次挂载。仅计用户空间处理，不含内核排队。</p></div></div>
+<div class="table-wrap"><table><thead><tr><th>操作</th><th>次数 / 失败</th><th>P50</th><th>P95</th><th>最大</th><th>锁等待累计</th><th>保存累计</th></tr></thead><tbody id="perf-rows"><tr><td colspan="7">等待 TeamFS 0.6 指标…</td></tr></tbody></table></div><div class="panel-foot"><span id="runtime-note">句柄状态待采样</span><span>保存耗时已包含在操作耗时中；嵌套同步不能重复相加。</span></div></section>
+<section class="panel"><div class="panel-head"><div><h2>实际操作记录</h2><p>按 FUSE 请求与挂载内管理操作记录；一次软件保存可能产生多条记录。</p></div><button id="pause" type="button">暂停刷新</button></div>
+<div class="filters"><label>路径<input id="path-filter" type="search" placeholder="搜索来源或目标路径"></label>
+<label>操作<select id="operation-filter"><option value="">全部操作</option></select></label>
+<label>结果<select id="result-filter"><option value="">全部结果</option><option value="error">仅未成功</option><option value="ok">仅成功</option></select></label>
+<label>最小耗时（ms）<input id="duration-filter" type="number" min="0" step="0.1" placeholder="筛选慢请求"></label><label>请求进程<input id="pid-filter" type="search" placeholder="PID"></label><button id="export" type="button">导出当前筛选 JSON</button></div>
+<div class="table-wrap"><table><thead><tr><th>时间 / 序号</th><th>操作</th><th>路径</th><th>PID</th><th>实际字节</th><th>耗时</th><th>结果</th></tr></thead><tbody id="events"><tr><td colspan="7" class="empty">等待真实操作记录…</td></tr></tbody></table></div>
+<div class="panel-foot"><span id="event-count">0 条记录</span><span id="log-status">日志状态待采样</span></div></section>
+<section class="bottom"><article class="panel compact"><h2>记录详情</h2><p>点击一条记录，查看原始路径字节、参数和错误。</p><pre id="detail">尚未选择记录。</pre></article>
+<article class="panel compact"><h2>怎样读这些数据</h2><p>在另一个终端对挂载目录执行创建、读写、改名、删除或同步，页面会在采样后更新。</p><p>速率由相邻真实采样的累计字节差计算。只统计到达 TeamFS 的请求；应用和内核缓存、内核提前拒绝的操作不一定进入回调。</p><p>“未成功”表示一次请求的结果，应用探测文件也可能产生“路径不存在”。日志不包含文件正文。PID 表示请求进程，不代表某位组员。断开连接后显示的数据会明确标记为上次采样。</p><p id="window-note">页面展示最近的诊断记录；较早记录可在日志文件中查询。</p></article></section>
+</main><footer>TeamFS 0.6 · 状态来自 .teamfs/status.json，记录来自 .teamfs/events.json · 监控页面不执行文件修改</footer>
+<script src="/monitor.js"></script></body></html>

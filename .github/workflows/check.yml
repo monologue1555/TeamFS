@@ -1,0 +1,47 @@
+name: TeamFS checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CARGO_TARGET_DIR: /tmp/teamfs-target
+      TEAMFS_REQUIRE_TOOLS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.75.0
+      - name: Install build and application test dependencies
+        run: sudo apt-get update && sudo apt-get install -y fuse3 libfuse-dev pkg-config build-essential python3 git rsync vim fio
+      - name: Remove historical reports from this disposable CI checkout
+        run: |
+          mkdir -p artifacts
+          find artifacts -maxdepth 1 -type f \( -name '*.txt' -o -name '*.json' -o -name '*.jsonl' -o -name '*.log' \) -delete
+      - name: Unit tests
+        run: cargo test --locked
+      - name: Detect real FUSE capability
+        id: fuse
+        shell: bash
+        run: |
+          if test -c /dev/fuse && test -r /dev/fuse && test -w /dev/fuse && command -v fusermount3 >/dev/null; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            mkdir -p artifacts
+            echo '{"status":"environment_skip","reason":"Runner does not expose a usable /dev/fuse and fusermount3; mounted tests were not run"}' > artifacts/ci-mount-status.json
+            echo "::warning::Real mount tests skipped: FUSE unavailable on this runner"
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Real mounted regression and compatibility checks
+        if: steps.fuse.outputs.available == 'true'
+        run: bash scripts/check.sh
+      - name: Retain reports, including failures and explicit skips
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: teamfs-check-results
+          path: |
+            artifacts/*.txt
+            artifacts/*.json
+            artifacts/*trace.log
+            artifacts/random-*.jsonl

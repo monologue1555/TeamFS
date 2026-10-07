@@ -1,0 +1,15 @@
+PASS: native fio write 64k jobs=1
+PASS: native fio randread 4k jobs=1
+PASS: native fio randread 4k jobs=4
+PASS: native small-file lifecycle
+PASS: direct fio write 64k jobs=1
+PASS: direct fio randread 4k jobs=1
+PASS: direct fio randread 4k jobs=4
+PASS: direct small-file lifecycle
+PASS: direct persistence and controlled slow commit
+PASS: cached fio write 64k jobs=1
+PASS: cached fio randread 4k jobs=1
+PASS: cached fio randread 4k jobs=4
+PASS: cached small-file lifecycle
+PASS: cached persistence and controlled slow commit
+RESULT {'pass': 14}; report: /mnt/d/PyProject/operating system/Teamwork/artifacts/baseline-v6.json

@@ -1,75 +1,141 @@
-TeamFS v0.2：一份报告的保存与恢复
-2026-10-07T19:59:23+0800
+TeamFS 基础功能演示：忘记保存、误改、误删，再找回
+2026-10-07T21:05:25+0800
+binary: /home/monologue/.cache/teamfs/target/debug/teamfs
+kernel: 6.6.114.1-microsoft-standard-WSL2
 
-1. 创建报告，并显式同步到 SQLite
-小组报告初稿
-我们用 Rust 与 fuse-rs 实现可恢复的资料文件系统。
+1. 创建报告，不手动同步；演示开启 --auto-sync 1
+PASS：自动保存完成，从写入到观测成功 1.074640s（含定时等待）。
 
+2. 强制结束挂载进程，再加载同一存储
+PASS：异常退出后，自动同步的报告逐字节保留。
+
+3. 建立 before-edit 快照，修改报告，查看差异
+内容修改	notes/report.txt	属性=["mtime"]
+变化汇总：{"added":0,"modified":1,"removed":0,"type_changed":0}
 操作完成（模式："persistent"）
+文件已恢复到新路径；后续成功同步（手动、已启用的自动同步或正常卸载）后才能持久保存。
+PASS：快照恢复到新路径，内容与初稿一致。
 
-2. 卸载并重新挂载：报告仍然存在
-PASS：重新挂载后的报告逐字节一致。
+4. 创建一份不在快照里的新笔记，随后误删
+1	删除	292 字节	notes/new-note.bin	删除时间=1791378327
+共 1 条记录；恢复不会覆盖已有文件。
 
-3. 创建 before-edit 快照
+5. 从回收站恢复二进制笔记，验证逐字节一致
 操作完成（模式："persistent"）
-[
-  {
-    "created_unix": 1791374363,
-    "name": "before-edit"
-  }
-]
+文件已恢复到新路径；后续成功同步（手动、已启用的自动同步或正常卸载）后才能持久保存。
+PASS：恢复内容一致，SHA256 = f9985b762450b036b805f824f0f98e9ae2837df8fda4fb3789878a733495c27e
 
-4. 覆盖当前报告；通过普通 cat 读取只读历史目录
-小组报告初稿
-我们用 Rust 与 fuse-rs 实现可恢复的资料文件系统。
+6. 模拟编辑器通过改名替换报告，旧目标进入回收站
+1	删除	292 字节	notes/new-note.bin	删除时间=1791378327
+2	改名覆盖	19 字节	notes/report.txt	删除时间=1791378327
+共 2 条记录；恢复不会覆盖已有文件。
 
-5. 恢复为 report-recovered.txt，不覆盖当前报告
+7. 清理回收站，正常卸载并重挂载
 操作完成（模式："persistent"）
-文件已恢复到新路径；尚需 teamfs sync 或正常卸载才能持久保存。
-PASS：cmp 内容一致；SHA256 = 05b20312c2ce93d3d18cf7a9e4e84f945594097158f978f37fba4ab2e5ecc400
-操作完成（模式："persistent"）
-
-6. cat .teamfs/status.json：查看当前状态
+PASS：清理结果已保存，恢复出的报告和笔记仍在。
 {
+  "auto_sync_attempts": 0,
+  "auto_sync_interval_seconds": null,
+  "auto_sync_successes": 0,
+  "cache_bytes": 368,
+  "cache_limit_bytes": 8388608,
   "capacity_bytes": 67108864,
+  "content_fetched_bytes": 368,
   "directories": 2,
   "dirty": false,
-  "files": 4,
+  "files": 5,
   "filesystem": "TeamFS",
+  "last_commit_content_bytes": 0,
+  "last_commit_rows": 2,
   "last_sync_error": null,
-  "last_sync_unix": 1791374363,
+  "last_sync_unix": 1791378327,
   "max_file_bytes": 16777216,
   "mode": "persistent",
-  "read_bytes": 535,
-  "read_calls": 14,
+  "read_bytes": 368,
+  "read_calls": 4,
+  "resident_unsaved_content_bytes": 0,
   "schema_version": 1,
-  "snapshot_bytes": 501,
+  "snapshot_bytes": 491,
   "snapshot_capacity_bytes": 134217728,
   "snapshot_count": 1,
   "snapshot_limit": 10,
   "snapshots": [
     {
-      "created_unix": 1791374363,
+      "created_unix": 1791378326,
       "name": "before-edit"
     }
   ],
+  "store_path_bytes": [
+    47,
+    104,
+    111,
+    109,
+    101,
+    47,
+    109,
+    111,
+    110,
+    111,
+    108,
+    111,
+    103,
+    117,
+    101,
+    47,
+    116,
+    101,
+    97,
+    109,
+    102,
+    115,
+    45,
+    115,
+    104,
+    111,
+    119,
+    99,
+    97,
+    115,
+    101,
+    45,
+    106,
+    111,
+    97,
+    56,
+    121,
+    102,
+    48,
+    48,
+    47,
+    115,
+    116,
+    111,
+    114,
+    101,
+    47,
+    115,
+    116,
+    97,
+    116,
+    101,
+    46,
+    115,
+    113,
+    108,
+    105,
+    116,
+    101,
+    51
+  ],
+  "trash_bytes": 0,
+  "trash_capacity_bytes": 67108864,
+  "trash_count": 0,
+  "trash_limit": 1024,
   "uptime_seconds": 0,
-  "used_bytes": 520,
-  "version": "0.2.0",
-  "write_bytes": 19,
-  "write_calls": 1
+  "used_bytes": 811,
+  "version": "0.4.0",
+  "write_bytes": 0,
+  "write_calls": 0
 }
 
-PASS：恢复文件与快照跨重挂载保留。
-{
-  "measured_at": "2026-10-07T19:59:23+0800",
-  "mode": "persistent",
-  "fixture": "seed files plus one UTF-8 report",
-  "snapshot_command_seconds": 0.06405400199946598,
-  "report_bytes": 86,
-  "snapshot_content_bytes": 501,
-  "backend_files_bytes_before_unmount": 90336,
-  "recovered_sha256": "05b20312c2ce93d3d18cf7a9e4e84f945594097158f978f37fba4ab2e5ecc400",
-  "backend_files_bytes_after_unmount": 24576
-}
-以上是当前小文件样例的一次实测，不代表通用性能结论。演示挂载和临时存储将清理。
+ALL PASS：自动保存、异常恢复、快照差异、两种删除保护、恢复和清理均验证。

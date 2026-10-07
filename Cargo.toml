@@ -1,6 +1,6 @@
 [package]
 name = "teamfs"
-version = "0.2.0"
+version = "0.6.0"
 edition = "2021"
 description = "面向课程演示的 Rust + fuse-rs 可恢复资料文件系统"
 license = "MIT"
@@ -9,9 +9,10 @@ license = "MIT"
 fuse = "=0.3.1"
 libc = "0.2"
 time = "=0.1.45"
-rusqlite = { version = "=0.31.0", features = ["bundled"] }
+rusqlite = { version = "=0.31.0", features = ["bundled", "backup"] }
 serde = { version = "=1.0.197", features = ["derive"] }
 serde_json = "=1.0.114"
+sha2 = "=0.10.8"
 
 [profile.release]
 overflow-checks = true

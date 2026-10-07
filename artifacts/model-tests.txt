@@ -1,18 +1,27 @@
-   Compiling teamfs v0.2.0 (/mnt/d/PyProject/operating system/Teamwork)
-    Finished test [unoptimized + debuginfo] target(s) in 1.53s
-     Running unittests src/main.rs (/home/monologue/.cache/teamfs-v2/target/debug/deps/teamfs-0348e696e8b6684a)
+   Compiling teamfs v0.6.0 (/mnt/d/PyProject/operating system/Teamwork)
+    Finished test [unoptimized + debuginfo] target(s) in 1.37s
+     Running unittests src/main.rs (/home/monologue/.cache/teamfs/target/debug/deps/teamfs-85771aaa1c1be681)
 
-running 11 tests
+running 20 tests
+test content::tests::edits_copy_only_when_a_history_version_is_retained ... ok
+test diagnostics::tests::mountinfo_paths_decode_without_utf8_loss ... ok
+test history::tests::raw_paths_are_readable_and_unambiguous ... ok
+test history::tests::comparison_detects_owner_and_directory_modes_without_contents ... ok
+test history::tests::comparison_ignores_access_time_and_directory_mtime ... ok
 test model::tests::directories_errors_and_snapshot ... ok
 test model::tests::offsets_eof_and_sparse_writes ... ok
 test model::tests::persisted_tree_rejects_invalid_relationships ... ok
 test model::tests::persisted_tree_preserves_raw_names_and_excludes_orphans ... ok
+test metrics::tests::recent_percentiles_and_lifetime_totals_are_distinct ... ok
+test model::tests::rename_replace_and_cycle ... ok
 test model::tests::truncate_and_append ... ok
 test model::tests::seed_and_fresh_mount ... ok
 test model::tests::unlink_open_file_and_kernel_reference ... ok
-test model::tests::rename_replace_and_cycle ... ok
+test service::tests::diff_handle_and_lookup_retain_retired_view_until_both_release ... ok
 test service::tests::invalid_and_oversized_control_requests_do_not_execute ... ok
 test service::tests::retired_snapshot_survives_handle_and_lookup_then_collects ... ok
+test service::tests::retired_trash_waits_for_handle_and_lookup_then_releases_bytes ... ok
+test audit::tests::recent_window_reports_loss_without_refusing_records ... ok
 test model::tests::access_handles_and_limits ... ok
 
-test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s

@@ -1,0 +1,13 @@
+TeamFS v0.4 real mounted acceptance 2026-10-07T22:02:04+0800
+PASS 01: directory preview and whole-tree restore preserve hierarchy, raw names, bytes, permissions and links
+PASS 02: conflicts and bad paths leave no partial tree; root excludes management data; unsynced restore rolls back on crash
+PASS 03: relative/dangling symlinks survive restart, snapshot and trash recovery without dereferencing targets
+PASS 04: standalone checksummed backups restore files/history into new stores; corrupt or existing targets are refused atomically
+PASS 05: backup requires a successful initial sync and never publishes a backup on sync failure
+PASS 06: Vim actually edits/saves; cp -a and tar round-trip nested files and symbolic links
+PASS 07: owner permissions, local advisory flock and four-process append workloads behave correctly and persist
+PASS 08: optional cached I/O supports shared mmap, msync/fsync and persistence; default direct mode remains available
+PASS 09: whole-directory capacity preflight is atomic; configured limits persist across remount
+PASS 10: 96MiB data starts without content reads, 8MiB cache stays bounded, 4KiB change saves 4KiB; failed content commits rollback and retry
+PASS 11: authentic v0.3 format-2 database migrates atomically with snapshot and trash contents
+ALL PASS: 11 v4 mounted scenarios

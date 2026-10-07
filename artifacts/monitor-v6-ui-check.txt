@@ -1,0 +1,8 @@
+TeamFS 0.6 real monitor UI validation
+URL: http://127.0.0.1:8767/
+Observed live v0.6.0 mount, connection and phase percentile table.
+Minimum duration 1000ms: zero matching events; 1ms: only qualifying sync/snapshot events.
+Write event detail exposes lock_wait_us/service_us/commit_us/total_us.
+Page width 1265px: no horizontal overflow. Browser error log: empty.
+Screenshot: monitor-v6.jpg
+Independent demo; existing port 8766 playground preserved.

@@ -40,6 +40,24 @@ const fs = require('node:fs');
     await recovery('reset');
     ok('新版保存与恢复：未同步异常退出丢失、快照隔离、恢复、同步与不覆盖');
 
+    async function protect(action) { await page.locator('[data-protection="' + action + '"]').click(); }
+    for (const action of ['write','tick','crash']) await protect(action);
+    assert.equal((await page.locator('#protection-live').textContent()).trim(), '{}');
+    for (const action of ['write','auto','tick','crash','snapshot','edit','diff']) await protect(action);
+    assert.match(await page.locator('#protection-diff').textContent(), /内容修改  report.txt/);
+    for (const action of ['note','delete','restore']) await protect(action);
+    assert.match(await page.locator('#protection-live').textContent(), /recovered-1.txt/);
+    await protect('restore');
+    assert.match(await page.locator('#protection-result').textContent(), /拒绝覆盖/);
+    await protect('purge');
+    await protect('crash');
+    assert.match(await page.locator('#protection-live').textContent(), /recovered-1.txt/);
+    assert.match(await page.locator('#protection-trash').textContent(), /回收站为空/);
+    await protect('replace');
+    assert.match(await page.locator('#protection-trash').textContent(), /改名覆盖/);
+    await protect('reset');
+    ok('0.3 模拟：可选自动保存、异常重启、差异、删除和覆盖保护、恢复及清理');
+
     async function scenario(index) {
       await page.locator(`[data-index="${index}"]`).click();
       for (let layer = 0; layer < 5; layer++) await page.locator('#next').click();

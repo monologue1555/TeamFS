@@ -1,0 +1,10 @@
+TeamFS v0.5 structured logging / live monitor 2026-10-07T22:02:17+0800
+PASS 01: real callbacks record PID/UID, raw names, paths, rename destination, actual bytes, duration and errno without file contents
+PASS 02: automatic/explicit commits and management commands logged; repeated control fsync stays idempotent; monitoring reads do not log themselves
+PASS 03: event JSON is immutable per open, read-only, refreshes on reopen, and CLI filters match actual records
+PASS 04: SQLite failure has structured error context; asynchronous JSONL file contains real events
+PASS 05: localhost server samples real FUSE data, supports cursor queries, and exposes only read-only same-origin routes
+PASS 06: disconnect reports stale data explicitly; remount switches session and resets event cursors
+PASS 07: unwritable log does not fail business writes or sync; repaired logging resumes automatically
+PASS 08: file logs rotate independently, memory mode retains live events, and recursive log paths are refused
+ALL PASS: 8 v5 mounted/HTTP scenarios

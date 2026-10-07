@@ -1,0 +1,3245 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-10-07T22:03:48+0800",
+  "suite": "baseline-v6",
+  "completed": true,
+  "environment": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "uid": 1000
+  },
+  "context": {
+    "samples_per_workload": 3,
+    "build": "debug",
+    "io_engine": "psync, queue depth 1 per job",
+    "cache_policy": "no host cache drop; includes warm/uncontrolled OS caches; fio invalidate disabled consistently",
+    "audit": "file logger and trace disabled; runtime metrics still enabled on TeamFS",
+    "meaning": "fio completion latency and end-to-end CLI wall time are different metrics; no general performance ranking inferred",
+    "fio_version": "fio-3.39",
+    "direct_version": "0.6.0",
+    "direct_status": {
+      "audit": {
+        "errors": 459,
+        "evicted": 16915,
+        "file": null,
+        "first_seq": 16916,
+        "last_seq": 18963,
+        "retained": 2048,
+        "session_id": "1791381812-621168440-13644",
+        "successes": 18504
+      },
+      "auto_sync_attempts": 0,
+      "auto_sync_interval_seconds": null,
+      "auto_sync_successes": 0,
+      "cache_bytes": 8388608,
+      "cache_limit_bytes": 8388608,
+      "capacity_bytes": 67108864,
+      "content_fetched_bytes": 62926848,
+      "directories": 2,
+      "dirty": false,
+      "files": 8,
+      "filesystem": "TeamFS",
+      "last_commit_content_bytes": 0,
+      "last_commit_rows": 0,
+      "last_sync_error": null,
+      "last_sync_unix": 1791381820,
+      "max_file_bytes": 16777216,
+      "mode": "persistent",
+      "performance": {
+        "operations": [
+          {
+            "calls": 456,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 4,
+            "max_us": 102,
+            "mean_us": 27.605263157894736,
+            "operation": "fuse.create",
+            "p50_us": 28,
+            "p95_us": 47,
+            "p99_us": 88,
+            "sample_count": 256,
+            "service_total_us": 10217,
+            "total_us": 12588
+          },
+          {
+            "calls": 486,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 25,
+            "max_us": 88,
+            "mean_us": 8.502057613168724,
+            "operation": "fuse.flush",
+            "p50_us": 8,
+            "p95_us": 15,
+            "p99_us": 36,
+            "sample_count": 256,
+            "service_total_us": 70,
+            "total_us": 4132
+          },
+          {
+            "calls": 3,
+            "commit_total_us": 114999,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 42339,
+            "mean_us": 38446.0,
+            "operation": "fuse.fsync",
+            "p50_us": 42184,
+            "p95_us": 42339,
+            "p99_us": 42339,
+            "sample_count": 3,
+            "service_total_us": 115325,
+            "total_us": 115338
+          },
+          {
+            "calls": 459,
+            "commit_total_us": 0,
+            "errors": 459,
+            "lock_wait_total_us": 2,
+            "max_us": 23,
+            "mean_us": 5.973856209150327,
+            "operation": "fuse.lookup",
+            "p50_us": 5,
+            "p95_us": 13,
+            "p99_us": 19,
+            "sample_count": 256,
+            "service_total_us": 277,
+            "total_us": 2742
+          },
+          {
+            "calls": 3,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 23,
+            "mean_us": 14.0,
+            "operation": "fuse.mkdir",
+            "p50_us": 10,
+            "p95_us": 23,
+            "p99_us": 23,
+            "sample_count": 3,
+            "service_total_us": 30,
+            "total_us": 42
+          },
+          {
+            "calls": 30,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 11,
+            "max_us": 22,
+            "mean_us": 10.6,
+            "operation": "fuse.open",
+            "p50_us": 8,
+            "p95_us": 21,
+            "p99_us": 22,
+            "sample_count": 30,
+            "service_total_us": 119,
+            "total_us": 318
+          },
+          {
+            "calls": 6,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 1,
+            "max_us": 162,
+            "mean_us": 120.33333333333333,
+            "operation": "fuse.opendir",
+            "p50_us": 111,
+            "p95_us": 162,
+            "p99_us": 162,
+            "sample_count": 6,
+            "service_total_us": 695,
+            "total_us": 722
+          },
+          {
+            "calls": 15552,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 110,
+            "max_us": 1916,
+            "mean_us": 10.438335905349794,
+            "operation": "fuse.read",
+            "p50_us": 5,
+            "p95_us": 5,
+            "p99_us": 11,
+            "sample_count": 256,
+            "service_total_us": 103864,
+            "total_us": 162337
+          },
+          {
+            "calls": 18,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 2,
+            "max_us": 101,
+            "mean_us": 33.94444444444444,
+            "operation": "fuse.readdir",
+            "p50_us": 28,
+            "p95_us": 101,
+            "p99_us": 101,
+            "sample_count": 18,
+            "service_total_us": 505,
+            "total_us": 611
+          },
+          {
+            "calls": 486,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 14,
+            "max_us": 81,
+            "mean_us": 16.006172839506174,
+            "operation": "fuse.release",
+            "p50_us": 18,
+            "p95_us": 41,
+            "p99_us": 77,
+            "sample_count": 256,
+            "service_total_us": 3975,
+            "total_us": 7779
+          },
+          {
+            "calls": 6,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 34,
+            "mean_us": 23.5,
+            "operation": "fuse.releasedir",
+            "p50_us": 24,
+            "p95_us": 34,
+            "p99_us": 34,
+            "sample_count": 6,
+            "service_total_us": 114,
+            "total_us": 141
+          },
+          {
+            "calls": 3,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 9,
+            "mean_us": 8.666666666666666,
+            "operation": "fuse.rmdir",
+            "p50_us": 9,
+            "p95_us": 9,
+            "p99_us": 9,
+            "sample_count": 3,
+            "service_total_us": 16,
+            "total_us": 26
+          },
+          {
+            "calls": 3,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 16,
+            "mean_us": 13.0,
+            "operation": "fuse.setattr",
+            "p50_us": 12,
+            "p95_us": 16,
+            "p99_us": 16,
+            "sample_count": 3,
+            "service_total_us": 24,
+            "total_us": 39
+          },
+          {
+            "calls": 450,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 8,
+            "max_us": 318,
+            "mean_us": 65.05777777777777,
+            "operation": "fuse.unlink",
+            "p50_us": 81,
+            "p95_us": 129,
+            "p99_us": 290,
+            "sample_count": 256,
+            "service_total_us": 26876,
+            "total_us": 29276
+          },
+          {
+            "calls": 977,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 67,
+            "max_us": 734578,
+            "mean_us": 2451.1156601842376,
+            "operation": "fuse.write",
+            "p50_us": 563,
+            "p95_us": 722,
+            "p99_us": 717895,
+            "sample_count": 256,
+            "service_total_us": 2387450,
+            "total_us": 2394740
+          },
+          {
+            "calls": 10,
+            "commit_total_us": 613036,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 194646,
+            "mean_us": 61644.1,
+            "operation": "management.sync",
+            "p50_us": 12202,
+            "p95_us": 194646,
+            "p99_us": 194646,
+            "sample_count": 10,
+            "service_total_us": 616441,
+            "total_us": 616441
+          },
+          {
+            "calls": 14,
+            "commit_total_us": 738740,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 194253,
+            "mean_us": 52767.142857142855,
+            "operation": "sync.commit",
+            "p50_us": 30709,
+            "p95_us": 194253,
+            "p99_us": 194253,
+            "sample_count": 14,
+            "service_total_us": 738740,
+            "total_us": 738740
+          }
+        ],
+        "percentile_scope": "most recent samples per operation; counters cover this mount",
+        "recorded": 18962,
+        "sample_limit_per_operation": 256,
+        "schema_version": 1,
+        "slowest": [
+          {
+            "errno": null,
+            "operation": "fuse.write",
+            "path_bytes": [
+              112,
+              97,
+              116,
+              99,
+              104,
+              45,
+              108,
+              97,
+              114,
+              103,
+              101
+            ],
+            "path_display": "patch-large",
+            "pid": 13402,
+            "sequence": 18937,
+            "timing": {
+              "commit_us": 0,
+              "lock_wait_us": 0,
+              "service_us": 734573,
+              "total_us": 734578
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.write",
+            "path_bytes": [
+              112,
+              97,
+              116,
+              99,
+              104,
+              45,
+              108,
+              97,
+              114,
+              103,
+              101
+            ],
+            "path_display": "patch-large",
+            "pid": 13402,
+            "sequence": 18943,
+            "timing": {
+              "commit_us": 0,
+              "lock_wait_us": 0,
+              "service_us": 719968,
+              "total_us": 719973
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.write",
+            "path_bytes": [
+              112,
+              97,
+              116,
+              99,
+              104,
+              45,
+              108,
+              97,
+              114,
+              103,
+              101
+            ],
+            "path_display": "patch-large",
+            "pid": 13402,
+            "sequence": 18949,
+            "timing": {
+              "commit_us": 0,
+              "lock_wait_us": 0,
+              "service_us": 717890,
+              "total_us": 717895
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13900,
+            "sequence": 18960,
+            "timing": {
+              "commit_us": 194253,
+              "lock_wait_us": 0,
+              "service_us": 194646,
+              "total_us": 194646
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13900,
+            "sequence": 18959,
+            "timing": {
+              "commit_us": 194253,
+              "lock_wait_us": 0,
+              "service_us": 194253,
+              "total_us": 194253
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13888,
+            "sequence": 18910,
+            "timing": {
+              "commit_us": 159492,
+              "lock_wait_us": 0,
+              "service_us": 159933,
+              "total_us": 159933
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13888,
+            "sequence": 18909,
+            "timing": {
+              "commit_us": 159492,
+              "lock_wait_us": 0,
+              "service_us": 159492,
+              "total_us": 159492
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13896,
+            "sequence": 18947,
+            "timing": {
+              "commit_us": 78168,
+              "lock_wait_us": 0,
+              "service_us": 78503,
+              "total_us": 78503
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13896,
+            "sequence": 18946,
+            "timing": {
+              "commit_us": 78168,
+              "lock_wait_us": 0,
+              "service_us": 78168,
+              "total_us": 78168
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13897,
+            "sequence": 18953,
+            "timing": {
+              "commit_us": 71621,
+              "lock_wait_us": 0,
+              "service_us": 72098,
+              "total_us": 72098
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13897,
+            "sequence": 18952,
+            "timing": {
+              "commit_us": 71621,
+              "lock_wait_us": 0,
+              "service_us": 71621,
+              "total_us": 71621
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13894,
+            "sequence": 18941,
+            "timing": {
+              "commit_us": 67438,
+              "lock_wait_us": 0,
+              "service_us": 67801,
+              "total_us": 67801
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13894,
+            "sequence": 18940,
+            "timing": {
+              "commit_us": 67438,
+              "lock_wait_us": 0,
+              "service_us": 67438,
+              "total_us": 67438
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.fsync",
+            "path_bytes": [
+              102,
+              105,
+              111,
+              45,
+              48
+            ],
+            "path_display": "fio-0",
+            "pid": 13699,
+            "sequence": 241,
+            "timing": {
+              "commit_us": 42295,
+              "lock_wait_us": 0,
+              "service_us": 42335,
+              "total_us": 42339
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13699,
+            "sequence": 240,
+            "timing": {
+              "commit_us": 42295,
+              "lock_wait_us": 0,
+              "service_us": 42295,
+              "total_us": 42295
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.fsync",
+            "path_bytes": [
+              102,
+              105,
+              111,
+              45,
+              48
+            ],
+            "path_display": "fio-0",
+            "pid": 13724,
+            "sequence": 377,
+            "timing": {
+              "commit_us": 41995,
+              "lock_wait_us": 0,
+              "service_us": 42180,
+              "total_us": 42184
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13724,
+            "sequence": 376,
+            "timing": {
+              "commit_us": 41995,
+              "lock_wait_us": 0,
+              "service_us": 41995,
+              "total_us": 41995
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.fsync",
+            "path_bytes": [
+              102,
+              105,
+              111,
+              45,
+              48
+            ],
+            "path_display": "fio-0",
+            "pid": 13674,
+            "sequence": 105,
+            "timing": {
+              "commit_us": 30709,
+              "lock_wait_us": 0,
+              "service_us": 30810,
+              "total_us": 30815
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13674,
+            "sequence": 104,
+            "timing": {
+              "commit_us": 30709,
+              "lock_wait_us": 0,
+              "service_us": 30709,
+              "total_us": 30709
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13889,
+            "sequence": 18917,
+            "timing": {
+              "commit_us": 11902,
+              "lock_wait_us": 0,
+              "service_us": 12202,
+              "total_us": 12202
+            }
+          }
+        ],
+        "timing_scope": "userspace callback only; excludes kernel queue and reply delivery; commit is included in service"
+      },
+      "read_bytes": 75497472,
+      "read_calls": 15552,
+      "resident_unsaved_content_bytes": 0,
+      "runtime": {
+        "live": {
+          "kernel_lookup_refs": 114,
+          "nodes": 10,
+          "open_handles": 0,
+          "unlinked_nodes": 0
+        },
+        "open_handles": 0,
+        "retired_snapshots": 0,
+        "retired_trash": 0
+      },
+      "schema_version": 1,
+      "snapshot_bytes": 0,
+      "snapshot_capacity_bytes": 134217728,
+      "snapshot_count": 0,
+      "snapshot_limit": 10,
+      "snapshots": [],
+      "store_path_bytes": [
+        47,
+        104,
+        111,
+        109,
+        101,
+        47,
+        109,
+        111,
+        110,
+        111,
+        108,
+        111,
+        103,
+        117,
+        101,
+        47,
+        116,
+        101,
+        97,
+        109,
+        102,
+        115,
+        45,
+        98,
+        97,
+        115,
+        101,
+        108,
+        105,
+        110,
+        101,
+        45,
+        100,
+        105,
+        114,
+        101,
+        99,
+        116,
+        45,
+        99,
+        100,
+        110,
+        121,
+        116,
+        102,
+        56,
+        109,
+        47,
+        115,
+        116,
+        111,
+        114,
+        101,
+        47,
+        115,
+        116,
+        97,
+        116,
+        101,
+        46,
+        115,
+        113,
+        108,
+        105,
+        116,
+        101,
+        51
+      ],
+      "trash_bytes": 28800,
+      "trash_capacity_bytes": 67108864,
+      "trash_count": 450,
+      "trash_limit": 1024,
+      "uptime_seconds": 7,
+      "used_bytes": 33554853,
+      "version": "0.6.0",
+      "write_bytes": 54583430,
+      "write_calls": 977
+    },
+    "direct_storage": {
+      "blob_bytes": 96514597,
+      "blob_count": 469,
+      "current_nodes": 10,
+      "database_page_bytes": 96776192,
+      "format": 3,
+      "free_page_bytes": 0,
+      "logical_current_bytes": 33554853,
+      "note": "SQLite may manage WAL/SHM sidecars while opening read-only; application rows are never changed. No content checksum baseline is stored.",
+      "snapshots": 0,
+      "trash_records": 450,
+      "unreferenced_blob_bytes": 62930944,
+      "unreferenced_blobs": 10
+    },
+    "cached_version": "0.6.0",
+    "cached_status": {
+      "audit": {
+        "errors": 459,
+        "evicted": 29612,
+        "file": null,
+        "first_seq": 29613,
+        "last_seq": 31660,
+        "retained": 2048,
+        "session_id": "1791381820-158413257-13910",
+        "successes": 31201
+      },
+      "auto_sync_attempts": 0,
+      "auto_sync_interval_seconds": null,
+      "auto_sync_successes": 0,
+      "cache_bytes": 8388608,
+      "cache_limit_bytes": 8388608,
+      "capacity_bytes": 67108864,
+      "content_fetched_bytes": 62926848,
+      "directories": 2,
+      "dirty": false,
+      "files": 8,
+      "filesystem": "TeamFS",
+      "last_commit_content_bytes": 0,
+      "last_commit_rows": 0,
+      "last_sync_error": null,
+      "last_sync_unix": 1791381828,
+      "max_file_bytes": 16777216,
+      "mode": "persistent",
+      "performance": {
+        "operations": [
+          {
+            "calls": 456,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 4,
+            "max_us": 156,
+            "mean_us": 27.67324561403509,
+            "operation": "fuse.create",
+            "p50_us": 28,
+            "p95_us": 47,
+            "p99_us": 69,
+            "sample_count": 256,
+            "service_total_us": 10186,
+            "total_us": 12619
+          },
+          {
+            "calls": 486,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 22,
+            "max_us": 53,
+            "mean_us": 8.286008230452675,
+            "operation": "fuse.flush",
+            "p50_us": 8,
+            "p95_us": 16,
+            "p99_us": 31,
+            "sample_count": 256,
+            "service_total_us": 62,
+            "total_us": 4027
+          },
+          {
+            "calls": 3,
+            "commit_total_us": 110124,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 41768,
+            "mean_us": 36767.333333333336,
+            "operation": "fuse.fsync",
+            "p50_us": 37005,
+            "p95_us": 41768,
+            "p99_us": 41768,
+            "sample_count": 3,
+            "service_total_us": 110287,
+            "total_us": 110302
+          },
+          {
+            "calls": 459,
+            "commit_total_us": 0,
+            "errors": 459,
+            "lock_wait_total_us": 0,
+            "max_us": 46,
+            "mean_us": 6.019607843137255,
+            "operation": "fuse.lookup",
+            "p50_us": 5,
+            "p95_us": 11,
+            "p99_us": 22,
+            "sample_count": 256,
+            "service_total_us": 310,
+            "total_us": 2763
+          },
+          {
+            "calls": 3,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 19,
+            "mean_us": 13.0,
+            "operation": "fuse.mkdir",
+            "p50_us": 10,
+            "p95_us": 19,
+            "p99_us": 19,
+            "sample_count": 3,
+            "service_total_us": 30,
+            "total_us": 39
+          },
+          {
+            "calls": 30,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 12,
+            "max_us": 39,
+            "mean_us": 11.966666666666667,
+            "operation": "fuse.open",
+            "p50_us": 11,
+            "p95_us": 35,
+            "p99_us": 39,
+            "sample_count": 30,
+            "service_total_us": 122,
+            "total_us": 359
+          },
+          {
+            "calls": 6,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 195,
+            "mean_us": 147.16666666666666,
+            "operation": "fuse.opendir",
+            "p50_us": 149,
+            "p95_us": 195,
+            "p99_us": 195,
+            "sample_count": 6,
+            "service_total_us": 854,
+            "total_us": 883
+          },
+          {
+            "calls": 15456,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 166,
+            "max_us": 2633,
+            "mean_us": 10.503752587991718,
+            "operation": "fuse.read",
+            "p50_us": 5,
+            "p95_us": 6,
+            "p99_us": 11,
+            "sample_count": 256,
+            "service_total_us": 103923,
+            "total_us": 162346
+          },
+          {
+            "calls": 18,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 45,
+            "mean_us": 32.111111111111114,
+            "operation": "fuse.readdir",
+            "p50_us": 31,
+            "p95_us": 45,
+            "p99_us": 45,
+            "sample_count": 18,
+            "service_total_us": 497,
+            "total_us": 578
+          },
+          {
+            "calls": 486,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 10,
+            "max_us": 94,
+            "mean_us": 15.948559670781894,
+            "operation": "fuse.release",
+            "p50_us": 18,
+            "p95_us": 39,
+            "p99_us": 58,
+            "sample_count": 256,
+            "service_total_us": 4022,
+            "total_us": 7751
+          },
+          {
+            "calls": 6,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 31,
+            "mean_us": 25.0,
+            "operation": "fuse.releasedir",
+            "p50_us": 27,
+            "p95_us": 31,
+            "p99_us": 31,
+            "sample_count": 6,
+            "service_total_us": 124,
+            "total_us": 150
+          },
+          {
+            "calls": 3,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 12,
+            "mean_us": 10.0,
+            "operation": "fuse.rmdir",
+            "p50_us": 9,
+            "p95_us": 12,
+            "p99_us": 12,
+            "sample_count": 3,
+            "service_total_us": 18,
+            "total_us": 30
+          },
+          {
+            "calls": 3,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 4,
+            "max_us": 29,
+            "mean_us": 24.0,
+            "operation": "fuse.setattr",
+            "p50_us": 26,
+            "p95_us": 29,
+            "p99_us": 29,
+            "sample_count": 3,
+            "service_total_us": 32,
+            "total_us": 72
+          },
+          {
+            "calls": 450,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 5,
+            "max_us": 342,
+            "mean_us": 68.46888888888888,
+            "operation": "fuse.unlink",
+            "p50_us": 83,
+            "p95_us": 118,
+            "p99_us": 267,
+            "sample_count": 256,
+            "service_total_us": 28411,
+            "total_us": 30811
+          },
+          {
+            "calls": 13770,
+            "commit_total_us": 0,
+            "errors": 0,
+            "lock_wait_total_us": 231,
+            "max_us": 790589,
+            "mean_us": 187.01909949164852,
+            "operation": "fuse.write",
+            "p50_us": 24,
+            "p95_us": 91,
+            "p99_us": 742787,
+            "sample_count": 256,
+            "service_total_us": 2511634,
+            "total_us": 2575253
+          },
+          {
+            "calls": 10,
+            "commit_total_us": 610128,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 193952,
+            "mean_us": 61389.5,
+            "operation": "management.sync",
+            "p50_us": 12393,
+            "p95_us": 193952,
+            "p99_us": 193952,
+            "sample_count": 10,
+            "service_total_us": 613895,
+            "total_us": 613895
+          },
+          {
+            "calls": 14,
+            "commit_total_us": 729815,
+            "errors": 0,
+            "lock_wait_total_us": 0,
+            "max_us": 193524,
+            "mean_us": 52129.642857142855,
+            "operation": "sync.commit",
+            "p50_us": 31467,
+            "p95_us": 193524,
+            "p99_us": 193524,
+            "sample_count": 14,
+            "service_total_us": 729815,
+            "total_us": 729815
+          }
+        ],
+        "percentile_scope": "most recent samples per operation; counters cover this mount",
+        "recorded": 31659,
+        "sample_limit_per_operation": 256,
+        "schema_version": 1,
+        "slowest": [
+          {
+            "errno": null,
+            "operation": "fuse.write",
+            "path_bytes": [
+              112,
+              97,
+              116,
+              99,
+              104,
+              45,
+              108,
+              97,
+              114,
+              103,
+              101
+            ],
+            "path_display": "patch-large",
+            "pid": 13402,
+            "sequence": 31640,
+            "timing": {
+              "commit_us": 0,
+              "lock_wait_us": 0,
+              "service_us": 790583,
+              "total_us": 790589
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.write",
+            "path_bytes": [
+              112,
+              97,
+              116,
+              99,
+              104,
+              45,
+              108,
+              97,
+              114,
+              103,
+              101
+            ],
+            "path_display": "patch-large",
+            "pid": 13402,
+            "sequence": 31646,
+            "timing": {
+              "commit_us": 0,
+              "lock_wait_us": 0,
+              "service_us": 756166,
+              "total_us": 756171
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.write",
+            "path_bytes": [
+              112,
+              97,
+              116,
+              99,
+              104,
+              45,
+              108,
+              97,
+              114,
+              103,
+              101
+            ],
+            "path_display": "patch-large",
+            "pid": 13402,
+            "sequence": 31634,
+            "timing": {
+              "commit_us": 0,
+              "lock_wait_us": 0,
+              "service_us": 742782,
+              "total_us": 742787
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14165,
+            "sequence": 31657,
+            "timing": {
+              "commit_us": 193524,
+              "lock_wait_us": 0,
+              "service_us": 193952,
+              "total_us": 193952
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14165,
+            "sequence": 31656,
+            "timing": {
+              "commit_us": 193524,
+              "lock_wait_us": 0,
+              "service_us": 193524,
+              "total_us": 193524
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14153,
+            "sequence": 31607,
+            "timing": {
+              "commit_us": 162769,
+              "lock_wait_us": 0,
+              "service_us": 163087,
+              "total_us": 163087
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14153,
+            "sequence": 31606,
+            "timing": {
+              "commit_us": 162769,
+              "lock_wait_us": 0,
+              "service_us": 162769,
+              "total_us": 162769
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14159,
+            "sequence": 31638,
+            "timing": {
+              "commit_us": 74078,
+              "lock_wait_us": 0,
+              "service_us": 74530,
+              "total_us": 74530
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14159,
+            "sequence": 31637,
+            "timing": {
+              "commit_us": 74078,
+              "lock_wait_us": 0,
+              "service_us": 74078,
+              "total_us": 74078
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14161,
+            "sequence": 31644,
+            "timing": {
+              "commit_us": 71253,
+              "lock_wait_us": 0,
+              "service_us": 71819,
+              "total_us": 71819
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14163,
+            "sequence": 31650,
+            "timing": {
+              "commit_us": 70891,
+              "lock_wait_us": 0,
+              "service_us": 71386,
+              "total_us": 71386
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14161,
+            "sequence": 31643,
+            "timing": {
+              "commit_us": 71253,
+              "lock_wait_us": 0,
+              "service_us": 71253,
+              "total_us": 71253
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14163,
+            "sequence": 31649,
+            "timing": {
+              "commit_us": 70891,
+              "lock_wait_us": 0,
+              "service_us": 70891,
+              "total_us": 70891
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.fsync",
+            "path_bytes": [
+              102,
+              105,
+              111,
+              45,
+              48
+            ],
+            "path_display": "fio-0",
+            "pid": 13989,
+            "sequence": 4184,
+            "timing": {
+              "commit_us": 41707,
+              "lock_wait_us": 0,
+              "service_us": 41763,
+              "total_us": 41768
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13989,
+            "sequence": 4183,
+            "timing": {
+              "commit_us": 41707,
+              "lock_wait_us": 0,
+              "service_us": 41707,
+              "total_us": 41707
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.fsync",
+            "path_bytes": [
+              102,
+              105,
+              111,
+              45,
+              48
+            ],
+            "path_display": "fio-0",
+            "pid": 13938,
+            "sequence": 2056,
+            "timing": {
+              "commit_us": 36950,
+              "lock_wait_us": 0,
+              "service_us": 37000,
+              "total_us": 37005
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13938,
+            "sequence": 2055,
+            "timing": {
+              "commit_us": 36950,
+              "lock_wait_us": 0,
+              "service_us": 36950,
+              "total_us": 36950
+            }
+          },
+          {
+            "errno": null,
+            "operation": "fuse.fsync",
+            "path_bytes": [
+              102,
+              105,
+              111,
+              45,
+              48
+            ],
+            "path_display": "fio-0",
+            "pid": 13964,
+            "sequence": 3120,
+            "timing": {
+              "commit_us": 31467,
+              "lock_wait_us": 0,
+              "service_us": 31524,
+              "total_us": 31529
+            }
+          },
+          {
+            "errno": null,
+            "operation": "sync.commit",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 13964,
+            "sequence": 3119,
+            "timing": {
+              "commit_us": 31467,
+              "lock_wait_us": 0,
+              "service_us": 31467,
+              "total_us": 31467
+            }
+          },
+          {
+            "errno": null,
+            "operation": "management.sync",
+            "path_bytes": null,
+            "path_display": null,
+            "pid": 14154,
+            "sequence": 31614,
+            "timing": {
+              "commit_us": 11960,
+              "lock_wait_us": 0,
+              "service_us": 12393,
+              "total_us": 12393
+            }
+          }
+        ],
+        "timing_scope": "userspace callback only; excludes kernel queue and reply delivery; commit is included in service"
+      },
+      "read_bytes": 75497472,
+      "read_calls": 15456,
+      "resident_unsaved_content_bytes": 0,
+      "runtime": {
+        "live": {
+          "kernel_lookup_refs": 114,
+          "nodes": 10,
+          "open_handles": 0,
+          "unlinked_nodes": 0
+        },
+        "open_handles": 0,
+        "retired_snapshots": 0,
+        "retired_trash": 0
+      },
+      "schema_version": 1,
+      "snapshot_bytes": 0,
+      "snapshot_capacity_bytes": 134217728,
+      "snapshot_count": 0,
+      "snapshot_limit": 10,
+      "snapshots": [],
+      "store_path_bytes": [
+        47,
+        104,
+        111,
+        109,
+        101,
+        47,
+        109,
+        111,
+        110,
+        111,
+        108,
+        111,
+        103,
+        117,
+        101,
+        47,
+        116,
+        101,
+        97,
+        109,
+        102,
+        115,
+        45,
+        98,
+        97,
+        115,
+        101,
+        108,
+        105,
+        110,
+        101,
+        45,
+        99,
+        97,
+        99,
+        104,
+        101,
+        100,
+        45,
+        104,
+        100,
+        117,
+        111,
+        106,
+        100,
+        108,
+        107,
+        47,
+        115,
+        116,
+        111,
+        114,
+        101,
+        47,
+        115,
+        116,
+        97,
+        116,
+        101,
+        46,
+        115,
+        113,
+        108,
+        105,
+        116,
+        101,
+        51
+      ],
+      "trash_bytes": 28800,
+      "trash_capacity_bytes": 67108864,
+      "trash_count": 450,
+      "trash_limit": 1024,
+      "uptime_seconds": 8,
+      "used_bytes": 33554853,
+      "version": "0.6.0",
+      "write_bytes": 54583430,
+      "write_calls": 13770
+    },
+    "cached_storage": {
+      "blob_bytes": 96514597,
+      "blob_count": 469,
+      "current_nodes": 10,
+      "database_page_bytes": 96776192,
+      "format": 3,
+      "free_page_bytes": 0,
+      "logical_current_bytes": 33554853,
+      "note": "SQLite may manage WAL/SHM sidecars while opening read-only; application rows are never changed. No content checksum baseline is stored.",
+      "snapshots": 0,
+      "trash_records": 450,
+      "unreferenced_blob_bytes": 62930944,
+      "unreferenced_blobs": 10
+    }
+  },
+  "summary": {
+    "pass": 14
+  },
+  "cases": [
+    {
+      "name": "native fio write 64k jobs=1",
+      "status": "pass",
+      "seconds": 1.2216753329998937,
+      "detail": {
+        "fixture": "4MiB per job",
+        "jobs": 1,
+        "operation": "write",
+        "block_size": "64k",
+        "samples": [
+          {
+            "iops": 3555.555556,
+            "bandwidth_bytes_per_sec": 233016888,
+            "completion_latency_ns_mean": 11175.625,
+            "completion_latency_ns_p95": 11968,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-native-write-1-0.json"
+          },
+          {
+            "iops": 3555.555556,
+            "bandwidth_bytes_per_sec": 233016888,
+            "completion_latency_ns_mean": 13022.984375,
+            "completion_latency_ns_p95": 13504,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-native-write-1-1.json"
+          },
+          {
+            "iops": 5333.333333,
+            "bandwidth_bytes_per_sec": 349525333,
+            "completion_latency_ns_mean": 19200.109375,
+            "completion_latency_ns_p95": 22656,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-native-write-1-2.json"
+          }
+        ],
+        "median_iops": 3555.555556
+      }
+    },
+    {
+      "name": "native fio randread 4k jobs=1",
+      "status": "pass",
+      "seconds": 1.2176787409998724,
+      "detail": {
+        "fixture": "4MiB per job",
+        "jobs": 1,
+        "operation": "randread",
+        "block_size": "4k",
+        "samples": [
+          {
+            "iops": 1024000.0,
+            "bandwidth_bytes_per_sec": 4194304000,
+            "completion_latency_ns_mean": 832.586914,
+            "completion_latency_ns_p95": 1112,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-native-randread-1-0.json"
+          },
+          {
+            "iops": 512000.0,
+            "bandwidth_bytes_per_sec": 2097152000,
+            "completion_latency_ns_mean": 1143.069336,
+            "completion_latency_ns_p95": 2544,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-native-randread-1-1.json"
+          },
+          {
+            "iops": 512000.0,
+            "bandwidth_bytes_per_sec": 2097152000,
+            "completion_latency_ns_mean": 1055.917969,
+            "completion_latency_ns_p95": 1448,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-native-randread-1-2.json"
+          }
+        ],
+        "median_iops": 512000.0
+      }
+    },
+    {
+      "name": "native fio randread 4k jobs=4",
+      "status": "pass",
+      "seconds": 1.2213710820001324,
+      "detail": {
+        "fixture": "4MiB per job",
+        "jobs": 4,
+        "operation": "randread",
+        "block_size": "4k",
+        "samples": [
+          {
+            "iops": 2048000.0,
+            "bandwidth_bytes_per_sec": 8388608000,
+            "completion_latency_ns_mean": 982.651611,
+            "completion_latency_ns_p95": 1288,
+            "total_io_bytes": 16777216,
+            "raw_result": "fio-native-randread-4-0.json"
+          },
+          {
+            "iops": 2048000.0,
+            "bandwidth_bytes_per_sec": 8388608000,
+            "completion_latency_ns_mean": 924.094971,
+            "completion_latency_ns_p95": 1896,
+            "total_io_bytes": 16777216,
+            "raw_result": "fio-native-randread-4-1.json"
+          },
+          {
+            "iops": 2048000.0,
+            "bandwidth_bytes_per_sec": 8388608000,
+            "completion_latency_ns_mean": 906.859619,
+            "completion_latency_ns_p95": 1224,
+            "total_io_bytes": 16777216,
+            "raw_result": "fio-native-randread-4-2.json"
+          }
+        ],
+        "median_iops": 2048000.0
+      }
+    },
+    {
+      "name": "native small-file lifecycle",
+      "status": "pass",
+      "seconds": 0.01431637599989699,
+      "detail": {
+        "fixture": "150 files x 64B per repetition; TeamFS deletions include trash protection",
+        "samples": [
+          {
+            "create_ms": 2.9606,
+            "scan_stat_ms": 1.187439,
+            "delete_ms": 1.150211
+          },
+          {
+            "create_ms": 2.687994,
+            "scan_stat_ms": 0.326597,
+            "delete_ms": 1.111065
+          },
+          {
+            "create_ms": 2.776882,
+            "scan_stat_ms": 0.302409,
+            "delete_ms": 1.204635
+          }
+        ]
+      }
+    },
+    {
+      "name": "direct fio write 64k jobs=1",
+      "status": "pass",
+      "seconds": 1.241431030000058,
+      "detail": {
+        "fixture": "4MiB per job",
+        "jobs": 1,
+        "operation": "write",
+        "block_size": "64k",
+        "samples": [
+          {
+            "iops": 1729.72973,
+            "bandwidth_bytes_per_sec": 113359567,
+            "completion_latency_ns_mean": 74117.859375,
+            "completion_latency_ns_p95": 160768,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-direct-write-1-0.json"
+          },
+          {
+            "iops": 1280.0,
+            "bandwidth_bytes_per_sec": 83886080,
+            "completion_latency_ns_mean": 84867.15625,
+            "completion_latency_ns_p95": 146432,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-direct-write-1-1.json"
+          },
+          {
+            "iops": 1333.333333,
+            "bandwidth_bytes_per_sec": 87381333,
+            "completion_latency_ns_mean": 69450.09375,
+            "completion_latency_ns_p95": 114176,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-direct-write-1-2.json"
+          }
+        ],
+        "median_iops": 1333.333333
+      }
+    },
+    {
+      "name": "direct fio randread 4k jobs=1",
+      "status": "pass",
+      "seconds": 1.239468085000226,
+      "detail": {
+        "fixture": "4MiB per job",
+        "jobs": 1,
+        "operation": "randread",
+        "block_size": "4k",
+        "samples": [
+          {
+            "iops": 20078.431373,
+            "bandwidth_bytes_per_sec": 82241254,
+            "completion_latency_ns_mean": 48626.107422,
+            "completion_latency_ns_p95": 65280,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-direct-randread-1-0.json"
+          },
+          {
+            "iops": 19320.754717,
+            "bandwidth_bytes_per_sec": 79137811,
+            "completion_latency_ns_mean": 50533.259766,
+            "completion_latency_ns_p95": 84480,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-direct-randread-1-1.json"
+          },
+          {
+            "iops": 20078.431373,
+            "bandwidth_bytes_per_sec": 82241254,
+            "completion_latency_ns_mean": 48284.532227,
+            "completion_latency_ns_p95": 62720,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-direct-randread-1-2.json"
+          }
+        ],
+        "median_iops": 20078.431373
+      }
+    },
+    {
+      "name": "direct fio randread 4k jobs=4",
+      "status": "pass",
+      "seconds": 1.329061537999678,
+      "detail": {
+        "fixture": "4MiB per job",
+        "jobs": 4,
+        "operation": "randread",
+        "block_size": "4k",
+        "samples": [
+          {
+            "iops": 35617.391304,
+            "bandwidth_bytes_per_sec": 145888834,
+            "completion_latency_ns_mean": 110345.723145,
+            "completion_latency_ns_p95": 146432,
+            "total_io_bytes": 16777216,
+            "raw_result": "fio-direct-randread-4-0.json"
+          },
+          {
+            "iops": 35617.391304,
+            "bandwidth_bytes_per_sec": 145888834,
+            "completion_latency_ns_mean": 110509.22998,
+            "completion_latency_ns_p95": 138240,
+            "total_io_bytes": 16777216,
+            "raw_result": "fio-direct-randread-4-1.json"
+          },
+          {
+            "iops": 35617.391304,
+            "bandwidth_bytes_per_sec": 145888834,
+            "completion_latency_ns_mean": 110751.538818,
+            "completion_latency_ns_p95": 140288,
+            "total_io_bytes": 16777216,
+            "raw_result": "fio-direct-randread-4-2.json"
+          }
+        ],
+        "median_iops": 35617.391304
+      }
+    },
+    {
+      "name": "direct small-file lifecycle",
+      "status": "pass",
+      "seconds": 0.5141234909997365,
+      "detail": {
+        "fixture": "150 files x 64B per repetition; TeamFS deletions include trash protection",
+        "samples": [
+          {
+            "create_ms": 87.608572,
+            "scan_stat_ms": 32.203687,
+            "delete_ms": 47.043368
+          },
+          {
+            "create_ms": 87.13041,
+            "scan_stat_ms": 34.22955,
+            "delete_ms": 50.641635
+          },
+          {
+            "create_ms": 87.666992,
+            "scan_stat_ms": 32.996564,
+            "delete_ms": 53.511259
+          }
+        ]
+      }
+    },
+    {
+      "name": "direct persistence and controlled slow commit",
+      "status": "pass",
+      "seconds": 3.0581424219999462,
+      "detail": {
+        "samples": [
+          {
+            "file_bytes": 4096,
+            "changed_bytes": 4096,
+            "write_ms": 0.220792,
+            "sync_cli_ms": 19.256943,
+            "inserted_payload_bytes": 4096,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 4096,
+            "changed_bytes": 4096,
+            "write_ms": 0.205472,
+            "sync_cli_ms": 20.255807,
+            "inserted_payload_bytes": 4096,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 4096,
+            "changed_bytes": 4096,
+            "write_ms": 0.332563,
+            "sync_cli_ms": 18.840428,
+            "inserted_payload_bytes": 4096,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 16777216,
+            "changed_bytes": 4096,
+            "write_ms": 734.92233,
+            "sync_cli_ms": 80.69419,
+            "inserted_payload_bytes": 16777216,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 16777216,
+            "changed_bytes": 4096,
+            "write_ms": 720.342169,
+            "sync_cli_ms": 91.794642,
+            "inserted_payload_bytes": 16777216,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 16777216,
+            "changed_bytes": 4096,
+            "write_ms": 718.225123,
+            "sync_cli_ms": 86.586421,
+            "inserted_payload_bytes": 16777216,
+            "changed_rows": 1
+          }
+        ],
+        "controlled_store_lock_sync_cli_ms": 209.180623,
+        "note": "SQL payload is not physical device I/O. Controlled 150ms writer lock is an injected slow-path example, excluded from throughput samples.",
+        "metrics": {
+          "operations": [
+            {
+              "calls": 456,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 4,
+              "max_us": 102,
+              "mean_us": 27.605263157894736,
+              "operation": "fuse.create",
+              "p50_us": 28,
+              "p95_us": 47,
+              "p99_us": 88,
+              "sample_count": 256,
+              "service_total_us": 10217,
+              "total_us": 12588
+            },
+            {
+              "calls": 486,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 25,
+              "max_us": 88,
+              "mean_us": 8.502057613168724,
+              "operation": "fuse.flush",
+              "p50_us": 8,
+              "p95_us": 15,
+              "p99_us": 36,
+              "sample_count": 256,
+              "service_total_us": 70,
+              "total_us": 4132
+            },
+            {
+              "calls": 3,
+              "commit_total_us": 114999,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 42339,
+              "mean_us": 38446.0,
+              "operation": "fuse.fsync",
+              "p50_us": 42184,
+              "p95_us": 42339,
+              "p99_us": 42339,
+              "sample_count": 3,
+              "service_total_us": 115325,
+              "total_us": 115338
+            },
+            {
+              "calls": 459,
+              "commit_total_us": 0,
+              "errors": 459,
+              "lock_wait_total_us": 2,
+              "max_us": 23,
+              "mean_us": 5.973856209150327,
+              "operation": "fuse.lookup",
+              "p50_us": 5,
+              "p95_us": 13,
+              "p99_us": 19,
+              "sample_count": 256,
+              "service_total_us": 277,
+              "total_us": 2742
+            },
+            {
+              "calls": 3,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 23,
+              "mean_us": 14.0,
+              "operation": "fuse.mkdir",
+              "p50_us": 10,
+              "p95_us": 23,
+              "p99_us": 23,
+              "sample_count": 3,
+              "service_total_us": 30,
+              "total_us": 42
+            },
+            {
+              "calls": 30,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 11,
+              "max_us": 22,
+              "mean_us": 10.6,
+              "operation": "fuse.open",
+              "p50_us": 8,
+              "p95_us": 21,
+              "p99_us": 22,
+              "sample_count": 30,
+              "service_total_us": 119,
+              "total_us": 318
+            },
+            {
+              "calls": 6,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 1,
+              "max_us": 162,
+              "mean_us": 120.33333333333331,
+              "operation": "fuse.opendir",
+              "p50_us": 111,
+              "p95_us": 162,
+              "p99_us": 162,
+              "sample_count": 6,
+              "service_total_us": 695,
+              "total_us": 722
+            },
+            {
+              "calls": 15552,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 110,
+              "max_us": 1916,
+              "mean_us": 10.438335905349794,
+              "operation": "fuse.read",
+              "p50_us": 5,
+              "p95_us": 5,
+              "p99_us": 11,
+              "sample_count": 256,
+              "service_total_us": 103864,
+              "total_us": 162337
+            },
+            {
+              "calls": 18,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 2,
+              "max_us": 101,
+              "mean_us": 33.94444444444444,
+              "operation": "fuse.readdir",
+              "p50_us": 28,
+              "p95_us": 101,
+              "p99_us": 101,
+              "sample_count": 18,
+              "service_total_us": 505,
+              "total_us": 611
+            },
+            {
+              "calls": 486,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 14,
+              "max_us": 81,
+              "mean_us": 16.006172839506174,
+              "operation": "fuse.release",
+              "p50_us": 18,
+              "p95_us": 41,
+              "p99_us": 77,
+              "sample_count": 256,
+              "service_total_us": 3975,
+              "total_us": 7779
+            },
+            {
+              "calls": 6,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 34,
+              "mean_us": 23.5,
+              "operation": "fuse.releasedir",
+              "p50_us": 24,
+              "p95_us": 34,
+              "p99_us": 34,
+              "sample_count": 6,
+              "service_total_us": 114,
+              "total_us": 141
+            },
+            {
+              "calls": 3,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 9,
+              "mean_us": 8.666666666666666,
+              "operation": "fuse.rmdir",
+              "p50_us": 9,
+              "p95_us": 9,
+              "p99_us": 9,
+              "sample_count": 3,
+              "service_total_us": 16,
+              "total_us": 26
+            },
+            {
+              "calls": 3,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 16,
+              "mean_us": 13.0,
+              "operation": "fuse.setattr",
+              "p50_us": 12,
+              "p95_us": 16,
+              "p99_us": 16,
+              "sample_count": 3,
+              "service_total_us": 24,
+              "total_us": 39
+            },
+            {
+              "calls": 450,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 8,
+              "max_us": 318,
+              "mean_us": 65.05777777777777,
+              "operation": "fuse.unlink",
+              "p50_us": 81,
+              "p95_us": 129,
+              "p99_us": 290,
+              "sample_count": 256,
+              "service_total_us": 26876,
+              "total_us": 29276
+            },
+            {
+              "calls": 977,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 67,
+              "max_us": 734578,
+              "mean_us": 2451.1156601842376,
+              "operation": "fuse.write",
+              "p50_us": 563,
+              "p95_us": 722,
+              "p99_us": 717895,
+              "sample_count": 256,
+              "service_total_us": 2387450,
+              "total_us": 2394740
+            },
+            {
+              "calls": 9,
+              "commit_total_us": 605186,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 194646,
+              "mean_us": 67583.88888888889,
+              "operation": "management.sync",
+              "p50_us": 67801,
+              "p95_us": 194646,
+              "p99_us": 194646,
+              "sample_count": 9,
+              "service_total_us": 608255,
+              "total_us": 608255
+            },
+            {
+              "calls": 13,
+              "commit_total_us": 730890,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 194253,
+              "mean_us": 56222.307692307695,
+              "operation": "sync.commit",
+              "p50_us": 41995,
+              "p95_us": 194253,
+              "p99_us": 194253,
+              "sample_count": 13,
+              "service_total_us": 730890,
+              "total_us": 730890
+            }
+          ],
+          "percentile_scope": "most recent samples per operation; counters cover this mount",
+          "recorded": 18960,
+          "sample_limit_per_operation": 256,
+          "schema_version": 1,
+          "slowest": [
+            {
+              "errno": null,
+              "operation": "fuse.write",
+              "path_bytes": [
+                112,
+                97,
+                116,
+                99,
+                104,
+                45,
+                108,
+                97,
+                114,
+                103,
+                101
+              ],
+              "path_display": "patch-large",
+              "pid": 13402,
+              "sequence": 18937,
+              "timing": {
+                "commit_us": 0,
+                "lock_wait_us": 0,
+                "service_us": 734573,
+                "total_us": 734578
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.write",
+              "path_bytes": [
+                112,
+                97,
+                116,
+                99,
+                104,
+                45,
+                108,
+                97,
+                114,
+                103,
+                101
+              ],
+              "path_display": "patch-large",
+              "pid": 13402,
+              "sequence": 18943,
+              "timing": {
+                "commit_us": 0,
+                "lock_wait_us": 0,
+                "service_us": 719968,
+                "total_us": 719973
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.write",
+              "path_bytes": [
+                112,
+                97,
+                116,
+                99,
+                104,
+                45,
+                108,
+                97,
+                114,
+                103,
+                101
+              ],
+              "path_display": "patch-large",
+              "pid": 13402,
+              "sequence": 18949,
+              "timing": {
+                "commit_us": 0,
+                "lock_wait_us": 0,
+                "service_us": 717890,
+                "total_us": 717895
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13900,
+              "sequence": 18960,
+              "timing": {
+                "commit_us": 194253,
+                "lock_wait_us": 0,
+                "service_us": 194646,
+                "total_us": 194646
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13900,
+              "sequence": 18959,
+              "timing": {
+                "commit_us": 194253,
+                "lock_wait_us": 0,
+                "service_us": 194253,
+                "total_us": 194253
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13888,
+              "sequence": 18910,
+              "timing": {
+                "commit_us": 159492,
+                "lock_wait_us": 0,
+                "service_us": 159933,
+                "total_us": 159933
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13888,
+              "sequence": 18909,
+              "timing": {
+                "commit_us": 159492,
+                "lock_wait_us": 0,
+                "service_us": 159492,
+                "total_us": 159492
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13896,
+              "sequence": 18947,
+              "timing": {
+                "commit_us": 78168,
+                "lock_wait_us": 0,
+                "service_us": 78503,
+                "total_us": 78503
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13896,
+              "sequence": 18946,
+              "timing": {
+                "commit_us": 78168,
+                "lock_wait_us": 0,
+                "service_us": 78168,
+                "total_us": 78168
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13897,
+              "sequence": 18953,
+              "timing": {
+                "commit_us": 71621,
+                "lock_wait_us": 0,
+                "service_us": 72098,
+                "total_us": 72098
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13897,
+              "sequence": 18952,
+              "timing": {
+                "commit_us": 71621,
+                "lock_wait_us": 0,
+                "service_us": 71621,
+                "total_us": 71621
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13894,
+              "sequence": 18941,
+              "timing": {
+                "commit_us": 67438,
+                "lock_wait_us": 0,
+                "service_us": 67801,
+                "total_us": 67801
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13894,
+              "sequence": 18940,
+              "timing": {
+                "commit_us": 67438,
+                "lock_wait_us": 0,
+                "service_us": 67438,
+                "total_us": 67438
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.fsync",
+              "path_bytes": [
+                102,
+                105,
+                111,
+                45,
+                48
+              ],
+              "path_display": "fio-0",
+              "pid": 13699,
+              "sequence": 241,
+              "timing": {
+                "commit_us": 42295,
+                "lock_wait_us": 0,
+                "service_us": 42335,
+                "total_us": 42339
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13699,
+              "sequence": 240,
+              "timing": {
+                "commit_us": 42295,
+                "lock_wait_us": 0,
+                "service_us": 42295,
+                "total_us": 42295
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.fsync",
+              "path_bytes": [
+                102,
+                105,
+                111,
+                45,
+                48
+              ],
+              "path_display": "fio-0",
+              "pid": 13724,
+              "sequence": 377,
+              "timing": {
+                "commit_us": 41995,
+                "lock_wait_us": 0,
+                "service_us": 42180,
+                "total_us": 42184
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13724,
+              "sequence": 376,
+              "timing": {
+                "commit_us": 41995,
+                "lock_wait_us": 0,
+                "service_us": 41995,
+                "total_us": 41995
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.fsync",
+              "path_bytes": [
+                102,
+                105,
+                111,
+                45,
+                48
+              ],
+              "path_display": "fio-0",
+              "pid": 13674,
+              "sequence": 105,
+              "timing": {
+                "commit_us": 30709,
+                "lock_wait_us": 0,
+                "service_us": 30810,
+                "total_us": 30815
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13674,
+              "sequence": 104,
+              "timing": {
+                "commit_us": 30709,
+                "lock_wait_us": 0,
+                "service_us": 30709,
+                "total_us": 30709
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13889,
+              "sequence": 18917,
+              "timing": {
+                "commit_us": 11902,
+                "lock_wait_us": 0,
+                "service_us": 12202,
+                "total_us": 12202
+              }
+            }
+          ],
+          "timing_scope": "userspace callback only; excludes kernel queue and reply delivery; commit is included in service"
+        }
+      }
+    },
+    {
+      "name": "cached fio write 64k jobs=1",
+      "status": "pass",
+      "seconds": 1.5359814570001618,
+      "detail": {
+        "fixture": "4MiB per job",
+        "jobs": 1,
+        "operation": "write",
+        "block_size": "64k",
+        "samples": [
+          {
+            "iops": 703.296703,
+            "bandwidth_bytes_per_sec": 46091252,
+            "completion_latency_ns_mean": 817806.96875,
+            "completion_latency_ns_p95": 1253376,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-cached-write-1-0.json"
+          },
+          {
+            "iops": 752.941176,
+            "bandwidth_bytes_per_sec": 49344752,
+            "completion_latency_ns_mean": 805176.765625,
+            "completion_latency_ns_p95": 1105920,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-cached-write-1-1.json"
+          },
+          {
+            "iops": 673.684211,
+            "bandwidth_bytes_per_sec": 44150568,
+            "completion_latency_ns_mean": 807990.28125,
+            "completion_latency_ns_p95": 1073152,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-cached-write-1-2.json"
+          }
+        ],
+        "median_iops": 703.296703
+      }
+    },
+    {
+      "name": "cached fio randread 4k jobs=1",
+      "status": "pass",
+      "seconds": 1.2919088810003814,
+      "detail": {
+        "fixture": "4MiB per job",
+        "jobs": 1,
+        "operation": "randread",
+        "block_size": "4k",
+        "samples": [
+          {
+            "iops": 17066.666667,
+            "bandwidth_bytes_per_sec": 69905066,
+            "completion_latency_ns_mean": 55793.083984,
+            "completion_latency_ns_p95": 94720,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-cached-randread-1-0.json"
+          },
+          {
+            "iops": 17964.912281,
+            "bandwidth_bytes_per_sec": 73584280,
+            "completion_latency_ns_mean": 53384.568359,
+            "completion_latency_ns_p95": 88576,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-cached-randread-1-1.json"
+          },
+          {
+            "iops": 18618.181818,
+            "bandwidth_bytes_per_sec": 76260072,
+            "completion_latency_ns_mean": 52520.324219,
+            "completion_latency_ns_p95": 77312,
+            "total_io_bytes": 4194304,
+            "raw_result": "fio-cached-randread-1-2.json"
+          }
+        ],
+        "median_iops": 17964.912281
+      }
+    },
+    {
+      "name": "cached fio randread 4k jobs=4",
+      "status": "pass",
+      "seconds": 1.5095895599997675,
+      "detail": {
+        "fixture": "4MiB per job",
+        "jobs": 4,
+        "operation": "randread",
+        "block_size": "4k",
+        "samples": [
+          {
+            "iops": 33851.239669,
+            "bandwidth_bytes_per_sec": 138654677,
+            "completion_latency_ns_mean": 115660.287354,
+            "completion_latency_ns_p95": 150528,
+            "total_io_bytes": 16777216,
+            "raw_result": "fio-cached-randread-4-0.json"
+          },
+          {
+            "iops": 34420.168067,
+            "bandwidth_bytes_per_sec": 140985008,
+            "completion_latency_ns_mean": 113673.470215,
+            "completion_latency_ns_p95": 148480,
+            "total_io_bytes": 16777216,
+            "raw_result": "fio-cached-randread-4-1.json"
+          },
+          {
+            "iops": 35929.824561,
+            "bandwidth_bytes_per_sec": 147168561,
+            "completion_latency_ns_mean": 109676.168213,
+            "completion_latency_ns_p95": 125440,
+            "total_io_bytes": 16777216,
+            "raw_result": "fio-cached-randread-4-2.json"
+          }
+        ],
+        "median_iops": 34420.168067
+      }
+    },
+    {
+      "name": "cached small-file lifecycle",
+      "status": "pass",
+      "seconds": 0.5205917070002215,
+      "detail": {
+        "fixture": "150 files x 64B per repetition; TeamFS deletions include trash protection",
+        "samples": [
+          {
+            "create_ms": 82.730051,
+            "scan_stat_ms": 33.197796,
+            "delete_ms": 50.596085
+          },
+          {
+            "create_ms": 88.060591,
+            "scan_stat_ms": 35.532548,
+            "delete_ms": 56.164181
+          },
+          {
+            "create_ms": 86.38161,
+            "scan_stat_ms": 32.326177,
+            "delete_ms": 54.625303
+          }
+        ]
+      }
+    },
+    {
+      "name": "cached persistence and controlled slow commit",
+      "status": "pass",
+      "seconds": 3.401108921999821,
+      "detail": {
+        "samples": [
+          {
+            "file_bytes": 4096,
+            "changed_bytes": 4096,
+            "write_ms": 0.314894,
+            "sync_cli_ms": 19.554059,
+            "inserted_payload_bytes": 4096,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 4096,
+            "changed_bytes": 4096,
+            "write_ms": 0.262213,
+            "sync_cli_ms": 21.076204,
+            "inserted_payload_bytes": 4096,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 4096,
+            "changed_bytes": 4096,
+            "write_ms": 0.265937,
+            "sync_cli_ms": 19.970169,
+            "inserted_payload_bytes": 4096,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 16777216,
+            "changed_bytes": 4096,
+            "write_ms": 743.176926,
+            "sync_cli_ms": 90.500286,
+            "inserted_payload_bytes": 16777216,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 16777216,
+            "changed_bytes": 4096,
+            "write_ms": 791.028563,
+            "sync_cli_ms": 86.64762,
+            "inserted_payload_bytes": 16777216,
+            "changed_rows": 1
+          },
+          {
+            "file_bytes": 16777216,
+            "changed_bytes": 4096,
+            "write_ms": 756.666262,
+            "sync_cli_ms": 85.829627,
+            "inserted_payload_bytes": 16777216,
+            "changed_rows": 1
+          }
+        ],
+        "controlled_store_lock_sync_cli_ms": 206.485825,
+        "note": "SQL payload is not physical device I/O. Controlled 150ms writer lock is an injected slow-path example, excluded from throughput samples.",
+        "metrics": {
+          "operations": [
+            {
+              "calls": 456,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 4,
+              "max_us": 156,
+              "mean_us": 27.67324561403509,
+              "operation": "fuse.create",
+              "p50_us": 28,
+              "p95_us": 47,
+              "p99_us": 69,
+              "sample_count": 256,
+              "service_total_us": 10186,
+              "total_us": 12619
+            },
+            {
+              "calls": 486,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 22,
+              "max_us": 53,
+              "mean_us": 8.286008230452675,
+              "operation": "fuse.flush",
+              "p50_us": 8,
+              "p95_us": 16,
+              "p99_us": 31,
+              "sample_count": 256,
+              "service_total_us": 62,
+              "total_us": 4027
+            },
+            {
+              "calls": 3,
+              "commit_total_us": 110124,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 41768,
+              "mean_us": 36767.333333333336,
+              "operation": "fuse.fsync",
+              "p50_us": 37005,
+              "p95_us": 41768,
+              "p99_us": 41768,
+              "sample_count": 3,
+              "service_total_us": 110287,
+              "total_us": 110302
+            },
+            {
+              "calls": 459,
+              "commit_total_us": 0,
+              "errors": 459,
+              "lock_wait_total_us": 0,
+              "max_us": 46,
+              "mean_us": 6.019607843137255,
+              "operation": "fuse.lookup",
+              "p50_us": 5,
+              "p95_us": 11,
+              "p99_us": 22,
+              "sample_count": 256,
+              "service_total_us": 310,
+              "total_us": 2763
+            },
+            {
+              "calls": 3,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 19,
+              "mean_us": 13.0,
+              "operation": "fuse.mkdir",
+              "p50_us": 10,
+              "p95_us": 19,
+              "p99_us": 19,
+              "sample_count": 3,
+              "service_total_us": 30,
+              "total_us": 39
+            },
+            {
+              "calls": 30,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 12,
+              "max_us": 39,
+              "mean_us": 11.966666666666669,
+              "operation": "fuse.open",
+              "p50_us": 11,
+              "p95_us": 35,
+              "p99_us": 39,
+              "sample_count": 30,
+              "service_total_us": 122,
+              "total_us": 359
+            },
+            {
+              "calls": 6,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 195,
+              "mean_us": 147.16666666666666,
+              "operation": "fuse.opendir",
+              "p50_us": 149,
+              "p95_us": 195,
+              "p99_us": 195,
+              "sample_count": 6,
+              "service_total_us": 854,
+              "total_us": 883
+            },
+            {
+              "calls": 15456,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 166,
+              "max_us": 2633,
+              "mean_us": 10.503752587991718,
+              "operation": "fuse.read",
+              "p50_us": 5,
+              "p95_us": 6,
+              "p99_us": 11,
+              "sample_count": 256,
+              "service_total_us": 103923,
+              "total_us": 162346
+            },
+            {
+              "calls": 18,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 45,
+              "mean_us": 32.111111111111114,
+              "operation": "fuse.readdir",
+              "p50_us": 31,
+              "p95_us": 45,
+              "p99_us": 45,
+              "sample_count": 18,
+              "service_total_us": 497,
+              "total_us": 578
+            },
+            {
+              "calls": 486,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 10,
+              "max_us": 94,
+              "mean_us": 15.948559670781894,
+              "operation": "fuse.release",
+              "p50_us": 18,
+              "p95_us": 39,
+              "p99_us": 58,
+              "sample_count": 256,
+              "service_total_us": 4022,
+              "total_us": 7751
+            },
+            {
+              "calls": 6,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 31,
+              "mean_us": 25.0,
+              "operation": "fuse.releasedir",
+              "p50_us": 27,
+              "p95_us": 31,
+              "p99_us": 31,
+              "sample_count": 6,
+              "service_total_us": 124,
+              "total_us": 150
+            },
+            {
+              "calls": 3,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 12,
+              "mean_us": 10.0,
+              "operation": "fuse.rmdir",
+              "p50_us": 9,
+              "p95_us": 12,
+              "p99_us": 12,
+              "sample_count": 3,
+              "service_total_us": 18,
+              "total_us": 30
+            },
+            {
+              "calls": 3,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 4,
+              "max_us": 29,
+              "mean_us": 24.0,
+              "operation": "fuse.setattr",
+              "p50_us": 26,
+              "p95_us": 29,
+              "p99_us": 29,
+              "sample_count": 3,
+              "service_total_us": 32,
+              "total_us": 72
+            },
+            {
+              "calls": 450,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 5,
+              "max_us": 342,
+              "mean_us": 68.46888888888888,
+              "operation": "fuse.unlink",
+              "p50_us": 83,
+              "p95_us": 118,
+              "p99_us": 267,
+              "sample_count": 256,
+              "service_total_us": 28411,
+              "total_us": 30811
+            },
+            {
+              "calls": 13770,
+              "commit_total_us": 0,
+              "errors": 0,
+              "lock_wait_total_us": 231,
+              "max_us": 790589,
+              "mean_us": 187.01909949164852,
+              "operation": "fuse.write",
+              "p50_us": 24,
+              "p95_us": 91,
+              "p99_us": 742787,
+              "sample_count": 256,
+              "service_total_us": 2511634,
+              "total_us": 2575253
+            },
+            {
+              "calls": 9,
+              "commit_total_us": 607608,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 193952,
+              "mean_us": 67900.77777777778,
+              "operation": "management.sync",
+              "p50_us": 71386,
+              "p95_us": 193952,
+              "p99_us": 193952,
+              "sample_count": 9,
+              "service_total_us": 611107,
+              "total_us": 611107
+            },
+            {
+              "calls": 13,
+              "commit_total_us": 727295,
+              "errors": 0,
+              "lock_wait_total_us": 0,
+              "max_us": 193524,
+              "mean_us": 55945.769230769234,
+              "operation": "sync.commit",
+              "p50_us": 36950,
+              "p95_us": 193524,
+              "p99_us": 193524,
+              "sample_count": 13,
+              "service_total_us": 727295,
+              "total_us": 727295
+            }
+          ],
+          "percentile_scope": "most recent samples per operation; counters cover this mount",
+          "recorded": 31657,
+          "sample_limit_per_operation": 256,
+          "schema_version": 1,
+          "slowest": [
+            {
+              "errno": null,
+              "operation": "fuse.write",
+              "path_bytes": [
+                112,
+                97,
+                116,
+                99,
+                104,
+                45,
+                108,
+                97,
+                114,
+                103,
+                101
+              ],
+              "path_display": "patch-large",
+              "pid": 13402,
+              "sequence": 31640,
+              "timing": {
+                "commit_us": 0,
+                "lock_wait_us": 0,
+                "service_us": 790583,
+                "total_us": 790589
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.write",
+              "path_bytes": [
+                112,
+                97,
+                116,
+                99,
+                104,
+                45,
+                108,
+                97,
+                114,
+                103,
+                101
+              ],
+              "path_display": "patch-large",
+              "pid": 13402,
+              "sequence": 31646,
+              "timing": {
+                "commit_us": 0,
+                "lock_wait_us": 0,
+                "service_us": 756166,
+                "total_us": 756171
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.write",
+              "path_bytes": [
+                112,
+                97,
+                116,
+                99,
+                104,
+                45,
+                108,
+                97,
+                114,
+                103,
+                101
+              ],
+              "path_display": "patch-large",
+              "pid": 13402,
+              "sequence": 31634,
+              "timing": {
+                "commit_us": 0,
+                "lock_wait_us": 0,
+                "service_us": 742782,
+                "total_us": 742787
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14165,
+              "sequence": 31657,
+              "timing": {
+                "commit_us": 193524,
+                "lock_wait_us": 0,
+                "service_us": 193952,
+                "total_us": 193952
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14165,
+              "sequence": 31656,
+              "timing": {
+                "commit_us": 193524,
+                "lock_wait_us": 0,
+                "service_us": 193524,
+                "total_us": 193524
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14153,
+              "sequence": 31607,
+              "timing": {
+                "commit_us": 162769,
+                "lock_wait_us": 0,
+                "service_us": 163087,
+                "total_us": 163087
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14153,
+              "sequence": 31606,
+              "timing": {
+                "commit_us": 162769,
+                "lock_wait_us": 0,
+                "service_us": 162769,
+                "total_us": 162769
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14159,
+              "sequence": 31638,
+              "timing": {
+                "commit_us": 74078,
+                "lock_wait_us": 0,
+                "service_us": 74530,
+                "total_us": 74530
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14159,
+              "sequence": 31637,
+              "timing": {
+                "commit_us": 74078,
+                "lock_wait_us": 0,
+                "service_us": 74078,
+                "total_us": 74078
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14161,
+              "sequence": 31644,
+              "timing": {
+                "commit_us": 71253,
+                "lock_wait_us": 0,
+                "service_us": 71819,
+                "total_us": 71819
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14163,
+              "sequence": 31650,
+              "timing": {
+                "commit_us": 70891,
+                "lock_wait_us": 0,
+                "service_us": 71386,
+                "total_us": 71386
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14161,
+              "sequence": 31643,
+              "timing": {
+                "commit_us": 71253,
+                "lock_wait_us": 0,
+                "service_us": 71253,
+                "total_us": 71253
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14163,
+              "sequence": 31649,
+              "timing": {
+                "commit_us": 70891,
+                "lock_wait_us": 0,
+                "service_us": 70891,
+                "total_us": 70891
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.fsync",
+              "path_bytes": [
+                102,
+                105,
+                111,
+                45,
+                48
+              ],
+              "path_display": "fio-0",
+              "pid": 13989,
+              "sequence": 4184,
+              "timing": {
+                "commit_us": 41707,
+                "lock_wait_us": 0,
+                "service_us": 41763,
+                "total_us": 41768
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13989,
+              "sequence": 4183,
+              "timing": {
+                "commit_us": 41707,
+                "lock_wait_us": 0,
+                "service_us": 41707,
+                "total_us": 41707
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.fsync",
+              "path_bytes": [
+                102,
+                105,
+                111,
+                45,
+                48
+              ],
+              "path_display": "fio-0",
+              "pid": 13938,
+              "sequence": 2056,
+              "timing": {
+                "commit_us": 36950,
+                "lock_wait_us": 0,
+                "service_us": 37000,
+                "total_us": 37005
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13938,
+              "sequence": 2055,
+              "timing": {
+                "commit_us": 36950,
+                "lock_wait_us": 0,
+                "service_us": 36950,
+                "total_us": 36950
+              }
+            },
+            {
+              "errno": null,
+              "operation": "fuse.fsync",
+              "path_bytes": [
+                102,
+                105,
+                111,
+                45,
+                48
+              ],
+              "path_display": "fio-0",
+              "pid": 13964,
+              "sequence": 3120,
+              "timing": {
+                "commit_us": 31467,
+                "lock_wait_us": 0,
+                "service_us": 31524,
+                "total_us": 31529
+              }
+            },
+            {
+              "errno": null,
+              "operation": "sync.commit",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 13964,
+              "sequence": 3119,
+              "timing": {
+                "commit_us": 31467,
+                "lock_wait_us": 0,
+                "service_us": 31467,
+                "total_us": 31467
+              }
+            },
+            {
+              "errno": null,
+              "operation": "management.sync",
+              "path_bytes": null,
+              "path_display": null,
+              "pid": 14154,
+              "sequence": 31614,
+              "timing": {
+                "commit_us": 11960,
+                "lock_wait_us": 0,
+                "service_us": 12393,
+                "total_us": 12393
+              }
+            }
+          ],
+          "timing_scope": "userspace callback only; excludes kernel queue and reply delivery; commit is included in service"
+        }
+      }
+    }
+  ]
+}

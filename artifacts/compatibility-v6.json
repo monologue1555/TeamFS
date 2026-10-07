@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-10-07T22:02:38+0800",
+  "suite": "compatibility-v6",
+  "environment": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "uid": 1000
+  },
+  "context": {
+    "direct": "0.6.0",
+    "sqlite_delete_boundary": {
+      "direct": {
+        "committed_rows": 30,
+        "recovered_rows": 0,
+        "matches_committed": false
+      },
+      "cached": {
+        "committed_rows": 30,
+        "recovered_rows": 0,
+        "matches_committed": false
+      }
+    },
+    "cached": "0.6.0"
+  },
+  "summary": {
+    "pass": 19,
+    "unsupported": 7
+  },
+  "cases": [
+    {
+      "name": "direct / Git workflow",
+      "status": "pass",
+      "seconds": 0.5754422810000506,
+      "detail": "git init/add/commit/checkout/status/fsck completed"
+    },
+    {
+      "name": "direct / rsync round trip",
+      "status": "pass",
+      "seconds": 0.12184362400012105,
+      "detail": "recursive update/delete with binary, raw names, empty file and symlink"
+    },
+    {
+      "name": "direct / repeated Vim saves",
+      "status": "pass",
+      "seconds": 0.0896284430000378,
+      "detail": null
+    },
+    {
+      "name": "direct / atomic replace under concurrent reads",
+      "status": "pass",
+      "seconds": 0.7548891299998104,
+      "detail": null
+    },
+    {
+      "name": "direct / local POSIX record locks",
+      "status": "pass",
+      "seconds": 0.014596697999877506,
+      "detail": null
+    },
+    {
+      "name": "direct / SQLite PERSIST commit, rollback and daemon crash",
+      "status": "pass",
+      "seconds": 0.13424945599990679,
+      "detail": "SQLite PERSIST, explicit TeamFS sync=False; WAL is not claimed"
+    },
+    {
+      "name": "direct / SQLite DELETE plus explicit sync",
+      "status": "pass",
+      "seconds": 0.13265993200002413,
+      "detail": "SQLite DELETE, explicit TeamFS sync=True; WAL is not claimed"
+    },
+    {
+      "name": "direct / SQLite DELETE without explicit sync",
+      "status": "unsupported",
+      "seconds": 0.1260717330001171,
+      "detail": "Reproduced DELETE-mode durability boundary: committed 30 rows, recovered 0. Use explicit TeamFS sync or validated PERSIST mode."
+    },
+    {
+      "name": "direct / error contracts and unlinked open handles",
+      "status": "pass",
+      "seconds": 0.005128672999944683,
+      "detail": null
+    },
+    {
+      "name": "direct / mmap then snapshot",
+      "status": "unsupported",
+      "seconds": 4.5169999793870375e-06,
+      "detail": "default direct_io intentionally does not offer shared mmap"
+    },
+    {
+      "name": "direct / hardlink capability",
+      "status": "unsupported",
+      "seconds": 0.001298867999594222,
+      "detail": "hardlink is explicitly unsupported, errno=1"
+    },
+    {
+      "name": "direct / xattr capability",
+      "status": "unsupported",
+      "seconds": 0.0010096490000250924,
+      "detail": "xattr is explicitly unsupported, errno=95"
+    },
+    {
+      "name": "direct / clean unmount",
+      "status": "pass",
+      "seconds": 0.020813173000078677,
+      "detail": [
+        null,
+        null
+      ]
+    },
+    {
+      "name": "cached / Git workflow",
+      "status": "pass",
+      "seconds": 0.5874449890002325,
+      "detail": "git init/add/commit/checkout/status/fsck completed"
+    },
+    {
+      "name": "cached / rsync round trip",
+      "status": "pass",
+      "seconds": 0.12161464499968133,
+      "detail": "recursive update/delete with binary, raw names, empty file and symlink"
+    },
+    {
+      "name": "cached / repeated Vim saves",
+      "status": "pass",
+      "seconds": 0.09556459500026904,
+      "detail": null
+    },
+    {
+      "name": "cached / atomic replace under concurrent reads",
+      "status": "pass",
+      "seconds": 0.7481646389996968,
+      "detail": null
+    },
+    {
+      "name": "cached / local POSIX record locks",
+      "status": "pass",
+      "seconds": 0.015716392999820528,
+      "detail": null
+    },
+    {
+      "name": "cached / SQLite PERSIST commit, rollback and daemon crash",
+      "status": "pass",
+      "seconds": 0.1347153330002584,
+      "detail": "SQLite PERSIST, explicit TeamFS sync=False; WAL is not claimed"
+    },
+    {
+      "name": "cached / SQLite DELETE plus explicit sync",
+      "status": "pass",
+      "seconds": 0.12626506200012955,
+      "detail": "SQLite DELETE, explicit TeamFS sync=True; WAL is not claimed"
+    },
+    {
+      "name": "cached / SQLite DELETE without explicit sync",
+      "status": "unsupported",
+      "seconds": 0.12513295100006872,
+      "detail": "Reproduced DELETE-mode durability boundary: committed 30 rows, recovered 0. Use explicit TeamFS sync or validated PERSIST mode."
+    },
+    {
+      "name": "cached / error contracts and unlinked open handles",
+      "status": "pass",
+      "seconds": 0.004083847999936552,
+      "detail": null
+    },
+    {
+      "name": "cached / mmap then snapshot",
+      "status": "pass",
+      "seconds": 0.02726451000035013,
+      "detail": null
+    },
+    {
+      "name": "cached / hardlink capability",
+      "status": "unsupported",
+      "seconds": 0.0013438659998428193,
+      "detail": "hardlink is explicitly unsupported, errno=1"
+    },
+    {
+      "name": "cached / xattr capability",
+      "status": "unsupported",
+      "seconds": 0.0009277429999201559,
+      "detail": "xattr is explicitly unsupported, errno=95"
+    },
+    {
+      "name": "cached / clean unmount",
+      "status": "pass",
+      "seconds": 0.019759677999900305,
+      "detail": [
+        null,
+        null
+      ]
+    }
+  ]
+}

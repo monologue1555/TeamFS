@@ -7,3 +7,11 @@
 *.sqlite3-shm
 store.lock
 __pycache__/
+*.jsonl
+*.jsonl.1
+*.jsonl.2
+/artifacts/monitor-demo-session.json
+
+!/artifacts/random-*.jsonl
+/artifacts/monitor-demo-session-*.json
+/artifacts/word-division/

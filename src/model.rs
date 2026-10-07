@@ -1,6 +1,7 @@
 //! 内存模型：独立于 FUSE 回复对象，可以直接用单元测试学习文件系统语义。
 //! 名字映射到 inode，inode 映射到节点；打开句柄和路径是两回事。
 
+use crate::content::Content;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 use std::ffi::{OsStr, OsString};
@@ -21,6 +22,7 @@ pub const EXAMPLE: &str = "小组笔记示例\n任务：学习 Rust，使用 fus
 pub enum Kind {
     File,
     Directory,
+    Symlink,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -62,7 +64,7 @@ pub struct SavedNode {
     pub attr: Attr,
     pub parent: u64,
     pub name: Vec<u8>,
-    pub data: Vec<u8>,
+    pub data: Content,
 }
 #[derive(Clone, Debug)]
 pub struct Tree {
@@ -72,7 +74,8 @@ pub struct Tree {
 pub const VIRTUAL_BASE: u64 = 1 << 60;
 
 enum Data {
-    File(Vec<u8>),
+    File(Content),
+    Symlink(Content),
     Directory(BTreeMap<OsString, u64>),
 }
 
@@ -103,9 +106,16 @@ pub struct MemFs {
     handles: HashMap<u64, Handle>,
     next_ino: u64,
     next_fh: u64,
+    pub capacity: usize,
+    pub max_file: usize,
 }
 
 impl MemFs {
+    pub fn runtime_stats(&self) -> serde_json::Value {
+        serde_json::json!({"nodes":self.nodes.len(),"open_handles":self.handles.len(),
+            "unlinked_nodes":self.nodes.values().filter(|n|!n.linked).count(),
+            "kernel_lookup_refs":self.nodes.values().map(|n|n.lookup_refs).sum::<u64>()})
+    }
     pub fn new(uid: u32, gid: u32) -> Self {
         let now = time::get_time();
         let root = Node {
@@ -132,6 +142,8 @@ impl MemFs {
             handles: HashMap::new(),
             next_ino: 2,
             next_fh: 1,
+            capacity: CAPACITY,
+            max_file: MAX_FILE_SIZE,
         };
         let welcome = fs
             .create(ROOT, OsStr::new("welcome.txt"), Kind::File, 0o644, uid, gid)
@@ -156,7 +168,7 @@ impl MemFs {
 
     fn replace_bytes(&mut self, ino: u64, bytes: &[u8]) {
         let node = self.nodes.get_mut(&ino).unwrap();
-        node.data = Data::File(bytes.to_vec());
+        node.data = Data::File(bytes.to_vec().into());
         node.attr.size = bytes.len() as u64;
     }
 
@@ -167,14 +179,14 @@ impl MemFs {
     fn children(&self, ino: u64) -> FsResult<&BTreeMap<OsString, u64>> {
         match &self.node(ino)?.data {
             Data::Directory(children) => Ok(children),
-            Data::File(_) => Err(ENOTDIR),
+            Data::File(_) | Data::Symlink(_) => Err(ENOTDIR),
         }
     }
 
     fn children_mut(&mut self, ino: u64) -> FsResult<&mut BTreeMap<OsString, u64>> {
         match &mut self.nodes.get_mut(&ino).ok_or(ENOENT)?.data {
             Data::Directory(children) => Ok(children),
-            Data::File(_) => Err(ENOTDIR),
+            Data::File(_) | Data::Symlink(_) => Err(ENOTDIR),
         }
     }
 
@@ -271,7 +283,8 @@ impl MemFs {
         self.next_ino += 1; // inode 在本次挂载中不复用，避免缓存指向其他文件。
         let now = time::get_time();
         let data = match kind {
-            Kind::File => Data::File(Vec::new()),
+            Kind::File => Data::File(Vec::new().into()),
+            Kind::Symlink => Data::Symlink(Vec::new().into()),
             Kind::Directory => Data::Directory(BTreeMap::new()),
         };
         self.nodes.insert(
@@ -386,24 +399,24 @@ impl MemFs {
         }
         let node = self.nodes.get_mut(&ino).ok_or(ENOENT)?;
         match &node.data {
-            Data::Directory(_) => Err(EISDIR),
+            Data::Directory(_) | Data::Symlink(_) => Err(EISDIR),
             Data::File(bytes) => {
                 let start = usize::try_from(offset)
                     .map_err(|_| EINVAL)?
                     .min(bytes.len());
                 let end = start.saturating_add(size as usize).min(bytes.len());
                 node.attr.atime = time::get_time();
-                Ok(bytes[start..end].to_vec())
+                bytes.read(start, end - start)
             }
         }
     }
 
     fn check_size(&self, ino: u64, size: usize) -> FsResult<()> {
-        if size > MAX_FILE_SIZE {
+        if size > self.max_file {
             return Err(EFBIG);
         }
         let old_size = self.node(ino)?.attr.size as usize;
-        if self.used_bytes() - old_size + size > CAPACITY {
+        if self.used_bytes() - old_size + size > self.capacity {
             return Err(libc::ENOSPC);
         }
         Ok(())
@@ -432,9 +445,8 @@ impl MemFs {
         }
         self.check_size(ino, size)?;
         let node = self.nodes.get_mut(&ino).unwrap();
-        if let Data::File(data) = &mut node.data {
-            data.resize(size, 0); // 越过 EOF 写入时，间隙补零。
-            data[start..end].copy_from_slice(bytes);
+        if let Data::File(content) = &mut node.data {
+            content.edit(size, Some((start, bytes)))?;
         }
         node.attr.size = size as u64;
         node.attr.mtime = time::get_time();
@@ -449,8 +461,8 @@ impl MemFs {
         let size = usize::try_from(size).map_err(|_| EFBIG)?;
         self.check_size(ino, size)?;
         let node = self.nodes.get_mut(&ino).unwrap();
-        if let Data::File(bytes) = &mut node.data {
-            bytes.resize(size, 0);
+        if let Data::File(content) = &mut node.data {
+            content.edit(size, None)?;
         }
         node.attr.size = size as u64;
         node.attr.mtime = time::get_time();
@@ -498,7 +510,7 @@ impl MemFs {
         self.collect(ino);
     }
 
-    pub fn remove(&mut self, parent: u64, name: &OsStr, directory: bool) -> FsResult<()> {
+    pub fn check_remove(&self, parent: u64, name: &OsStr, directory: bool) -> FsResult<u64> {
         Self::valid_name(name)?;
         let ino = self.lookup(parent, name)?;
         let kind = self.node(ino)?.attr.kind;
@@ -512,17 +524,22 @@ impl MemFs {
         } else if kind == Kind::Directory {
             return Err(EISDIR);
         }
+        Ok(ino)
+    }
+
+    pub fn remove(&mut self, parent: u64, name: &OsStr, directory: bool) -> FsResult<()> {
+        let ino = self.check_remove(parent, name, directory)?;
         self.detach(parent, name, ino);
         Ok(())
     }
 
-    pub fn rename(
-        &mut self,
+    pub fn check_rename(
+        &self,
         parent: u64,
         name: &OsStr,
         new_parent: u64,
         new_name: &OsStr,
-    ) -> FsResult<()> {
+    ) -> FsResult<Option<u64>> {
         Self::valid_name(name)?;
         Self::valid_name(new_name)?;
         let ino = self.lookup(parent, name)?;
@@ -531,7 +548,7 @@ impl MemFs {
             return Err(ENOENT);
         }
         if parent == new_parent && name == new_name {
-            return Ok(());
+            return Ok(None);
         }
         let kind = self.node(ino)?.attr.kind;
         if kind == Kind::Directory {
@@ -549,13 +566,31 @@ impl MemFs {
         if let Some(target) = self.children(new_parent)?.get(new_name).copied() {
             let target_kind = self.node(target)?.attr.kind;
             match (kind, target_kind) {
-                (Kind::File, Kind::Directory) => return Err(EISDIR),
-                (Kind::Directory, Kind::File) => return Err(ENOTDIR),
+                (Kind::File | Kind::Symlink, Kind::Directory) => return Err(EISDIR),
+                (Kind::Directory, Kind::File | Kind::Symlink) => return Err(ENOTDIR),
                 (Kind::Directory, Kind::Directory) if !self.children(target)?.is_empty() => {
                     return Err(ENOTEMPTY)
                 }
                 _ => {}
             }
+            return Ok(Some(target));
+        }
+        Ok(None)
+    }
+
+    pub fn rename(
+        &mut self,
+        parent: u64,
+        name: &OsStr,
+        new_parent: u64,
+        new_name: &OsStr,
+    ) -> FsResult<()> {
+        let target = self.check_rename(parent, name, new_parent, new_name)?;
+        if parent == new_parent && name == new_name {
+            return Ok(());
+        }
+        let ino = self.lookup(parent, name)?;
+        if let Some(target) = target {
             self.detach(new_parent, new_name, target);
         }
         self.children_mut(parent)?.remove(name);
@@ -574,13 +609,46 @@ impl MemFs {
     pub fn used_bytes(&self) -> usize {
         self.nodes
             .values()
-            .filter(|node| node.attr.kind == Kind::File)
+            .filter(|node| node.attr.kind != Kind::Directory)
             .map(|node| node.attr.size as usize)
             .sum()
     }
 
     pub fn node_count(&self) -> u64 {
         self.nodes.len() as u64
+    }
+
+    /// Called under the service lock, before unlink/replace. No atime or handle changes.
+    pub fn saved_file(&self, ino: u64) -> FsResult<(Vec<u8>, SavedNode)> {
+        let node = self.node(ino)?;
+        let data = match &node.data {
+            Data::File(bytes) | Data::Symlink(bytes) => bytes.clone(),
+            _ => return Err(EISDIR),
+        };
+        let mut parts = Vec::new();
+        let mut current = ino;
+        while current != ROOT {
+            let n = self.node(current)?;
+            let name = self
+                .children(n.parent)?
+                .iter()
+                .find(|(_, id)| **id == current)
+                .ok_or(ENOENT)?
+                .0;
+            parts.push(name.as_bytes().to_vec());
+            current = n.parent;
+        }
+        let name = parts.first().cloned().ok_or(EINVAL)?;
+        parts.reverse();
+        Ok((
+            parts.join(&b'/'),
+            SavedNode {
+                attr: node.attr.clone(),
+                parent: node.parent,
+                name,
+                data,
+            },
+        ))
     }
 
     pub fn export(&self) -> Tree {
@@ -602,8 +670,8 @@ impl MemFs {
                     .to_vec()
             };
             let data = match &node.data {
-                Data::File(bytes) => bytes.clone(),
-                _ => Vec::new(),
+                Data::File(bytes) | Data::Symlink(bytes) => bytes.clone(),
+                _ => Vec::new().into(),
             };
             nodes.push(SavedNode {
                 attr: node.attr.clone(),
@@ -619,12 +687,18 @@ impl MemFs {
         }
     }
 
+    #[cfg(test)]
     pub fn from_tree(tree: &Tree) -> Result<Self, String> {
+        Self::from_tree_limits(tree, CAPACITY, MAX_FILE_SIZE)
+    }
+    pub fn from_tree_limits(tree: &Tree, capacity: usize, max_file: usize) -> Result<Self, String> {
         let mut fs = Self {
             nodes: HashMap::new(),
             handles: HashMap::new(),
             next_ino: tree.next_ino,
             next_fh: 1,
+            capacity,
+            max_file,
         };
         let mut bytes = 0usize;
         for saved in &tree.nodes {
@@ -637,12 +711,16 @@ impl MemFs {
                 return Err("invalid inode/attribute".into());
             }
             let data = match a.kind {
-                Kind::File => {
-                    if a.size != saved.data.len() as u64 || saved.data.len() > MAX_FILE_SIZE {
+                Kind::File | Kind::Symlink => {
+                    if a.size != saved.data.len() as u64 || saved.data.len() > fs.max_file {
                         return Err("invalid file size".into());
                     }
                     bytes = bytes.checked_add(saved.data.len()).ok_or("size overflow")?;
-                    Data::File(saved.data.clone())
+                    if a.kind == Kind::Symlink {
+                        Data::Symlink(saved.data.clone())
+                    } else {
+                        Data::File(saved.data.clone())
+                    }
                 }
                 Kind::Directory => {
                     if !saved.data.is_empty() || a.size != 0 {
@@ -668,7 +746,7 @@ impl MemFs {
                 return Err("duplicate inode".into());
             }
         }
-        if bytes > CAPACITY {
+        if bytes > fs.capacity {
             return Err("content capacity exceeded".into());
         }
         let root = tree
@@ -703,7 +781,7 @@ impl MemFs {
             }
             let node = &fs.nodes[&ino];
             let nlink = match &node.data {
-                Data::File(_) => 1,
+                Data::File(_) | Data::Symlink(_) => 1,
                 Data::Directory(children) => {
                     pending.extend(children.values().copied());
                     2 + children
@@ -726,7 +804,7 @@ impl MemFs {
         (
             self.nodes
                 .values()
-                .filter(|n| n.linked && n.attr.kind == Kind::File)
+                .filter(|n| n.linked && n.attr.kind != Kind::Directory)
                 .count(),
             self.nodes
                 .values()
@@ -734,31 +812,194 @@ impl MemFs {
                 .count(),
         )
     }
+    pub fn contents(&self) -> Vec<Content> {
+        self.nodes
+            .values()
+            .filter_map(|n| match &n.data {
+                Data::File(c) | Data::Symlink(c) => Some(c.clone()),
+                _ => None,
+            })
+            .collect()
+    }
+    pub fn path_of(&self, ino: u64) -> Option<Vec<u8>> {
+        let mut current = ino;
+        let mut parts = Vec::new();
+        while current != ROOT {
+            let node = self.nodes.get(&current)?;
+            if !node.linked {
+                return None;
+            }
+            let name = self
+                .children(node.parent)
+                .ok()?
+                .iter()
+                .find(|(_, child)| **child == current)?
+                .0;
+            parts.push(name.as_bytes().to_vec());
+            current = node.parent;
+        }
+        parts.reverse();
+        Some(parts.join(&b'/'))
+    }
 
     pub fn restore_file(&mut self, parent: u64, name: &OsStr, saved: &SavedNode) -> FsResult<u64> {
-        if saved.attr.kind != Kind::File {
+        if saved.attr.kind == Kind::Directory {
             return Err(EISDIR);
+        }
+        if saved.data.len() > self.max_file {
+            return Err(EFBIG);
         }
         if self
             .used_bytes()
             .checked_add(saved.data.len())
             .ok_or(libc::ENOSPC)?
-            > CAPACITY
+            > self.capacity
         {
             return Err(libc::ENOSPC);
         }
         let ino = self.create(
             parent,
             name,
-            Kind::File,
+            saved.attr.kind,
             saved.attr.mode as u32,
             saved.attr.uid,
             saved.attr.gid,
         )?;
-        self.replace_bytes(ino, &saved.data);
+        self.nodes.get_mut(&ino).unwrap().data = if saved.attr.kind == Kind::Symlink {
+            Data::Symlink(saved.data.clone())
+        } else {
+            Data::File(saved.data.clone())
+        };
+        self.nodes.get_mut(&ino).unwrap().attr.size = saved.attr.size;
         let node = self.nodes.get_mut(&ino).unwrap();
         node.attr.mtime = saved.attr.mtime;
         Ok(ino)
+    }
+
+    pub fn symlink(
+        &mut self,
+        parent: u64,
+        name: &OsStr,
+        target: &[u8],
+        uid: u32,
+        gid: u32,
+    ) -> FsResult<u64> {
+        if target.is_empty() || target.contains(&0) || target.len() > 4095 {
+            return Err(EINVAL);
+        }
+        if self.used_bytes() + target.len() > self.capacity {
+            return Err(libc::ENOSPC);
+        }
+        let ino = self.create(parent, name, Kind::Symlink, 0o777, uid, gid)?;
+        let n = self.nodes.get_mut(&ino).unwrap();
+        n.data = Data::Symlink(target.to_vec().into());
+        n.attr.size = target.len() as u64;
+        Ok(ino)
+    }
+    pub fn readlink(&self, ino: u64) -> FsResult<Vec<u8>> {
+        match &self.node(ino)?.data {
+            Data::Symlink(data) => data.all(),
+            _ => Err(EINVAL),
+        }
+    }
+    pub fn configure_limits(&mut self, capacity: usize, max_file: usize) -> Result<(), String> {
+        crate::store::valid_limits(capacity, max_file)?;
+        if self.used_bytes() > capacity
+            || self
+                .nodes
+                .values()
+                .any(|n| n.attr.kind != Kind::Directory && n.attr.size > max_file as u64)
+        {
+            return Err("新容量低于当前文件实际大小".into());
+        }
+        self.capacity = capacity;
+        self.max_file = max_file;
+        Ok(())
+    }
+    pub fn validate_tree_restore(
+        &self,
+        parent: u64,
+        name: &OsStr,
+        nodes: &[SavedNode],
+    ) -> FsResult<()> {
+        Self::valid_name(name)?;
+        if self.children(parent)?.contains_key(name) {
+            return Err(EEXIST);
+        }
+        if !self.node(parent)?.linked {
+            return Err(ENOENT);
+        }
+        if nodes.is_empty() || nodes[0].attr.kind != Kind::Directory {
+            return Err(ENOTDIR);
+        }
+        if nodes
+            .iter()
+            .any(|n| n.attr.kind != Kind::Directory && n.data.len() > self.max_file)
+        {
+            return Err(EFBIG);
+        }
+        let bytes = nodes.iter().map(|n| n.data.len()).sum::<usize>();
+        if self.used_bytes().checked_add(bytes).ok_or(libc::ENOSPC)? > self.capacity {
+            return Err(libc::ENOSPC);
+        }
+        if self
+            .next_ino
+            .checked_add(nodes.len() as u64)
+            .ok_or(libc::ENOSPC)?
+            >= VIRTUAL_BASE
+        {
+            return Err(libc::ENOSPC);
+        }
+        Ok(())
+    }
+    /// Build an isolated subtree, then attach it once. Existing handles and inode identities survive.
+    pub fn restore_tree(&mut self, parent: u64, name: &OsStr, nodes: &[SavedNode]) -> FsResult<()> {
+        self.validate_tree_restore(parent, name, nodes)?;
+        let ids: HashMap<_, _> = nodes
+            .iter()
+            .enumerate()
+            .map(|(i, n)| (n.attr.ino, self.next_ino + i as u64))
+            .collect();
+        let root = ids[&nodes[0].attr.ino];
+        let mut staged = HashMap::new();
+        for (i, saved) in nodes.iter().enumerate() {
+            let mut a = saved.attr.clone();
+            a.ino = ids[&a.ino];
+            a.ctime = time::get_time();
+            a.crtime = a.ctime;
+            let data = match a.kind {
+                Kind::File => Data::File(saved.data.clone()),
+                Kind::Symlink => Data::Symlink(saved.data.clone()),
+                Kind::Directory => Data::Directory(BTreeMap::new()),
+            };
+            staged.insert(
+                a.ino,
+                Node {
+                    attr: a,
+                    parent: if i == 0 { parent } else { ids[&saved.parent] },
+                    data,
+                    linked: true,
+                    lookup_refs: 0,
+                },
+            );
+        }
+        for saved in nodes.iter().skip(1) {
+            if let Data::Directory(children) =
+                &mut staged.get_mut(&ids[&saved.parent]).unwrap().data
+            {
+                children.insert(
+                    OsStr::from_bytes(&saved.name).to_os_string(),
+                    ids[&saved.attr.ino],
+                );
+            }
+        }
+        self.nodes.extend(staged);
+        self.next_ino += nodes.len() as u64;
+        self.children_mut(parent)
+            .unwrap()
+            .insert(name.to_os_string(), root);
+        self.changed_directory(parent);
+        Ok(())
     }
 }
 

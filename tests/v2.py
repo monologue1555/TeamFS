@@ -262,7 +262,7 @@ try:
     assert not (mount / ".teamfs/snapshots/failed-snapshot").exists()
     cli("snapshot", "delete", mount, "control-once", success=False)
     assert (mount / ".teamfs/snapshots/control-once").exists()
-    live_blob = db.execute("SELECT data FROM nodes WHERE scope='' AND name=?", (sqlite3.Binary("恢复.bin".encode()),)).fetchone()[0]
+    live_blob = db.execute("SELECT b.data FROM nodes n JOIN blobs b ON n.content_id=b.id WHERE n.scope='' AND n.name=?", (sqlite3.Binary("恢复.bin".encode()),)).fetchone()[0]
     assert live_blob == old_content
     db.execute("DROP TRIGGER fail_insert")
     db.commit()
