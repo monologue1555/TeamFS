@@ -110,8 +110,10 @@ pub fn create(database: &Path, destination: &Path) -> Result<Manifest, String> {
             .map_err(|e| e.to_string())?
             .run_to_completion(128, Duration::from_millis(5), None)
             .map_err(|e| e.to_string())?;
-        dest.execute_batch("PRAGMA journal_mode=DELETE; PRAGMA synchronous=FULL;
-            DELETE FROM blobs WHERE id NOT IN (SELECT content_id FROM nodes UNION SELECT content_id FROM trash); VACUUM;").map_err(|e|e.to_string())?;
+        dest.execute_batch("PRAGMA journal_mode=DELETE; PRAGMA synchronous=FULL;")
+            .map_err(|e| e.to_string())?;
+        crate::store::collect_garbage(&dest)?;
+        dest.execute_batch("VACUUM;").map_err(|e| e.to_string())?;
     }
     Store::validate_backup(&db)?;
     let (database_bytes, sha256) = hash(&db)?;

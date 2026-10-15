@@ -1,0 +1,28 @@
+{
+  "version": "0.8.0",
+  "measured_at": "2026-10-15T00:11:27+08:00",
+  "check_command": "bash scripts/check.sh",
+  "exit_code": 0,
+  "unit_tests_passed": 22,
+  "experiment_scenario_groups": 12,
+  "original_mounted_scenario_groups": 62,
+  "diagnostic_scenario_groups": 14,
+  "block_scenario_groups": 9,
+  "compatibility": {
+    "pass": 19,
+    "unsupported": 7
+  },
+  "random_operations": 1080,
+  "demo_identical_result_bytes": true,
+  "demo_baseline_sha256": "b44e33142c6b082ca8059dcd6137ef3b29f2804ad6b77829c5182eb55769b19b",
+  "demo_replay_sha256": "b44e33142c6b082ca8059dcd6137ef3b29f2804ad6b77829c5182eb55769b19b",
+  "evidence": [
+    "experiment-acceptance.json",
+    "experiment-acceptance.txt",
+    "experiment-regression.txt",
+    "experiment-demo-latest.json",
+    "experiment-manifest-example.json",
+    "experiments-trace.log"
+  ],
+  "scope": "Pinned mounted file inputs and process group only. No full environment, external data, network or arbitrary algorithm reproducibility guarantee."
+}

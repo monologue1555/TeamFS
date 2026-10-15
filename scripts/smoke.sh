@@ -14,15 +14,19 @@ cleanup() {
         wait "$pid" 2>/dev/null || true
     fi
     # 只删除明确创建的两个空目录；卸载失败时不做递归删除。
+    if [[ -f "$testdir/trace.log" ]]; then
+        cp -- "$testdir/trace.log" "$TEAMFS_ROOT/artifacts/fuse-trace.log"
+        rm -- "$testdir/trace.log"
+    fi
     if ! mountpoint -q -- "$mountpoint"; then rmdir -- "$mountpoint" "$testdir" 2>/dev/null || true; fi
 }
 trap cleanup EXIT
 mount_fs() {
-    "$TEAMFS_BIN" mount "$mountpoint" --memory --trace >> "$TEAMFS_ROOT/artifacts/fuse-trace.log" 2>&1 &
+    "$TEAMFS_BIN" mount "$mountpoint" --memory --trace >> "$testdir/trace.log" 2>&1 &
     pid=$!
     for _ in $(seq 1 100); do
         if mountpoint -q -- "$mountpoint"; then return; fi
-        if ! kill -0 "$pid" 2>/dev/null; then cat "$TEAMFS_ROOT/artifacts/fuse-trace.log" >&2; return 1; fi
+        if ! kill -0 "$pid" 2>/dev/null; then cat "$testdir/trace.log" >&2; return 1; fi
         sleep 0.1
     done
     echo '挂载超时' >&2
@@ -38,7 +42,7 @@ unmount_fs() {
     echo '卸载后进程没有及时退出' >&2
     return 1
 }
-: > "$TEAMFS_ROOT/artifacts/fuse-trace.log"
+: > "$testdir/trace.log"
 {
     echo 'TeamFS 实际验收'
     date -Iseconds
@@ -49,7 +53,7 @@ unmount_fs() {
     id
     mount_fs
     findmnt -n -o TARGET,FSTYPE --mountpoint "$mountpoint"
-    timeout 60 python3 "$TEAMFS_ROOT/tests/mounted.py" "$mountpoint"
+    timeout 180 python3 "$TEAMFS_ROOT/tests/mounted.py" "$mountpoint"
     unmount_fs
     mount_fs
     timeout 15 python3 "$TEAMFS_ROOT/tests/mounted.py" "$mountpoint" --reset

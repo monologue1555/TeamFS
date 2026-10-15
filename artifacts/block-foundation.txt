@@ -1,0 +1,9 @@
+PASS 01: 16 MiB file / 4 KiB overwrite saves 64 KiB, shares 255 blocks; snapshot bytes remain unchanged
+PASS 02: overwriting a block with identical bytes reuses its old payload
+PASS 03: cross-block write and normal remount preserve byte-exact contents
+PASS 04: truncate/grow, partial last blocks and zero-length files survive remount without resurrecting bytes
+PASS 05: payload, manifest and block-map insertion failures roll back together; dirty content remains readable and retries
+PASS 06: SIGKILL restores the last complete commit and retains immutable history
+PASS 07: held deleted snapshot, trash restore and independent backup/import preserve shared blocks
+PASS 08: format-3 migration preserves paths, attributes and bytes; injected failure restores original schema
+PASS 09: invalid block mappings are rejected without automatic repair or erasure

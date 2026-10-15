@@ -36,7 +36,11 @@ class Mount:
         self.mount = self.base / "mnt"
         self.mount.mkdir()
         self.store = self.base / "store"
-        self.trace = (ROOT / f"artifacts/{label}-trace.log").open("w")
+        self.trace_path = self.base / "trace.log"
+        self.trace_output = ROOT / f"artifacts/{label}-trace.log"
+        # Keep callback logging off the Windows /mnt/d 9P path during measurements.
+        # Preserve the actual trace in artifacts when this private test mount closes.
+        self.trace = self.trace_path.open("w")
         self.process = None
 
     def mounted(self):
@@ -96,5 +100,6 @@ class Mount:
         if self.mounted():
             subprocess.run(["fusermount3", "-uz", str(self.mount)], check=True)
         self.trace.close()
+        shutil.copyfile(self.trace_path, self.trace_output)
         assert self.base.parent == Path.home() and self.base.name.startswith("teamfs-") and not self.mounted()
         shutil.rmtree(self.base)

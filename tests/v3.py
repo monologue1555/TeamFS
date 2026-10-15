@@ -8,6 +8,7 @@ import sqlite3
 import subprocess
 import time
 from fs_harness import Mount, BINARY, fails, wait_for
+from storage_helpers import stored_bytes, legacy_nodes
 
 h = Mount("v3")
 m = h.mount
@@ -256,7 +257,9 @@ try:
     # No further FUSE requests until deadline: inspect the backing commit through a read-only SQL connection.
     def timer_saved():
         with sqlite3.connect(f"file:{h.store / 'state.sqlite3'}?mode=ro", uri=True) as conn:
-            row = conn.execute("SELECT b.data FROM nodes n JOIN blobs b ON n.content_id=b.id WHERE n.scope='' AND n.name=?", (b"timer",)).fetchone()
+            row = conn.execute("SELECT content_id FROM nodes WHERE scope='' AND name=?", (b"timer",)).fetchone()
+            if row is not None:
+                row = (stored_bytes(conn, b"timer"),)
             return row is not None and row[0] == b"idle save"
     wait_for(timer_saved)
     assert h.status()["auto_sync_successes"] >= 1
@@ -302,7 +305,10 @@ try:
 
     # Produce a v1 database with the original schema and validated live/snapshot data.
     db = sqlite3.connect(h.store / "state.sqlite3")
-    db.execute("UPDATE nodes SET data=(SELECT data FROM blobs WHERE id=nodes.content_id)")
+    for scope, ino, parent, name, attr, data in legacy_nodes(db):
+        db.execute("UPDATE nodes SET data=? WHERE scope=? AND ino=?", (data,scope,ino))
+    db.execute("DROP TABLE content_blocks")
+    db.execute("DROP TABLE contents")
     db.execute("ALTER TABLE nodes DROP COLUMN content_id")
     db.execute("DROP TABLE blobs")
     db.execute("ALTER TABLE metadata DROP COLUMN capacity")
@@ -326,8 +332,8 @@ try:
     h.start()
     assert (m / "timer").read_bytes() == b"retry" and not h.trash()
     with sqlite3.connect(h.store / "state.sqlite3") as db:
-        assert db.execute("SELECT version FROM metadata").fetchone()[0] == 3
-        assert db.execute("SELECT n.scope,n.ino,n.parent,n.name,n.attr,b.data FROM nodes n JOIN blobs b ON n.content_id=b.id ORDER BY n.scope,n.ino").fetchall() == original_nodes
+        assert db.execute("SELECT version FROM metadata").fetchone()[0] == 4
+        assert legacy_nodes(db) == original_nodes
     h.stop()
     passed("v1 migration preserves all stored rows; migration failure rolls back schema and version")
 

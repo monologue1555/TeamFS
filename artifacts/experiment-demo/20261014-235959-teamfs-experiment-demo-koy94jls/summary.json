@@ -1,0 +1,24 @@
+{
+  "measured_at": "2026-10-14T23:59:59+0800",
+  "kernel": "6.6.114.1-microsoft-standard-WSL2",
+  "version": "0.8.0",
+  "baseline": {
+    "calibrated_mean": 41.5,
+    "mean": 20.0,
+    "sample_count": 3
+  },
+  "changed": {
+    "calibrated_mean": 121.5,
+    "mean": 60.0,
+    "sample_count": 3
+  },
+  "replayed": {
+    "calibrated_mean": 41.5,
+    "mean": 20.0,
+    "sample_count": 3
+  },
+  "identical_result_bytes": true,
+  "baseline_sha256": "b44e33142c6b082ca8059dcd6137ef3b29f2804ad6b77829c5182eb55769b19b",
+  "replay_sha256": "b44e33142c6b082ca8059dcd6137ef3b29f2804ad6b77829c5182eb55769b19b",
+  "scope": "Deterministic small Python data-analysis example. Standard Python libraries and environment are not archived by the experiment capture."
+}

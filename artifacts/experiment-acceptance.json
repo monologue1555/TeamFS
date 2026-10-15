@@ -1,0 +1,36 @@
+{
+  "baseline": {
+    "calibrated_mean": 41.5,
+    "mean": 20.0,
+    "sample_count": 3
+  },
+  "changed": {
+    "calibrated_mean": 121.5,
+    "mean": 60.0,
+    "sample_count": 3
+  },
+  "replayed": {
+    "calibrated_mean": 41.5,
+    "mean": 20.0,
+    "sample_count": 3
+  },
+  "version": "0.8.0",
+  "measured_at": "2026-10-15T13:06:05+0800",
+  "checks": [
+    "real analysis records its source and three consumed inputs, excludes unused data, stores SHA256 and command outcome",
+    "same-named current data changes the result; replaying pinned code/data returns the original byte-exact result",
+    "successful input snapshots survive daemon SIGKILL, normal snapshot delete is refused, and old inputs restore to a new directory",
+    "partial/binary/non-UTF8/empty inputs are exact; opened-only and metadata-only accesses remain distinct in cached mount mode",
+    "command failure preserves its input evidence and original exit code instead of pretending success",
+    "2500 actual reads survive audit-ring eviction; another process's reads of the same snapshot are not attributed",
+    "ordinary subprocess reads are captured and missing input requests are reported",
+    "reads from the mutable business tree are flagged rather than silently claimed as fixed inputs",
+    "relative internal links retain target evidence; absolute external links are flagged and cannot be certified as fixed inputs",
+    "SIGTERM stops and records the job; runner SIGKILL preserves an incomplete report and allows explicit recovery of observations",
+    "daemon crash preserves submitted inputs while explicitly rejecting lost runtime capture as incomplete",
+    "invalid names/output targets are rejected; snapshot transaction failure never releases the command exec gate"
+  ],
+  "baseline_result_sha256": "b44e33142c6b082ca8059dcd6137ef3b29f2804ad6b77829c5182eb55769b19b",
+  "replay_result_sha256": "b44e33142c6b082ca8059dcd6137ef3b29f2804ad6b77829c5182eb55769b19b",
+  "scope": "Local deterministic file-input experiment only; not full environment or arbitrary ML reproducibility."
+}

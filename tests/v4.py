@@ -10,6 +10,7 @@ import sqlite3
 import subprocess
 import time
 from fs_harness import Mount, BINARY, fails
+from storage_helpers import stored_bytes
 
 h=Mount("v4")
 m=h.mount
@@ -22,7 +23,7 @@ def tree(source,destination,dry=False,success=True):
     result=h.cli("restore-tree",m,"baseline",source,destination,*(["--dry-run"] if dry else []),"--json",success=success)
     return json.loads(result.stdout) if success else result
 def bytes_in_database(conn,name):
-    return conn.execute("SELECT b.data FROM nodes n JOIN blobs b ON n.content_id=b.id WHERE n.scope='' AND n.name=?",(os.fsencode(name),)).fetchone()[0]
+    return stored_bytes(conn, name)
 
 try:
     print("TeamFS v0.4 real mounted acceptance",time.strftime("%Y-%m-%dT%H:%M:%S%z"),flush=True)

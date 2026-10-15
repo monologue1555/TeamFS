@@ -1,0 +1,12 @@
+PASS 01: real analysis records its source and three consumed inputs, excludes unused data, stores SHA256 and command outcome
+PASS 02: same-named current data changes the result; replaying pinned code/data returns the original byte-exact result
+PASS 03: successful input snapshots survive daemon SIGKILL, normal snapshot delete is refused, and old inputs restore to a new directory
+PASS 04: partial/binary/non-UTF8/empty inputs are exact; opened-only and metadata-only accesses remain distinct in cached mount mode
+PASS 05: command failure preserves its input evidence and original exit code instead of pretending success
+PASS 06: 2500 actual reads survive audit-ring eviction; another process's reads of the same snapshot are not attributed
+PASS 07: ordinary subprocess reads are captured and missing input requests are reported
+PASS 08: reads from the mutable business tree are flagged rather than silently claimed as fixed inputs
+PASS 09: relative internal links retain target evidence; absolute external links are flagged and cannot be certified as fixed inputs
+PASS 10: SIGTERM stops and records the job; runner SIGKILL preserves an incomplete report and allows explicit recovery of observations
+PASS 11: daemon crash preserves submitted inputs while explicitly rejecting lost runtime capture as incomplete
+PASS 12: invalid names/output targets are rejected; snapshot transaction failure never releases the command exec gate

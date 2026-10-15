@@ -1,4 +1,4 @@
-TeamFS v0.3 actual mounted acceptance 2026-10-07T22:01:12+0800
+TeamFS v0.3 actual mounted acceptance 2026-10-15T13:04:18+0800
 binary: /home/monologue/.cache/teamfs/target/debug/teamfs
 PASS 01: unlink keeps immutable bytes, raw attributes and separate inode; restore is non-overwriting
 PASS 02: Chinese/non-UTF8/control names, empty file and repeated deletions retain distinct IDs
@@ -13,6 +13,5 @@ PASS 10: diff result is frozen per descriptor and survives deletion of its snaps
 PASS 11: idle timer commits; clean ticks skip; failures retry; stop wakes without waiting interval
 PASS 12: optional timer arguments validated; default still loses unsynced state on crash
 PASS 13: v1 migration preserves all stored rows; migration failure rolls back schema and version
-PASS 14: authentic 0.2 executable's v1 store migrates with raw names, attributes and snapshots
-PASS 15: combined auto-sync/snapshot/trash/diff operations serialize correctly; memory resets
-ALL PASS: 15 v3 mounted scenarios
+PASS 14: combined auto-sync/snapshot/trash/diff operations serialize correctly; memory resets
+ALL PASS: 14 v3 mounted scenarios

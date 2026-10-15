@@ -89,7 +89,7 @@ pub fn check_cli(args: &[OsString]) -> Result<(), String> {
                 "SQLite integrity_check、格式、业务树、快照、回收记录及内容引用检查通过",
                 "",
             );
-            if stats["format"].as_i64().unwrap_or(3) < 3 {
+            if stats["format"].as_i64().unwrap_or(4) < 4 {
                 add(
                     &mut r,
                     "format",

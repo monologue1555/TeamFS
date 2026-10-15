@@ -1,0 +1,475 @@
+{
+  "cancelled": false,
+  "capture": {
+    "all_observed_content_inputs_pinned": true,
+    "errors": [],
+    "external_link_accesses": 0,
+    "finished_unix": 1791994425,
+    "input_version_persistent": true,
+    "inputs": [
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1791994424,
+            710692589
+          ],
+          "crtime": [
+            1791994424,
+            710692589
+          ],
+          "ctime": [
+            1791994424,
+            711242581
+          ],
+          "gid": 1000,
+          "ino": 5,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1791994424,
+            711242581
+          ],
+          "nlink": 1,
+          "size": 742,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 12,
+          "lookup": 8,
+          "open": 2,
+          "read": 6
+        },
+        "path_bytes": [
+          97,
+          110,
+          97,
+          108,
+          121,
+          122,
+          101,
+          46,
+          112,
+          121
+        ],
+        "path_display": "analyze.py",
+        "pids": [
+          409
+        ],
+        "read_bytes": 2248,
+        "read_calls": 6,
+        "sha256": "014b15525e8fd853895cff3254a270d9c16d189a79560b44188840da8f81533a"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1791994424,
+            716468126
+          ],
+          "crtime": [
+            1791994424,
+            716468126
+          ],
+          "ctime": [
+            1791994424,
+            717045084
+          ],
+          "gid": 1000,
+          "ino": 6,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1791994424,
+            717045084
+          ],
+          "nlink": 1,
+          "size": 4,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 3,
+          "lookup": 1,
+          "open": 1,
+          "read": 2
+        },
+        "path_bytes": [
+          99,
+          97,
+          108,
+          105,
+          98,
+          114,
+          97,
+          116,
+          105,
+          111,
+          110,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "calibration.txt",
+        "pids": [
+          409
+        ],
+        "read_bytes": 4,
+        "read_calls": 2,
+        "sha256": "03c76d47c407b24353b3121bd96490373bd6c5de05f6b3d32bd420c4810f1160"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1791994424,
+            722503223
+          ],
+          "crtime": [
+            1791994424,
+            722503223
+          ],
+          "ctime": [
+            1791994424,
+            885961413
+          ],
+          "gid": 1000,
+          "ino": 7,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1791994424,
+            885961413
+          ],
+          "nlink": 1,
+          "size": 28,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 2,
+          "lookup": 1,
+          "open": 1,
+          "read": 2
+        },
+        "path_bytes": [
+          109,
+          101,
+          97,
+          115,
+          117,
+          114,
+          101,
+          109,
+          101,
+          110,
+          116,
+          115,
+          46,
+          99,
+          115,
+          118
+        ],
+        "path_display": "measurements.csv",
+        "pids": [
+          409
+        ],
+        "read_bytes": 28,
+        "read_calls": 2,
+        "sha256": "356919b3025144b11987fba7bf9195612fbf23a6864a1cef96e48a628ac5c682"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1791994424,
+            727983455
+          ],
+          "crtime": [
+            1791994424,
+            727983455
+          ],
+          "ctime": [
+            1791994424,
+            728562379
+          ],
+          "gid": 1000,
+          "ino": 8,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1791994424,
+            728562379
+          ],
+          "nlink": 1,
+          "size": 13,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 3,
+          "lookup": 1,
+          "open": 1,
+          "read": 2
+        },
+        "path_bytes": [
+          112,
+          97,
+          114,
+          97,
+          109,
+          101,
+          116,
+          101,
+          114,
+          115,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "parameters.json",
+        "pids": [
+          409
+        ],
+        "read_bytes": 13,
+        "read_calls": 2,
+        "sha256": "a8f6dde25c2b63cbf8aff4931fc5732acc39b20ef0800b6d7501c332c61e5b62"
+      }
+    ],
+    "metadata_accesses": [
+      {
+        "attributes": {
+          "atime": [
+            1791994424,
+            656309549
+          ],
+          "crtime": [
+            1791994424,
+            656309549
+          ],
+          "ctime": [
+            1791994424,
+            733750890
+          ],
+          "gid": 1000,
+          "ino": 1,
+          "kind": "Directory",
+          "mode": 493,
+          "mtime": [
+            1791994424,
+            733750890
+          ],
+          "nlink": 3,
+          "size": 0,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 34,
+          "lookup": 32,
+          "opendir": 1,
+          "readdir": 2
+        },
+        "path_bytes": [],
+        "path_display": "",
+        "pids": [
+          409
+        ],
+        "read_bytes": 0,
+        "read_calls": 0
+      }
+    ],
+    "process_group": 409,
+    "scope": "Only requests from this process group against this immutable snapshot are attributed. Hashes cover full file versions, even when only a portion was read. Opened-only files are not claimed to have been consumed. External dependencies and processes leaving the group are outside this capture.",
+    "snapshot": "experiment.changed",
+    "started_unix": 1791994424,
+    "unpinned_mount_accesses": 0
+  },
+  "capture_complete": true,
+  "command_bytes": [
+    [
+      112,
+      121,
+      116,
+      104,
+      111,
+      110,
+      51
+    ],
+    [
+      97,
+      110,
+      97,
+      108,
+      121,
+      122,
+      101,
+      46,
+      112,
+      121
+    ]
+  ],
+  "command_display": [
+    "python3",
+    "analyze.py"
+  ],
+  "exit_code": 0,
+  "experiment": "changed",
+  "finished_unix": 1791994425,
+  "input_directory_bytes": [
+    47,
+    104,
+    111,
+    109,
+    101,
+    47,
+    109,
+    111,
+    110,
+    111,
+    108,
+    111,
+    103,
+    117,
+    101,
+    47,
+    116,
+    101,
+    97,
+    109,
+    102,
+    115,
+    45,
+    101,
+    120,
+    112,
+    101,
+    114,
+    105,
+    109,
+    101,
+    110,
+    116,
+    45,
+    100,
+    101,
+    109,
+    111,
+    45,
+    117,
+    55,
+    108,
+    106,
+    98,
+    107,
+    113,
+    49,
+    47,
+    109,
+    110,
+    116,
+    47,
+    46,
+    116,
+    101,
+    97,
+    109,
+    102,
+    115,
+    47,
+    115,
+    110,
+    97,
+    112,
+    115,
+    104,
+    111,
+    116,
+    115,
+    47,
+    101,
+    120,
+    112,
+    101,
+    114,
+    105,
+    109,
+    101,
+    110,
+    116,
+    46,
+    99,
+    104,
+    97,
+    110,
+    103,
+    101,
+    100
+  ],
+  "mode": "persistent",
+  "output_directory_bytes": [
+    47,
+    104,
+    111,
+    109,
+    101,
+    47,
+    109,
+    111,
+    110,
+    111,
+    108,
+    111,
+    103,
+    117,
+    101,
+    47,
+    116,
+    101,
+    97,
+    109,
+    102,
+    115,
+    45,
+    101,
+    120,
+    112,
+    101,
+    114,
+    105,
+    109,
+    101,
+    110,
+    116,
+    45,
+    100,
+    101,
+    109,
+    111,
+    45,
+    117,
+    55,
+    108,
+    106,
+    98,
+    107,
+    113,
+    49,
+    47,
+    99,
+    104,
+    97,
+    110,
+    103,
+    101,
+    100
+  ],
+  "phase": "finished",
+  "process_group": 409,
+  "replay_source_snapshot": null,
+  "schema_version": 1,
+  "scope": "Pinned TeamFS snapshot and this process group only. External files, network inputs, software environment and processes leaving the group are not tracked. FUSE read bytes do not prove algorithmic use; metadata-only and opened-only accesses are separate. Snapshot files use direct I/O; mmap is unsupported.",
+  "signal": null,
+  "snapshot": "experiment.changed",
+  "started_unix": 1791994424,
+  "teamfs": "0.8.0"
+}

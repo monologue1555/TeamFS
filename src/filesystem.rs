@@ -73,6 +73,15 @@ impl TeamFs {
                 };
                 let mut detail = detail.clone();
                 detail["timing_us"] = serde_json::to_value(timing).unwrap();
+                let observed_inode = result.as_ref().ok().and_then(|v| v.inode()).unwrap_or(ino);
+                s.observe_experiment(
+                    caller.pid,
+                    op,
+                    observed_inode,
+                    &detail,
+                    result.as_ref().err().copied(),
+                    result.as_ref().ok().and_then(|v| v.bytes()),
+                );
                 s.caller = None;
                 s.operation_context = None;
                 if visible && (!matches!(op, "lookup" | "getattr" | "forget") || result.is_err()) {

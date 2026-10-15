@@ -1,5 +1,5 @@
-//! Transactional metadata deltas and immutable payloads; v1/v2 migration is atomic.
-use crate::content::{Content, Reader};
+//! Transactional metadata and immutable block manifests; v1/v2/v3 migration is atomic.
+use crate::content::{Content, Reader, PAGE};
 use crate::history::{TrashRecord, TRASH_CAPACITY, TRASH_LIMIT};
 use crate::model::{Attr, MemFs, SavedNode, Tree, CAPACITY, MAX_FILE_SIZE};
 use rusqlite::{params, Connection, OpenFlags};
@@ -37,6 +37,8 @@ pub struct Store {
     pub database: PathBuf,
     pub last_rows: u64,
     pub last_content_bytes: u64,
+    pub last_new_blocks: u64,
+    pub last_shared_blocks: u64,
 }
 const BASE:&str="CREATE TABLE metadata(version INTEGER NOT NULL,synced INTEGER NOT NULL,next_trash_id INTEGER NOT NULL,capacity INTEGER NOT NULL,max_file INTEGER NOT NULL);
     INSERT INTO metadata VALUES(3,0,1,67108864,16777216);
@@ -67,7 +69,7 @@ fn version(conn: &Connection) -> Result<i64, String> {
     let v = conn
         .query_row("SELECT version FROM metadata", [], |r| r.get::<_, i64>(0))
         .map_err(|e| e.to_string())?;
-    if !(1..=3).contains(&v) {
+    if !(1..=4).contains(&v) {
         return Err(format!("不支持的存储格式版本：{v}"));
     }
     let check: String = conn
@@ -112,7 +114,9 @@ impl Store {
         if node_count != stored_count {
             return Err("存在不属于任何文件树的节点".into());
         }
-        let (blobs, blob_bytes, unused, unused_bytes): (u64, u64, u64, u64) = if v == 3 {
+        let (blobs, blob_bytes, unused, unused_bytes): (u64, u64, u64, u64) = if v == 4 {
+            conn.query_row("SELECT count(*),coalesce(sum(length(data)),0),coalesce(sum(CASE WHEN id NOT IN (SELECT blob_id FROM content_blocks WHERE content_id IN (SELECT content_id FROM nodes UNION SELECT content_id FROM trash)) THEN 1 ELSE 0 END),0),coalesce(sum(CASE WHEN id NOT IN (SELECT blob_id FROM content_blocks WHERE content_id IN (SELECT content_id FROM nodes UNION SELECT content_id FROM trash)) THEN length(data) ELSE 0 END),0) FROM blobs",[],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?))).map_err(|e|e.to_string())?
+        } else if v == 3 {
             conn.query_row("SELECT count(*),coalesce(sum(length(data)),0),coalesce(sum(CASE WHEN id NOT IN (SELECT content_id FROM nodes UNION SELECT content_id FROM trash) THEN 1 ELSE 0 END),0),coalesce(sum(CASE WHEN id NOT IN (SELECT content_id FROM nodes UNION SELECT content_id FROM trash) THEN length(data) ELSE 0 END),0) FROM blobs",[],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?))).map_err(|e|e.to_string())?
         } else {
             (0, 0, 0, 0)
@@ -172,48 +176,87 @@ impl Store {
             "PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA cache_size=-2048;",
         )
         .map_err(|e| e.to_string())?;
-        if v < 3 {
+        if v < 4 {
             let tx = conn.transaction().map_err(|e| e.to_string())?;
-            if v == 1 {
-                tx.execute_batch("CREATE TABLE trash(id INTEGER PRIMARY KEY,path BLOB NOT NULL,deleted INTEGER NOT NULL,reason TEXT NOT NULL,attr TEXT NOT NULL,data BLOB NOT NULL);
+            if v < 3 {
+                if v == 1 {
+                    tx.execute_batch("CREATE TABLE trash(id INTEGER PRIMARY KEY,path BLOB NOT NULL,deleted INTEGER NOT NULL,reason TEXT NOT NULL,attr TEXT NOT NULL,data BLOB NOT NULL);
                     ALTER TABLE metadata ADD COLUMN next_trash_id INTEGER NOT NULL DEFAULT 1;").map_err(|e|e.to_string())?;
-            }
-            tx.execute_batch("CREATE TABLE blobs(id INTEGER PRIMARY KEY,data BLOB NOT NULL);
+                }
+                tx.execute_batch("CREATE TABLE blobs(id INTEGER PRIMARY KEY,data BLOB NOT NULL);
                 ALTER TABLE nodes ADD COLUMN content_id INTEGER; ALTER TABLE trash ADD COLUMN content_id INTEGER;
                 ALTER TABLE metadata ADD COLUMN capacity INTEGER NOT NULL DEFAULT 67108864;
                 ALTER TABLE metadata ADD COLUMN max_file INTEGER NOT NULL DEFAULT 16777216;").map_err(|e|e.to_string())?;
-            for table in ["nodes", "trash"] {
-                // Old databases have bounded contents. Move one value at a time, transactionally.
-                let rows: Vec<(i64, Vec<u8>)> = {
-                    let mut stmt = tx
-                        .prepare(&format!("SELECT rowid,data FROM {table}"))
+                for table in ["nodes", "trash"] {
+                    // Old databases have bounded contents. Move one value at a time, transactionally.
+                    let rows: Vec<(i64, Vec<u8>)> = {
+                        let mut stmt = tx
+                            .prepare(&format!("SELECT rowid,data FROM {table}"))
+                            .map_err(|e| e.to_string())?;
+                        let r = stmt
+                            .query_map([], |r| Ok((r.get(0)?, r.get(1)?)))
+                            .map_err(|e| e.to_string())?;
+                        r.collect::<Result<_, _>>().map_err(|e| e.to_string())?
+                    };
+                    for (row, bytes) in rows {
+                        tx.execute("INSERT INTO blobs(data) VALUES(?)", [bytes])
+                            .map_err(|e| e.to_string())?;
+                        tx.execute(
+                            &format!("UPDATE {table} SET content_id=?,data=X'' WHERE rowid=?"),
+                            params![tx.last_insert_rowid(), row],
+                        )
                         .map_err(|e| e.to_string())?;
-                    let r = stmt
-                        .query_map([], |r| Ok((r.get(0)?, r.get(1)?)))
-                        .map_err(|e| e.to_string())?;
-                    r.collect::<Result<_, _>>().map_err(|e| e.to_string())?
-                };
-                for (row, bytes) in rows {
-                    tx.execute("INSERT INTO blobs(data) VALUES(?)", [bytes])
+                    }
+                }
+                tx.execute("UPDATE metadata SET version=3", [])
+                    .map_err(|e| format!("存储迁移失败：{e}"))?;
+            }
+            // Each legacy immutable file becomes a manifest of fixed-size immutable blocks.
+            // Validate before migration; publish the new format only in the same transaction.
+            tx.execute_batch("CREATE TABLE contents(id INTEGER PRIMARY KEY,size INTEGER NOT NULL);
+                CREATE TABLE content_blocks(content_id INTEGER NOT NULL,page INTEGER NOT NULL,blob_id INTEGER NOT NULL,PRIMARY KEY(content_id,page));
+                CREATE INDEX content_blocks_blob ON content_blocks(blob_id);").map_err(|e|e.to_string())?;
+            let ids: Vec<i64> = {
+                let mut q = tx
+                    .prepare("SELECT id FROM blobs ORDER BY id")
+                    .map_err(|e| e.to_string())?;
+                let rows = q.query_map([], |r| r.get(0)).map_err(|e| e.to_string())?;
+                rows.collect::<Result<_, _>>().map_err(|e| e.to_string())?
+            };
+            for id in ids {
+                let bytes: Vec<u8> = tx
+                    .query_row("SELECT data FROM blobs WHERE id=?", [id], |r| r.get(0))
+                    .map_err(|e| e.to_string())?;
+                tx.execute("INSERT INTO contents VALUES(?,?)", params![id, bytes.len()])
+                    .map_err(|e| e.to_string())?;
+                for (page, chunk) in bytes.chunks(PAGE).enumerate() {
+                    tx.execute("INSERT INTO blobs(data) VALUES(?)", [chunk])
                         .map_err(|e| e.to_string())?;
                     tx.execute(
-                        &format!("UPDATE {table} SET content_id=?,data=X'' WHERE rowid=?"),
-                        params![tx.last_insert_rowid(), row],
+                        "INSERT INTO content_blocks VALUES(?,?,?)",
+                        params![id, page, tx.last_insert_rowid()],
                     )
                     .map_err(|e| e.to_string())?;
                 }
+                tx.execute("DELETE FROM blobs WHERE id=?", [id])
+                    .map_err(|e| e.to_string())?;
             }
-            tx.execute("UPDATE metadata SET version=3", [])
-                .map_err(|e| format!("存储迁移失败：{e}"))?;
+            tx.execute("UPDATE metadata SET version=4", [])
+                .map_err(|e| e.to_string())?;
             tx.commit().map_err(|e| e.to_string())?;
         }
-        let loaded = if v < 3 {
-            Some(load(&conn, 3, reader.clone())?)
+        let reader = if v < 4 {
+            Reader::open(&database)?
+        } else {
+            reader
+        };
+        let loaded = if !fresh && v < 4 {
+            Some(load(&conn, 4, reader.clone())?)
         } else {
             loaded
         };
         // No runtime handles exist yet. During a mount, retired payloads remain valid until restart.
-        conn.execute("DELETE FROM blobs WHERE id NOT IN (SELECT content_id FROM nodes UNION SELECT content_id FROM trash)",[]).map_err(|e|e.to_string())?;
+        collect_garbage(&conn)?;
         Ok((
             Self {
                 conn,
@@ -222,6 +265,8 @@ impl Store {
                 database,
                 last_rows: 0,
                 last_content_bytes: 0,
+                last_new_blocks: 0,
+                last_shared_blocks: 0,
             },
             loaded,
         ))
@@ -254,34 +299,42 @@ impl Store {
         let mut pending: HashMap<usize, (Content, i64)> = HashMap::new();
         let mut bytes_written = 0;
         let mut rows_written = 0;
-        let mut empty_id = tx
-            .query_row(
-                "SELECT id FROM blobs WHERE length(data)=0 LIMIT 1",
-                [],
-                |r| r.get::<_, i64>(0),
-            )
-            .ok();
+        let mut new_blocks = 0;
+        let mut shared_blocks = 0;
         let mut content_id = |data: &Content| -> Result<i64, String> {
-            if data.is_empty() {
-                if let Some(id) = empty_id {
-                    return Ok(id);
-                }
-            }
             if let Some(id) = data.id_for(&self.reader) {
                 return Ok(id);
             }
             if let Some((_, id)) = pending.get(&data.key()) {
                 return Ok(*id);
             }
-            let bytes = data
-                .all()
-                .map_err(|e| format!("读取待保存内容失败：errno={e}"))?;
-            bytes_written += bytes.len() as u64;
-            tx.execute("INSERT INTO blobs(data) VALUES(?)", [bytes])
+            tx.execute("INSERT INTO contents(size) VALUES(?)", [data.len()])
                 .map_err(|e| e.to_string())?;
             let id = tx.last_insert_rowid();
-            if data.is_empty() {
-                empty_id = Some(id);
+            for page in 0..(data.len() + PAGE - 1) / PAGE {
+                let blob_id = if let Some((base, index)) = data.shared_page(page, &self.reader) {
+                    shared_blocks += 1;
+                    tx.query_row(
+                        "SELECT blob_id FROM content_blocks WHERE content_id=? AND page=?",
+                        params![base, index],
+                        |r| r.get::<_, i64>(0),
+                    )
+                    .map_err(|e| e.to_string())?
+                } else {
+                    let bytes = data
+                        .read(page * PAGE, PAGE)
+                        .map_err(|e| format!("读取待保存块失败：errno={e}"))?;
+                    bytes_written += bytes.len() as u64;
+                    new_blocks += 1;
+                    tx.execute("INSERT INTO blobs(data) VALUES(?)", [bytes])
+                        .map_err(|e| e.to_string())?;
+                    tx.last_insert_rowid()
+                };
+                tx.execute(
+                    "INSERT INTO content_blocks VALUES(?,?,?)",
+                    params![id, page, blob_id],
+                )
+                .map_err(|e| e.to_string())?;
             }
             pending.insert(data.key(), (data.clone(), id));
             Ok(id)
@@ -408,15 +461,43 @@ impl Store {
         }
         self.last_rows = rows_written;
         self.last_content_bytes = bytes_written;
+        self.last_new_blocks = new_blocks;
+        self.last_shared_blocks = shared_blocks;
         Ok(())
     }
 }
 
+pub fn collect_garbage(conn: &Connection) -> Result<(), String> {
+    let v = version(conn)?;
+    let sql = if v == 4 {
+        "BEGIN IMMEDIATE;
+         DELETE FROM contents WHERE id NOT IN (SELECT content_id FROM nodes UNION SELECT content_id FROM trash);
+         DELETE FROM content_blocks WHERE content_id NOT IN (SELECT id FROM contents);
+         DELETE FROM blobs WHERE id NOT IN (SELECT blob_id FROM content_blocks);
+         COMMIT;"
+    } else if v == 3 {
+        "DELETE FROM blobs WHERE id NOT IN (SELECT content_id FROM nodes UNION SELECT content_id FROM trash);"
+    } else {
+        return Ok(());
+    };
+    conn.execute_batch(sql).map_err(|e| e.to_string())
+}
+
 fn load(conn: &Connection, v: i64, reader: Arc<Mutex<Reader>>) -> Result<Loaded, String> {
+    if v == 4 {
+        let bad: i64 = conn.query_row("SELECT count(*) FROM contents c WHERE c.size<0 OR c.size>67108864
+            OR (SELECT count(*) FROM content_blocks m WHERE m.content_id=c.id)!=(c.size+65535)/65536
+            OR EXISTS(SELECT 1 FROM content_blocks m LEFT JOIN blobs b ON b.id=m.blob_id WHERE m.content_id=c.id AND
+              (m.page<0 OR m.page>=(c.size+65535)/65536 OR b.id IS NULL OR length(b.data)!=min(65536,c.size-m.page*65536)))", [], |r|r.get(0)).map_err(|e|e.to_string())?;
+        let orphan: i64 = conn.query_row("SELECT count(*) FROM content_blocks WHERE content_id NOT IN (SELECT id FROM contents)",[],|r|r.get(0)).map_err(|e|e.to_string())?;
+        if bad != 0 || orphan != 0 {
+            return Err("无效的内容块映射；不会自动修复或清空".into());
+        }
+    }
     let synced = conn
         .query_row("SELECT synced FROM metadata", [], |r| r.get(0))
         .map_err(|e| e.to_string())?;
-    let (capacity, max_file) = if v == 3 {
+    let (capacity, max_file) = if v >= 3 {
         conn.query_row("SELECT capacity,max_file FROM metadata", [], |r| {
             Ok((r.get(0)?, r.get(1)?))
         })
@@ -445,7 +526,9 @@ fn load(conn: &Connection, v: i64, reader: Arc<Mutex<Reader>>) -> Result<Loaded,
         if !name.is_empty() {
             MemFs::valid_name(std::ffi::OsStr::new(&name)).map_err(|_| "invalid snapshot name")?;
         }
-        let sql = if v == 3 {
+        let sql = if v == 4 {
+            "SELECT n.ino,n.parent,n.name,n.attr,n.content_id,b.size FROM nodes n LEFT JOIN contents b ON b.id=n.content_id WHERE scope=? ORDER BY n.ino"
+        } else if v == 3 {
             "SELECT n.ino,n.parent,n.name,n.attr,n.content_id,length(b.data) FROM nodes n LEFT JOIN blobs b ON b.id=n.content_id WHERE scope=? ORDER BY n.ino"
         } else {
             "SELECT ino,parent,name,attr,data FROM nodes WHERE scope=? ORDER BY ino"
@@ -461,7 +544,7 @@ fn load(conn: &Connection, v: i64, reader: Arc<Mutex<Reader>>) -> Result<Loaded,
             if attr.ino != ino {
                 return Err("inode mismatch".into());
             }
-            let data = if v == 3 {
+            let data = if v >= 3 {
                 Content::disk(
                     r.get(4).map_err(|e| e.to_string())?,
                     r.get(5).map_err(|e| e.to_string())?,
@@ -529,7 +612,9 @@ fn load(conn: &Connection, v: i64, reader: Arc<Mutex<Reader>>) -> Result<Loaded,
     let mut trash = Vec::new();
     let mut total = 0;
     if v >= 2 {
-        let sql = if v == 3 {
+        let sql = if v == 4 {
+            "SELECT t.id,t.path,t.deleted,t.reason,t.attr,t.content_id,b.size FROM trash t LEFT JOIN contents b ON t.content_id=b.id ORDER BY t.id"
+        } else if v == 3 {
             "SELECT t.id,t.path,t.deleted,t.reason,t.attr,t.content_id,length(b.data) FROM trash t LEFT JOIN blobs b ON t.content_id=b.id ORDER BY t.id"
         } else {
             "SELECT id,path,deleted,reason,attr,data FROM trash ORDER BY id"
@@ -537,7 +622,7 @@ fn load(conn: &Connection, v: i64, reader: Arc<Mutex<Reader>>) -> Result<Loaded,
         let mut q = conn.prepare(sql).map_err(|e| e.to_string())?;
         let mut rows = q.query([]).map_err(|e| e.to_string())?;
         while let Some(r) = rows.next().map_err(|e| e.to_string())? {
-            let data = if v == 3 {
+            let data = if v >= 3 {
                 Content::disk(
                     r.get(5).map_err(|e| e.to_string())?,
                     r.get(6).map_err(|e| e.to_string())?,

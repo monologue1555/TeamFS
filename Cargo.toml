@@ -1,8 +1,8 @@
 [package]
 name = "teamfs"
-version = "0.6.0"
+version = "0.8.0"
 edition = "2021"
-description = "面向课程演示的 Rust + fuse-rs 可恢复资料文件系统"
+description = "Rust + fuse-rs 科研实验文件输入追溯与可恢复文件系统"
 license = "MIT"
 
 [dependencies]

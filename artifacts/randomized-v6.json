@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
-  "measured_at": "2026-10-07T22:03:28+0800",
+  "measured_at": "2026-10-15T13:05:57+0800",
   "suite": "randomized-v6",
+  "completed": true,
   "environment": {
     "kernel": "6.6.114.1-microsoft-standard-WSL2",
     "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
@@ -19,7 +20,7 @@
     {
       "name": "direct seed=1555 steps=180",
       "status": "pass",
-      "seconds": 10.054538826000226,
+      "seconds": 12.743636986000006,
       "detail": {
         "seed": 1555,
         "steps": 180,
@@ -31,7 +32,7 @@
     {
       "name": "direct seed=20261007 steps=180",
       "status": "pass",
-      "seconds": 7.833604225000272,
+      "seconds": 10.348602894999999,
       "detail": {
         "seed": 20261007,
         "steps": 180,
@@ -43,7 +44,7 @@
     {
       "name": "direct seed=42 steps=180",
       "status": "pass",
-      "seconds": 7.34299855800009,
+      "seconds": 9.794824805999994,
       "detail": {
         "seed": 42,
         "steps": 180,
@@ -55,7 +56,7 @@
     {
       "name": "cached seed=1555 steps=180",
       "status": "pass",
-      "seconds": 9.876730650999889,
+      "seconds": 15.145398205000006,
       "detail": {
         "seed": 1555,
         "steps": 180,
@@ -67,7 +68,7 @@
     {
       "name": "cached seed=20261007 steps=180",
       "status": "pass",
-      "seconds": 7.693597968999711,
+      "seconds": 9.158367659999996,
       "detail": {
         "seed": 20261007,
         "steps": 180,
@@ -79,7 +80,7 @@
     {
       "name": "cached seed=42 steps=180",
       "status": "pass",
-      "seconds": 7.510460212999988,
+      "seconds": 8.178533123999998,
       "detail": {
         "seed": 42,
         "steps": 180,

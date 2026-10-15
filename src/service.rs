@@ -11,6 +11,20 @@ use std::path::Path;
 use std::time::Instant;
 use time::Timespec;
 
+fn experiment_path(tree: &crate::model::Tree, index: usize) -> Vec<u8> {
+    let mut node = &tree.nodes[index];
+    let mut parts = Vec::new();
+    while node.attr.ino != ROOT {
+        parts.push(node.name.clone());
+        node = tree
+            .nodes
+            .iter()
+            .find(|n| n.attr.ino == node.parent)
+            .unwrap();
+    }
+    parts.reverse();
+    parts.join(&b'/')
+}
 pub const ADMIN: u64 = VIRTUAL_BASE;
 const SNAPSHOTS: u64 = ADMIN + 1;
 const STATUS: u64 = ADMIN + 2;
@@ -25,6 +39,17 @@ const CONTROL_LIMIT: usize = 64 * 1024;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "operation", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Command {
+    ExperimentStart {
+        name: String,
+        pgid: u32,
+        source_snapshot: Option<String>,
+    },
+    ExperimentFinish {
+        name: String,
+    },
+    ExperimentDelete {
+        name: String,
+    },
     RestoreTree {
         snapshot: String,
         source: Vec<u8>,
@@ -80,6 +105,7 @@ struct Handle {
 }
 
 pub struct Service {
+    experiments: BTreeMap<String, crate::experiment::Session>,
     pub audit: crate::audit::Audit,
     pub metrics: crate::metrics::Metrics,
     pub caller: Option<crate::audit::Caller>,
@@ -260,6 +286,11 @@ impl Service {
         Ok(history::json_bytes(&preview))
     }
     fn command_output(&mut self, command: Command) -> FsResult<Vec<u8>> {
+        if let Command::ExperimentFinish { name } = command {
+            return self
+                .finish_experiment(&name)
+                .map(|v| history::json_bytes(&v));
+        }
         if let Command::RestoreTree {
             snapshot,
             source,
@@ -287,6 +318,7 @@ impl Service {
         };
         let last_sync = loaded.as_ref().map(|s| s.synced);
         let mut result = Self {
+            experiments: BTreeMap::new(),
             audit: crate::audit::Audit::new(),
             metrics: crate::metrics::Metrics::default(),
             caller: None,
@@ -641,8 +673,207 @@ impl Service {
         Ok(())
     }
 
+    fn create_snapshot(&mut self, name: String, source: Option<&str>) -> FsResult<()> {
+        Self::snapshot_name(&name)?;
+        if self.active.contains_key(&name) {
+            return Err(libc::EEXIST);
+        }
+        let tree = match source {
+            Some(source) => self.views[self.active.get(source).ok_or(libc::ENOENT)?]
+                .saved
+                .tree
+                .clone(),
+            None => self.live.export(),
+        };
+        let bytes: usize = tree.nodes.iter().map(|n| n.data.len()).sum();
+        if self.active.len() >= MAX_SNAPSHOTS || self.snapshot_bytes() + bytes > SNAPSHOT_CAPACITY {
+            return Err(libc::ENOSPC);
+        }
+        let mut snapshots = self.snapshots();
+        snapshots.push(Snapshot {
+            name,
+            created: time::get_time().sec,
+            tree,
+        });
+        self.commit(&snapshots)?;
+        self.add_view(snapshots.pop().unwrap())
+            .map_err(|_| libc::EOVERFLOW)?;
+        Ok(())
+    }
+    fn delete_snapshot(&mut self, name: &str) -> FsResult<()> {
+        let id = *self.active.get(name).ok_or(libc::ENOENT)?;
+        let snapshots: Vec<_> = self
+            .snapshots()
+            .into_iter()
+            .filter(|s| s.name != name)
+            .collect();
+        self.commit(&snapshots)?;
+        self.active.remove(name);
+        self.collect_view(id);
+        Ok(())
+    }
+    pub fn observe_experiment(
+        &mut self,
+        pid: u32,
+        op: &str,
+        ino: u64,
+        detail: &serde_json::Value,
+        error: Option<i32>,
+        bytes: Option<u64>,
+    ) {
+        if !matches!(
+            op,
+            "read" | "open" | "lookup" | "getattr" | "readlink" | "readdir" | "opendir" | "access"
+        ) || self.experiments.is_empty()
+        {
+            return;
+        }
+        let pgid = unsafe { libc::getpgid(pid as i32) };
+        if pgid < 0 {
+            return;
+        }
+        let virtual_node = self.virtual_nodes.get(&ino).copied();
+        for session in self
+            .experiments
+            .values_mut()
+            .filter(|s| s.finished.is_none() && s.pgid == pgid as u32)
+        {
+            let wanted = self.active.get(&session.snapshot).copied();
+            if let Some((view, index)) = virtual_node.filter(|(view, _)| Some(*view) == wanted) {
+                let access = session.accesses.entry(index).or_default();
+                access.pids.insert(pid);
+                if error.is_none() {
+                    *access.operations.entry(op.into()).or_default() += 1;
+                    if op == "read" {
+                        access.read_calls += 1;
+                        access.read_bytes += bytes.unwrap_or(0);
+                    }
+                } else {
+                    let tree = &self.views[&view].saved.tree;
+                    let mut path = experiment_path(tree, index);
+                    if let Ok(name) =
+                        serde_json::from_value::<Vec<u8>>(detail["name_bytes"].clone())
+                    {
+                        if !path.is_empty() {
+                            path.push(b'/');
+                        }
+                        path.extend(name);
+                    }
+                    *session
+                        .errors
+                        .entry((path, op.into(), error.unwrap()))
+                        .or_default() += 1;
+                }
+            } else if error.is_none()
+                && (ino < ADMIN
+                    || self.virtual_nodes.contains_key(&ino)
+                    || self.trash_nodes.contains_key(&ino))
+                && (matches!(op, "read" | "readlink")
+                    || op == "open"
+                        && detail["flags"].as_i64().unwrap_or(0) & libc::O_ACCMODE as i64
+                            != libc::O_WRONLY as i64)
+            {
+                session.unpinned_accesses += 1;
+            }
+        }
+    }
+    fn finish_experiment(&mut self, name: &str) -> FsResult<serde_json::Value> {
+        let session = self.experiments.get(name).ok_or(libc::ENOENT)?;
+        if let Some(value) = &session.finished {
+            return Ok(value.clone());
+        }
+        let view = &self.views[self.active.get(&session.snapshot).ok_or(libc::ENOENT)?];
+        let mut inputs = Vec::new();
+        let mut metadata = Vec::new();
+        let mut external_link_accesses = 0u64;
+        for (index, access) in &session.accesses {
+            let node = &view.saved.tree.nodes[*index];
+            let path = experiment_path(&view.saved.tree, *index);
+            let mut row = json!({"path_bytes":path,"path_display":history::display_path(&path),"attributes":node.attr,
+                "operations":access.operations,"pids":access.pids,"read_calls":access.read_calls,"read_bytes":access.read_bytes});
+            if node.attr.kind == Kind::File
+                && (access.read_calls > 0
+                    || access.operations.get("open").copied().unwrap_or(0) > 0)
+            {
+                row["sha256"] = json!(crate::experiment::digest(node)?);
+                row["access_class"] = json!(if access.read_calls > 0 {
+                    "content_read"
+                } else {
+                    "opened_only"
+                });
+                inputs.push(row);
+            } else {
+                if node.attr.kind == Kind::Symlink {
+                    let target = node.data.all()?;
+                    let escape = crate::experiment::link_may_escape(&view.saved.tree, *index)?;
+                    row["link_target_bytes"] = json!(target);
+                    row["link_target_display"] = json!(history::display_path(&target));
+                    row["link_may_escape_input"] = json!(escape);
+                    if escape {
+                        external_link_accesses +=
+                            access.operations.get("readlink").copied().unwrap_or(0);
+                    }
+                }
+                metadata.push(row);
+            }
+        }
+        let order = |a: &serde_json::Value, b: &serde_json::Value| {
+            let a: Vec<u8> = serde_json::from_value(a["path_bytes"].clone()).unwrap();
+            let b: Vec<u8> = serde_json::from_value(b["path_bytes"].clone()).unwrap();
+            a.cmp(&b)
+        };
+        inputs.sort_by(order);
+        metadata.sort_by(order);
+        let errors:Vec<_>=session.errors.iter().map(|((path,operation,errno),count)|json!({"path_bytes":path,"path_display":history::display_path(path),"operation":operation,"errno":errno,"count":count})).collect();
+        let value = json!({"snapshot":session.snapshot,"started_unix":session.started,"finished_unix":time::get_time().sec,
+            "process_group":session.pgid,"inputs":inputs,"metadata_accesses":metadata,"errors":errors,
+            "unpinned_mount_accesses":session.unpinned_accesses,"input_version_persistent":self.store.is_some(),
+            "all_observed_content_inputs_pinned":session.unpinned_accesses==0 && external_link_accesses==0,
+            "external_link_accesses":external_link_accesses,
+            "scope":"Only requests from this process group against this immutable snapshot are attributed. Hashes cover full file versions, even when only a portion was read. Opened-only files are not claimed to have been consumed. External dependencies and processes leaving the group are outside this capture."});
+        self.experiments.get_mut(name).unwrap().finished = Some(value.clone());
+        Ok(value)
+    }
     pub fn command(&mut self, command: Command) -> FsResult<()> {
         match command {
+            Command::ExperimentStart {
+                name,
+                pgid,
+                source_snapshot,
+            } => {
+                let snapshot = crate::experiment::snapshot_name(&name)?;
+                if pgid == 0
+                    || pgid > i32::MAX as u32
+                    || unsafe { libc::getpgid(pgid as i32) } != pgid as i32
+                {
+                    return Err(libc::EINVAL);
+                }
+                if self
+                    .experiments
+                    .values()
+                    .any(|s| s.finished.is_none() && s.pgid == pgid)
+                {
+                    return Err(libc::EBUSY);
+                }
+                self.create_snapshot(snapshot.clone(), source_snapshot.as_deref())?;
+                self.experiments
+                    .insert(name, crate::experiment::Session::new(snapshot, pgid));
+                Ok(())
+            }
+            Command::ExperimentFinish { name } => self.finish_experiment(&name).map(|_| ()),
+            Command::ExperimentDelete { name } => {
+                let snapshot = crate::experiment::snapshot_name(&name)?;
+                if self
+                    .experiments
+                    .get(&name)
+                    .map_or(false, |s| s.finished.is_none())
+                {
+                    return Err(libc::EBUSY);
+                }
+                self.delete_snapshot(&snapshot)?;
+                self.experiments.remove(&name);
+                Ok(())
+            }
             Command::RestoreTree {
                 snapshot,
                 source,
@@ -658,40 +889,12 @@ impl Service {
             }
             Command::TrashPurge { id } => self.purge_trash(Some(id)),
             Command::TrashPurgeAll => self.purge_trash(None),
-            Command::SnapshotCreate { name } => {
-                Self::snapshot_name(&name)?;
-                if self.active.contains_key(&name) {
-                    return Err(libc::EEXIST);
-                }
-                let tree = self.live.export();
-                let bytes: usize = tree.nodes.iter().map(|n| n.data.len()).sum();
-                if self.active.len() >= MAX_SNAPSHOTS
-                    || self.snapshot_bytes() + bytes > SNAPSHOT_CAPACITY
-                {
-                    return Err(libc::ENOSPC);
-                }
-                let mut snapshots = self.snapshots();
-                snapshots.push(Snapshot {
-                    name,
-                    created: time::get_time().sec,
-                    tree,
-                });
-                self.commit(&snapshots)?;
-                self.add_view(snapshots.pop().unwrap())
-                    .map_err(|_| libc::EOVERFLOW)?;
-                Ok(())
-            }
+            Command::SnapshotCreate { name } => self.create_snapshot(name, None),
             Command::SnapshotDelete { name } => {
-                let id = *self.active.get(&name).ok_or(libc::ENOENT)?;
-                let snapshots: Vec<_> = self
-                    .snapshots()
-                    .into_iter()
-                    .filter(|s| s.name != name)
-                    .collect();
-                self.commit(&snapshots)?;
-                self.active.remove(&name);
-                self.collect_view(id);
-                Ok(())
+                if name.starts_with(crate::experiment::PREFIX) {
+                    return Err(libc::EACCES);
+                }
+                self.delete_snapshot(&name)
             }
             Command::Restore {
                 snapshot,
@@ -772,6 +975,7 @@ impl Service {
             })
             .unwrap_or((0, 0));
         let mut seen = std::collections::HashSet::new();
+        let mut pages_seen = std::collections::HashSet::new();
         let dirty_bytes = self
             .live
             .contents()
@@ -782,8 +986,7 @@ impl Service {
                     .flat_map(|v| v.saved.tree.nodes.iter().map(|n| &n.data)),
             )
             .chain(self.trash_nodes.values().map(|r| &r.data))
-            .filter(|c| seen.insert(c.key()))
-            .map(|c| c.memory_bytes())
+            .map(|c| c.memory_bytes(&mut seen, &mut pages_seen))
             .sum::<usize>();
         let mut value = json!({
             "schema_version":1,"filesystem":"TeamFS","version":env!("CARGO_PKG_VERSION"),"mode":self.mode(),
@@ -800,9 +1003,13 @@ impl Service {
             "resident_unsaved_content_bytes":dirty_bytes,
             "last_commit_rows":self.store.as_ref().map_or(0,|s|s.last_rows),
             "last_commit_content_bytes":self.store.as_ref().map_or(0,|s|s.last_content_bytes),
+            "storage_format":self.store.as_ref().map(|_|4),"content_block_bytes":crate::content::PAGE,
+            "last_commit_new_blocks":self.store.as_ref().map_or(0,|s|s.last_new_blocks),
+            "last_commit_shared_blocks":self.store.as_ref().map_or(0,|s|s.last_shared_blocks),
             "audit":self.audit.summary()
         });
         value["performance"] = self.metrics.summary();
+        value["experiments"] = json!(self.experiments.iter().map(|(name,s)|json!({"name":name,"snapshot":s.snapshot,"pgid":s.pgid,"finished":s.finished.is_some(),"observed_nodes":s.accesses.len()})).collect::<Vec<_>>());
         value["runtime"] = json!({"open_handles":self.handles.len(),"retired_snapshots":self.views.len()-self.active.len(),"retired_trash":self.trash_nodes.len()-self.trash.len(),"live":self.live.runtime_stats()});
         let mut bytes = serde_json::to_vec_pretty(&value).unwrap();
         bytes.push(b'\n');

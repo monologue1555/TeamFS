@@ -3,6 +3,7 @@ mod autosync;
 mod backup;
 mod content;
 mod diagnostics;
+mod experiment;
 mod filesystem;
 mod history;
 mod metrics;
@@ -27,7 +28,7 @@ fn main() {
 }
 fn help() {
     println!(
-        r#"TeamFS 0.6 — 可保存、可恢复的用户空间文件系统
+        r#"TeamFS 0.8 — 可追溯实验输入的用户空间文件系统
 
 teamfs mount <挂载点> [--store <目录> | --memory] [--auto-sync <秒数>] [--capacity-mib <MiB>] [--max-file-mib <MiB>] [--cached-io] [--audit-log <外部日志路径> | --no-audit-file] [--trace]
 teamfs logs <挂载点> [--json] [--errors] [--operation <操作>] [--path <路径片段>] [--since <序号>]
@@ -47,6 +48,13 @@ teamfs restore-tree <挂载点> <快照> <源目录或 .> <新目标目录> [--d
 teamfs backup create <挂载点> <新备份目录>
 teamfs backup verify <备份目录>
 teamfs backup import <备份目录> --store <新存储目录>
+teamfs experiment run <挂载点> <名称> --output <新报告目录> -- <命令> [参数...]
+teamfs experiment show <报告目录>
+teamfs experiment replay <挂载点> <原报告目录> <新名称> --output <新报告目录>
+teamfs experiment verify <挂载点> <报告目录>
+teamfs experiment restore <挂载点> <名称> <新目标相对目录>
+teamfs experiment delete <挂载点> <名称>
+teamfs experiment recover <挂载点> <名称> <未完成报告目录>
 
 默认持久化；普通修改在 sync/fsync/正常卸载时保存。异常退出只恢复最后的成功同步。
 --auto-sync 接受 1～86400 秒，默认关闭，仅持久化模式可用；间隔不是最大丢失时间保证。
@@ -59,6 +67,9 @@ teamfs backup import <备份目录> --store <新存储目录>
 结构化日志可通过 .teamfs/events.json 或 logs 查询；持久化模式默认写入存储目录的 logs/events.jsonl。
 日志为尽力记录，写入失败或队列繁忙不会拒绝业务操作；--no-audit-file 只关闭文件日志。
 --memory 是教学内存模式，退出后包括快照、回收站在内的所有数据丢失。
+实验命令在只读输入快照中运行；TEAMFS_INPUT 指向输入目录，TEAMFS_OUTPUT 指向外部输出目录。
+报告只追踪该进程组访问固定输入的 FUSE 请求，区分正文读取、仅打开和元数据查询，不覆盖外部输入及完整软件环境。
+输入快照以 experiment. 开头保留，需通过 experiment delete 显式删除；复用原有快照容量规则。
 "#
     );
 }
@@ -106,6 +117,8 @@ fn run() -> Result<(), String> {
         return Ok(());
     }
     match args[0].to_str() {
+        Some("__experiment-exec") => experiment::child_exec(&args[1..]),
+        Some("experiment") => experiment::cli(&args[1..]),
         Some("check") => diagnostics::check_cli(&args[1..]),
         Some("doctor") => diagnostics::doctor_cli(&args[1..]),
         Some("metrics") => metrics_cli(&args[1..]),

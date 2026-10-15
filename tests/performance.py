@@ -25,7 +25,7 @@ def measure(binary,label):
         db=sqlite3.connect(h.store/"state.sqlite3")
         version=db.execute("SELECT version FROM metadata").fetchone()[0]
         db.execute("CREATE TABLE measurement_payload(n INTEGER)")
-        table="blobs" if version==3 else "nodes"
+        table="blobs" if version>=3 else "nodes"
         db.execute(f"CREATE TRIGGER measurement_insert AFTER INSERT ON {table} BEGIN INSERT INTO measurement_payload VALUES(length(NEW.data)); END")
         db.commit()
         samples=[]

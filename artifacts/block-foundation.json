@@ -1,0 +1,47 @@
+{
+  "measured_at": "2026-10-15T13:06:01+0800",
+  "kernel": "6.6.114.1-microsoft-standard-WSL2",
+  "build": "debug",
+  "version": "0.8.0",
+  "block_bytes": 65536,
+  "file_bytes": 16777216,
+  "samples": [
+    {
+      "changed_bytes": 4096,
+      "new_payload_bytes": 65536,
+      "new_blocks": 1,
+      "shared_blocks": 255,
+      "write_ms": 0.7679550000005975,
+      "sync_cli_ms": 27.19040700000619
+    },
+    {
+      "changed_bytes": 4096,
+      "new_payload_bytes": 65536,
+      "new_blocks": 1,
+      "shared_blocks": 255,
+      "write_ms": 0.564104999995152,
+      "sync_cli_ms": 20.20072399999151
+    },
+    {
+      "changed_bytes": 4096,
+      "new_payload_bytes": 65536,
+      "new_blocks": 1,
+      "shared_blocks": 255,
+      "write_ms": 0.5165930000003982,
+      "sync_cli_ms": 20.86273899999469
+    }
+  ],
+  "recovered_sha256": "b770579606fa38c4d266f246ac3078899556f1187de336b325c29762837c4479",
+  "checks": [
+    "16 MiB file / 4 KiB overwrite saves 64 KiB, shares 255 blocks; snapshot bytes remain unchanged",
+    "overwriting a block with identical bytes reuses its old payload",
+    "cross-block write and normal remount preserve byte-exact contents",
+    "truncate/grow, partial last blocks and zero-length files survive remount without resurrecting bytes",
+    "payload, manifest and block-map insertion failures roll back together; dirty content remains readable and retries",
+    "SIGKILL restores the last complete commit and retains immutable history",
+    "held deleted snapshot, trash restore and independent backup/import preserve shared blocks",
+    "format-3 migration preserves paths, attributes and bytes; injected failure restores original schema",
+    "invalid block mappings are rejected without automatic repair or erasure"
+  ],
+  "scope": "Foundation acceptance, not a native filesystem or cloud performance comparison. Bytes are inserted content payload, not physical disk writes."
+}

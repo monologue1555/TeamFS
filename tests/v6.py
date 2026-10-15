@@ -10,6 +10,7 @@ import time
 import threading
 from fs_harness import Mount, ROOT, fails
 from reporting import Report
+from storage_helpers import stored_bytes
 
 report=Report("v6-acceptance")
 h=Mount("v6")
@@ -65,7 +66,7 @@ def offline_checks():
     database=h.store/"state.sqlite3"
     baseline=hashlib.sha256(database.read_bytes()).hexdigest()
     v=json.loads(h.cli("check",h.store,"--json").stdout)
-    assert v["ok"] and v["storage"]["format"]==3
+    assert v["ok"] and v["storage"]["format"]==4
     assert hashlib.sha256(database.read_bytes()).hexdigest()==baseline
     (ROOT/"artifacts/check-example.json").write_text(json.dumps(v,ensure_ascii=False,indent=2)+"\n")
     missing=h.base/"nonexistent"
@@ -74,7 +75,7 @@ def offline_checks():
     # Work exclusively on copies; no bad fixture is ever mounted.
     for label,sql in [
         ("unknown","UPDATE metadata SET version=999"),
-        ("missing_blob","DELETE FROM blobs WHERE id=(SELECT content_id FROM nodes WHERE name=X'74696D696E67' AND scope='')"),
+        ("missing_blob","DELETE FROM blobs WHERE id=(SELECT blob_id FROM content_blocks WHERE content_id=(SELECT content_id FROM nodes WHERE name=X'74696D696E67' AND scope='') LIMIT 1)"),
         ("orphan_scope","UPDATE nodes SET scope='missing-tree' WHERE scope='' AND name=X'74696D696E67'")]:
         dest=h.base/label;shutil.copytree(h.store,dest)
         db=sqlite3.connect(dest/"state.sqlite3");db.execute(sql);db.commit();db.close()
@@ -108,7 +109,7 @@ def transaction_failure(table,operation):
     assert h.status()["dirty"] and "v6 injected" in h.status()["last_sync_error"]
     assert [r["id"] for r in h.trash()]==old_ids
     assert not (m/".teamfs/snapshots/failed").exists()
-    assert db.execute("SELECT b.data FROM nodes n JOIN blobs b ON b.id=n.content_id WHERE n.scope='' AND n.name=?",(b"old",)).fetchone()[0]==b"A"
+    assert stored_bytes(db,b"old")==b"A"
     # Remove the test-only trigger, then kill without retry: the old complete commit survives.
     db.execute("DROP TRIGGER fail_tx");db.commit();db.close()
     h.stop(kill=True);h.start(trace=False)
@@ -143,7 +144,7 @@ def writer_contention():
         if not success:
             assert h.status()["dirty"] and h.status()["last_sync_error"]
             db=sqlite3.connect(h.store/"state.sqlite3")
-            assert db.execute("SELECT b.data FROM nodes n JOIN blobs b ON b.id=n.content_id WHERE n.scope='' AND n.name=?",(b"held",)).fetchone()[0]==b"B"
+            assert stored_bytes(db,b"held")==b"B"
             db.close();h.sync()
         outcomes.append({"writer_lock_seconds":seconds,"sync_succeeded":success,"seconds_including_release_wait":elapsed})
     assert not h.status()["dirty"]
@@ -163,7 +164,7 @@ def lifecycle_soak():
         if i%20==0:
             h.snapshot("cycle");h.cli("snapshot","delete",m,"cycle")
             h.sync();s=h.status();assert s["runtime"]["open_handles"]==0,s["runtime"]
-            assert s["resident_unsaved_content_bytes"] <= (i+1)*4096
+            assert s["resident_unsaved_content_bytes"] <= (i+1)*65536
             samples.append({"iteration":i,"runtime":s["runtime"],"resident_unsaved_content_bytes":s["resident_unsaved_content_bytes"]})
     h.sync();h.stop()
     before=json.loads(h.cli("check",h.store,"--json").stdout)["storage"]

@@ -1,0 +1,23 @@
+{
+  "version": "0.7.0",
+  "measured_at": "2026-10-14T21:12:58+08:00",
+  "check_command": "bash scripts/check.sh",
+  "exit_code": 0,
+  "unit_tests_passed": 21,
+  "original_mounted_scenario_groups": 62,
+  "diagnostic_scenario_groups": 14,
+  "foundation_scenario_groups": 9,
+  "compatibility": {
+    "pass": 19,
+    "unsupported": 7
+  },
+  "random_groups": 6,
+  "random_operations": 1080,
+  "evidence": [
+    "block-foundation.json",
+    "block-foundation.txt",
+    "block-regression.txt",
+    "blocks-trace.log"
+  ],
+  "scope": "Independent WSL2 temporary mounts. Content insertion bytes are not physical disk writes. Existing unsupported application cases remain unsupported."
+}

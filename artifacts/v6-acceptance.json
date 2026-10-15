@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
-  "measured_at": "2026-10-07T22:02:34+0800",
+  "measured_at": "2026-10-15T13:04:45+0800",
   "suite": "v6-acceptance",
+  "completed": true,
   "environment": {
     "kernel": "6.6.114.1-microsoft-standard-WSL2",
     "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
@@ -16,25 +17,25 @@
     {
       "name": "phase metrics, frozen reads, read-only and no self-observation",
       "status": "pass",
-      "seconds": 0.17598444199984442,
+      "seconds": 0.2651055570000054,
       "detail": null
     },
     {
       "name": "busy store rejection and environment/mount diagnostics",
       "status": "pass",
-      "seconds": 0.20880584899987298,
+      "seconds": 0.3420732879999946,
       "detail": null
     },
     {
       "name": "offline integrity, corrupt/unknown/missing-reference refusal, no data mutation",
       "status": "pass",
-      "seconds": 0.07858439599976919,
+      "seconds": 0.10279370900000373,
       "detail": null
     },
     {
       "name": "transaction fault blobs / sync",
       "status": "pass",
-      "seconds": 0.25721680600008767,
+      "seconds": 0.2758976209999986,
       "detail": {
         "failure_point": "blobs",
         "command": "sync",
@@ -45,7 +46,7 @@
     {
       "name": "transaction fault blobs / snapshot",
       "status": "pass",
-      "seconds": 0.2680381239997587,
+      "seconds": 0.2704857979999957,
       "detail": {
         "failure_point": "blobs",
         "command": "snapshot",
@@ -56,7 +57,7 @@
     {
       "name": "transaction fault blobs / purge",
       "status": "pass",
-      "seconds": 0.2587383260001843,
+      "seconds": 0.2728627709999998,
       "detail": {
         "failure_point": "blobs",
         "command": "purge",
@@ -67,7 +68,7 @@
     {
       "name": "transaction fault nodes / sync",
       "status": "pass",
-      "seconds": 0.26979921000020113,
+      "seconds": 0.2754412900000034,
       "detail": {
         "failure_point": "nodes",
         "command": "sync",
@@ -78,7 +79,7 @@
     {
       "name": "transaction fault nodes / snapshot",
       "status": "pass",
-      "seconds": 0.2568866460001118,
+      "seconds": 0.38159203500000416,
       "detail": {
         "failure_point": "nodes",
         "command": "snapshot",
@@ -89,7 +90,7 @@
     {
       "name": "transaction fault nodes / purge",
       "status": "pass",
-      "seconds": 0.26322973700007424,
+      "seconds": 0.2752277100000029,
       "detail": {
         "failure_point": "nodes",
         "command": "purge",
@@ -100,7 +101,7 @@
     {
       "name": "transaction fault metadata / sync",
       "status": "pass",
-      "seconds": 0.256409905000055,
+      "seconds": 0.263963497000006,
       "detail": {
         "failure_point": "metadata",
         "command": "sync",
@@ -111,7 +112,7 @@
     {
       "name": "transaction fault metadata / snapshot",
       "status": "pass",
-      "seconds": 0.2590733669999281,
+      "seconds": 0.27207661599999966,
       "detail": {
         "failure_point": "metadata",
         "command": "snapshot",
@@ -122,7 +123,7 @@
     {
       "name": "transaction fault metadata / purge",
       "status": "pass",
-      "seconds": 0.25793570800033194,
+      "seconds": 0.27436498099999795,
       "detail": {
         "failure_point": "metadata",
         "command": "purge",
@@ -133,24 +134,24 @@
     {
       "name": "SQLite writer contention waits, timeout retains dirty and retry saves",
       "status": "pass",
-      "seconds": 2.9036842340001385,
+      "seconds": 2.915143213999997,
       "detail": [
         {
           "writer_lock_seconds": 0.2,
           "sync_succeeded": true,
-          "seconds_including_release_wait": 0.2428059930002746
+          "seconds_including_release_wait": 0.24282214099999777
         },
         {
           "writer_lock_seconds": 2.5,
           "sync_succeeded": false,
-          "seconds_including_release_wait": 2.50038229699976
+          "seconds_including_release_wait": 2.5003783189999993
         }
       ]
     },
     {
       "name": "120 lifecycle rounds: open/unlink/purge/close and retired-content reclamation",
       "status": "pass",
-      "seconds": 2.9321571770001356,
+      "seconds": 4.042727118000002,
       "detail": {
         "iterations": 120,
         "samples": [
@@ -167,7 +168,7 @@
               "retired_snapshots": 0,
               "retired_trash": 1
             },
-            "resident_unsaved_content_bytes": 4096
+            "resident_unsaved_content_bytes": 65536
           },
           {
             "iteration": 20,
@@ -182,7 +183,7 @@
               "retired_snapshots": 0,
               "retired_trash": 21
             },
-            "resident_unsaved_content_bytes": 86016
+            "resident_unsaved_content_bytes": 1376256
           },
           {
             "iteration": 40,
@@ -197,7 +198,7 @@
               "retired_snapshots": 0,
               "retired_trash": 41
             },
-            "resident_unsaved_content_bytes": 167936
+            "resident_unsaved_content_bytes": 2686976
           },
           {
             "iteration": 60,
@@ -212,7 +213,7 @@
               "retired_snapshots": 0,
               "retired_trash": 61
             },
-            "resident_unsaved_content_bytes": 249856
+            "resident_unsaved_content_bytes": 3997696
           },
           {
             "iteration": 80,
@@ -227,7 +228,7 @@
               "retired_snapshots": 0,
               "retired_trash": 81
             },
-            "resident_unsaved_content_bytes": 331776
+            "resident_unsaved_content_bytes": 5308416
           },
           {
             "iteration": 100,
@@ -242,7 +243,7 @@
               "retired_snapshots": 0,
               "retired_trash": 101
             },
-            "resident_unsaved_content_bytes": 413696
+            "resident_unsaved_content_bytes": 6619136
           }
         ],
         "unreferenced_bytes_before_restart": 0,

@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from storage_helpers import stored_bytes
 
 root = Path(__file__).resolve().parents[1]
 binary = Path(os.environ.get("CARGO_TARGET_DIR", str(Path.home() / ".cache/teamfs/target"))) / "debug/teamfs"
@@ -19,7 +20,7 @@ other = base / "other"
 store = base / "store"
 mount.mkdir()
 other.mkdir()
-trace = (root / "artifacts/v2-trace.log").open("w")
+trace = (base / "trace.log").open("w")
 process = None
 count = 0
 
@@ -262,7 +263,7 @@ try:
     assert not (mount / ".teamfs/snapshots/failed-snapshot").exists()
     cli("snapshot", "delete", mount, "control-once", success=False)
     assert (mount / ".teamfs/snapshots/control-once").exists()
-    live_blob = db.execute("SELECT b.data FROM nodes n JOIN blobs b ON n.content_id=b.id WHERE n.scope='' AND n.name=?", (sqlite3.Binary("恢复.bin".encode()),)).fetchone()[0]
+    live_blob = stored_bytes(db, "恢复.bin")
     assert live_blob == old_content
     db.execute("DROP TRIGGER fail_insert")
     db.commit()
@@ -328,5 +329,6 @@ finally:
     if mounted():
         subprocess.run(["fusermount3", "-uz", str(mount)], check=True)
     trace.close()
+    shutil.copyfile(base / "trace.log", root / "artifacts/v2-trace.log")
     assert base.parent == Path.home() and base.name.startswith("teamfs-v2-check-") and not mounted()
     shutil.rmtree(base)
