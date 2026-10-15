@@ -13,6 +13,8 @@ bash scripts/test-experiments.sh     # 真实挂载验收
 
 程序工作目录为固定输入快照，`TEAMFS_INPUT` 提供输入路径，`TEAMFS_OUTPUT` 提供挂载点外的输出路径。输入版本采用原有快照容量规则并持久保留，需显式 experiment delete 清理；memory 模式输入随进程结束丢失。运行计数是运行时状态，异常退出不补造完整报告。只追踪选定挂载和进程组，不覆盖网络、外部依赖、随机性或完整软件环境。见 [使用方法、原理、报告语义和边界](docs/experiments.md)。
 
+访问记录与进程归属：报告把访问分为正文读取、仅打开、属性查询、目录查询和读取软链接；FUSE 给出的线程号换算为进程号；未固定的挂载内读取按路径列出，其他进程组对同一输入快照的读取单独计数、从不计入输入。`bash scripts/test-attribution.sh` 把 `--trace` 记录的真实回调与报告逐项对账。规则见 [访问记录流程](docs/access-recording.md)，应用、VFS、FUSE、Rust 与 SQLite 的调用关系见 [架构调用图](docs/architecture.md)。`bash scripts/check.sh` 运行全部套件，即使中途失败也继续，最后生成 `artifacts/regression-summary.json/.md`，列出提交号、环境、各套件结果以及单列的未支持与跳过项。
+
 ## 0.7 基础：局部修改的版本保存成本
 
 研究问题：在保留可恢复文件版本的前提下，减少局部覆盖修改产生的重复内容保存。0.6 的增量保存以文件为单位；0.7 将内容保存粒度改为固定 **64 KiB 块**。块大小目前固定，不宣称是最佳参数。
@@ -431,12 +433,13 @@ bash scripts/test-v4.sh
 bash scripts/test-v5.sh
 bash scripts/test-v6.sh
 bash scripts/showcase.sh
-# 或用 bash scripts/check.sh 一次运行全部后端验收
+bash scripts/test-attribution.sh
+# 或用 bash scripts/check.sh 一次运行全部后端验收，汇总见 artifacts/regression-summary.md
 ```
 
 `smoke.sh` 使用内存模式复验原有 12 个挂载场景和 1 个重挂载场景。`test-v2.sh` 使用独立存储与挂载点，验证 15 组新增场景，包括 SIGKILL、只读快照、历史句柄、恢复、状态分段读取、控制请求幂等、SQLite 事务失败注入、重试、容量限制和损坏数据库拒绝。
 
-现有 7 个模型测试之外，新增树导入校验、原始名称持久化、无路径节点排除、历史节点回收和控制请求边界测试，再加上路径转义、差异规则及回收/差异句柄回收，再加上耗时统计和挂载路径解析，共 20 个测试。实际结果见 `artifacts/model-tests.txt`、`artifacts/acceptance.txt`、`artifacts/v2-acceptance.txt`、`artifacts/v3-acceptance.txt`、`artifacts/v4-acceptance.txt`、`artifacts/v5-acceptance.txt`。每次测试重写对应记录。
+现有 7 个模型测试之外，新增树导入校验、原始名称持久化、无路径节点排除、历史节点回收和控制请求边界测试，再加上路径转义、差异规则及回收/差异句柄回收，再加上耗时统计和挂载路径解析，共 20 个测试；之后的版本继续增加了实验采集、访问分类和线程归属等测试，当前数量以 `artifacts/model-tests.txt` 为准。实际结果见 `artifacts/model-tests.txt`、`artifacts/acceptance.txt`、`artifacts/v2-acceptance.txt`、`artifacts/v3-acceptance.txt`、`artifacts/v4-acceptance.txt`、`artifacts/v5-acceptance.txt`。每次测试重写对应记录。
 
 `test-v3.sh` 验证删除与替换保护、两种容量限制、恢复、清理失败回滚、空闲自动保存及重试、差异、迁移与联合场景。设置 TEAMFS_V02_BIN 为旧版 0.2 可执行文件时，还额外验证由旧程序实际生成的存储；本次实测包含这一项，共 15 组。常规版本 1 迁移及失败回滚测试始终执行。
 
@@ -465,6 +468,6 @@ bash scripts/showcase.sh
 
 项目基于 fuse-rs 开发应用，扩展的是 TeamFS 的存储与恢复能力，没有修改 fuse-rs 库。建议围绕同一份报告解释：普通读写如何到达 Rust、保存点怎样形成、快照如何隔离、错误发生后如何用差异清单定位变化，如何从快照或回收站取回内容。
 
-展示实测记录时说明环境、样例大小及模式。20 个单元测试和真实挂载场景用于证明行为；单次 showcase 的耗时只代表该样例，不能宣称普遍性能优势。PPT 尚未制作，输出和测量记录可作为后续素材。
+展示实测记录时说明环境、样例大小及模式。单元测试和真实挂载场景用于证明行为，各套件的通过、失败与未支持数量见 `artifacts/regression-summary.md`；单次 showcase 的耗时只代表该样例，不能宣称普遍性能优势。PPT 尚未制作，输出和测量记录可作为后续素材。
 
 参考：[fuse-rs 官方仓库](https://github.com/zargony/fuse-rs)、[固定版本 API](https://docs.rs/fuse/0.3.1/fuse/)、[Linux FUSE](https://docs.kernel.org/filesystems/fuse/fuse.html)、[Rust 官方教程](https://doc.rust-lang.org/book/)、[任务参考文章](https://blog.csdn.net/gitblog_00096/article/details/138896027)。

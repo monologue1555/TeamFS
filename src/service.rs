@@ -721,34 +721,84 @@ impl Service {
         error: Option<i32>,
         bytes: Option<u64>,
     ) {
-        if !matches!(
-            op,
-            "read" | "open" | "lookup" | "getattr" | "readlink" | "readdir" | "opendir" | "access"
-        ) || self.experiments.is_empty()
+        // pid 0 marks kernel-internal requests that have no calling task to attribute.
+        if pid == 0
+            || !matches!(
+                op,
+                "read" | "open" | "lookup" | "getattr" | "readlink" | "readdir" | "opendir" | "access"
+            )
+            || !self.experiments.values().any(|s| s.finished.is_none())
         {
             return;
         }
+        // The caller waits for this reply; no group means it was killed in the meantime.
         let pgid = unsafe { libc::getpgid(pid as i32) };
-        if pgid < 0 {
-            return;
+        if pgid > 0 {
+            self.observe_in_group(pid, pgid as u32, op, ino, detail, error, bytes);
         }
+    }
+    fn observe_in_group(
+        &mut self,
+        pid: u32,
+        pgid: u32,
+        op: &str,
+        ino: u64,
+        detail: &serde_json::Value,
+        error: Option<i32>,
+        bytes: Option<u64>,
+    ) {
         let virtual_node = self.virtual_nodes.get(&ino).copied();
+        // Requests that expose file content: these make a file an input, an unpinned read
+        // or, from another group, a read the experiment must not claim.
+        let content = error.is_none()
+            && (matches!(op, "read" | "readlink")
+                || op == "open"
+                    && detail["flags"].as_i64().unwrap_or(0) & libc::O_ACCMODE as i64
+                        != libc::O_WRONLY as i64);
+        let location = if !content {
+            None
+        } else if ino < ADMIN {
+            Some("business")
+        } else if virtual_node.is_some() {
+            Some("snapshot")
+        } else if self.trash_nodes.contains_key(&ino) {
+            Some("trash")
+        } else {
+            None
+        };
+        // Path walks are only needed for unpinned reads; keep pinned reads on the cheap path.
+        let unpinned_for_group = location.is_some()
+            && self.experiments.values().any(|s| {
+                s.finished.is_none()
+                    && s.pgid == pgid
+                    && virtual_node.map_or(true, |(view, _)| {
+                        self.active.get(&s.snapshot) != Some(&view)
+                    })
+            });
+        let location_path = if unpinned_for_group {
+            self.audit_path(ino, None)
+        } else {
+            None
+        };
         for session in self
             .experiments
             .values_mut()
-            .filter(|s| s.finished.is_none() && s.pgid == pgid as u32)
+            .filter(|s| s.finished.is_none())
         {
             let wanted = self.active.get(&session.snapshot).copied();
-            if let Some((view, index)) = virtual_node.filter(|(view, _)| Some(*view) == wanted) {
-                let access = session.accesses.entry(index).or_default();
-                access.pids.insert(pid);
-                if error.is_none() {
-                    *access.operations.entry(op.into()).or_default() += 1;
-                    if op == "read" {
-                        access.read_calls += 1;
-                        access.read_bytes += bytes.unwrap_or(0);
+            let pinned = virtual_node.filter(|(view, _)| Some(*view) == wanted);
+            if session.pgid != pgid {
+                if pinned.is_some() && content {
+                    session.other_group_accesses += 1;
+                    if session.other_group_pids.len() < crate::experiment::OTHER_GROUP_PIDS {
+                        let process = session.process(pid);
+                        session.other_group_pids.insert(process);
                     }
-                } else {
+                }
+                continue;
+            }
+            if let Some((view, index)) = pinned {
+                if let Some(errno) = error {
                     let tree = &self.views[&view].saved.tree;
                     let mut path = experiment_path(tree, index);
                     if let Ok(name) =
@@ -759,21 +809,27 @@ impl Service {
                         }
                         path.extend(name);
                     }
-                    *session
-                        .errors
-                        .entry((path, op.into(), error.unwrap()))
-                        .or_default() += 1;
+                    *session.errors.entry((path, op.into(), errno)).or_default() += 1;
+                    continue;
                 }
-            } else if error.is_none()
-                && (ino < ADMIN
-                    || self.virtual_nodes.contains_key(&ino)
-                    || self.trash_nodes.contains_key(&ino))
-                && (matches!(op, "read" | "readlink")
-                    || op == "open"
-                        && detail["flags"].as_i64().unwrap_or(0) & libc::O_ACCMODE as i64
-                            != libc::O_WRONLY as i64)
-            {
+                let process = session.process(pid);
+                let access = session.accesses.entry(index).or_default();
+                access.pids.insert(process);
+                *access.operations.entry(op.into()).or_default() += 1;
+                if op == "read" {
+                    access.read_calls += 1;
+                    access.read_bytes += bytes.unwrap_or(0);
+                }
+            } else if let Some(location) = location {
                 session.unpinned_accesses += 1;
+                let row = session
+                    .unpinned
+                    .entry((location, location_path.clone()))
+                    .or_default();
+                *row.operations.entry(op.into()).or_default() += 1;
+                if op == "read" {
+                    row.read_bytes += bytes.unwrap_or(0);
+                }
             }
         }
     }
@@ -786,34 +842,57 @@ impl Service {
         let mut inputs = Vec::new();
         let mut metadata = Vec::new();
         let mut external_link_accesses = 0u64;
+        let mut classes: BTreeMap<&str, u64> = [
+            "content_read",
+            "opened_only",
+            "attribute_only",
+            "directory_listing",
+            "link_read",
+        ]
+        .into_iter()
+        .map(|class| (class, 0))
+        .collect();
+        let mut processes = std::collections::BTreeSet::new();
         for (index, access) in &session.accesses {
             let node = &view.saved.tree.nodes[*index];
             let path = experiment_path(&view.saved.tree, *index);
+            let count = |op: &str| access.operations.get(op).copied().unwrap_or(0);
+            processes.extend(access.pids.iter().copied());
             let mut row = json!({"path_bytes":path,"path_display":history::display_path(&path),"attributes":node.attr,
                 "operations":access.operations,"pids":access.pids,"read_calls":access.read_calls,"read_bytes":access.read_bytes});
-            if node.attr.kind == Kind::File
-                && (access.read_calls > 0
-                    || access.operations.get("open").copied().unwrap_or(0) > 0)
+            // Content classes are inputs; everything else stays metadata evidence.
+            let class = if node.attr.kind == Kind::File && (access.read_calls > 0 || count("open") > 0)
             {
                 row["sha256"] = json!(crate::experiment::digest(node)?);
-                row["access_class"] = json!(if access.read_calls > 0 {
+                if access.read_calls > 0 {
                     "content_read"
                 } else {
                     "opened_only"
-                });
+                }
+            } else {
+                match node.attr.kind {
+                    Kind::Directory if count("opendir") + count("readdir") > 0 => {
+                        "directory_listing"
+                    }
+                    Kind::Symlink if count("readlink") > 0 => "link_read",
+                    _ => "attribute_only",
+                }
+            };
+            row["access_class"] = json!(class);
+            *classes.get_mut(class).unwrap() += 1;
+            if node.attr.kind == Kind::Symlink {
+                let target = node.data.all()?;
+                let escape = crate::experiment::link_may_escape(&view.saved.tree, *index)?;
+                row["link_target_bytes"] = json!(target);
+                row["link_target_display"] = json!(history::display_path(&target));
+                row["link_may_escape_input"] = json!(escape);
+                if escape {
+                    external_link_accesses += count("readlink");
+                }
+            }
+            if matches!(class, "content_read" | "opened_only") {
                 inputs.push(row);
             } else {
-                if node.attr.kind == Kind::Symlink {
-                    let target = node.data.all()?;
-                    let escape = crate::experiment::link_may_escape(&view.saved.tree, *index)?;
-                    row["link_target_bytes"] = json!(target);
-                    row["link_target_display"] = json!(history::display_path(&target));
-                    row["link_may_escape_input"] = json!(escape);
-                    if escape {
-                        external_link_accesses +=
-                            access.operations.get("readlink").copied().unwrap_or(0);
-                    }
-                }
                 metadata.push(row);
             }
         }
@@ -825,12 +904,19 @@ impl Service {
         inputs.sort_by(order);
         metadata.sort_by(order);
         let errors:Vec<_>=session.errors.iter().map(|((path,operation,errno),count)|json!({"path_bytes":path,"path_display":history::display_path(path),"operation":operation,"errno":errno,"count":count})).collect();
+        let unpinned:Vec<_>=session.unpinned.iter().map(|((location,path),row)|json!({"location":location,"path_bytes":path,
+            "path_display":path.as_deref().map(history::display_path),"operations":row.operations,"read_bytes":row.read_bytes})).collect();
+        let mut summary = json!(classes);
+        summary["error_requests"] = json!(session.errors.values().sum::<u64>());
+        summary["processes"] = json!(processes);
         let value = json!({"snapshot":session.snapshot,"started_unix":session.started,"finished_unix":time::get_time().sec,
-            "process_group":session.pgid,"inputs":inputs,"metadata_accesses":metadata,"errors":errors,
-            "unpinned_mount_accesses":session.unpinned_accesses,"input_version_persistent":self.store.is_some(),
+            "process_group":session.pgid,"summary":summary,"inputs":inputs,"metadata_accesses":metadata,"errors":errors,
+            "unpinned_mount_accesses":session.unpinned_accesses,"unpinned_mount_files":unpinned,
+            "input_version_persistent":self.store.is_some(),
             "all_observed_content_inputs_pinned":session.unpinned_accesses==0 && external_link_accesses==0,
             "external_link_accesses":external_link_accesses,
-            "scope":"Only requests from this process group against this immutable snapshot are attributed. Hashes cover full file versions, even when only a portion was read. Opened-only files are not claimed to have been consumed. External dependencies and processes leaving the group are outside this capture."});
+            "other_group_snapshot_accesses":session.other_group_accesses,"other_group_pids":session.other_group_pids,
+            "scope":"Only requests from this process group against this immutable snapshot are attributed; thread IDs are reported as their process IDs. Hashes cover full file versions, even when only a portion was read. Opened-only files are not claimed to have been consumed. Requests rejected by the kernel before FUSE (permission checks, non-directory path components) are not seen. Other process groups reading this snapshot are counted, never attributed. External dependencies and processes leaving the group are outside this capture."});
         self.experiments.get_mut(name).unwrap().finished = Some(value.clone());
         Ok(value)
     }
@@ -1653,6 +1739,124 @@ mod tests {
         service.forget(ino, 1);
         assert!(!service.views.contains_key(&root));
         assert!(!service.virtual_nodes.contains_key(&ino));
+    }
+    #[test]
+    fn experiment_capture_classifies_requests_and_separates_other_groups() {
+        use std::os::unix::process::CommandExt;
+        // A real process group leader, as ExperimentStart requires.
+        let mut leader = std::process::Command::new("sleep")
+            .arg("30")
+            .process_group(0)
+            .spawn()
+            .unwrap();
+        let pgid = leader.id();
+        let mut s = Service::new(1000, 1000, None).unwrap();
+        s.symlink(ROOT, OsStr::new("link"), b"welcome.txt", 1000, 1000)
+            .unwrap();
+        s.command(Command::ExperimentStart {
+            name: "unit".into(),
+            pgid,
+            source_snapshot: None,
+        })
+        .unwrap();
+        let root = s.lookup(SNAPSHOTS, OsStr::new("experiment.unit")).unwrap();
+        let welcome = s.lookup(root, OsStr::new("welcome.txt")).unwrap();
+        let notes = s.lookup(root, OsStr::new("notes")).unwrap();
+        let example = s.lookup(notes, OsStr::new("example.txt")).unwrap();
+        let link = s.lookup(root, OsStr::new("link")).unwrap();
+        let business = s.lookup(ROOT, OsStr::new("welcome.txt")).unwrap();
+        let (tid_tx, tid_rx) = std::sync::mpsc::channel();
+        let (done_tx, done_rx) = std::sync::mpsc::channel::<()>();
+        let worker = std::thread::spawn(move || {
+            tid_tx
+                .send(unsafe { libc::syscall(libc::SYS_gettid) } as u32)
+                .unwrap();
+            let _ = done_rx.recv();
+        });
+        let tid = tid_rx.recv().unwrap();
+        let me = std::process::id();
+        let none = json!({});
+        let readable = json!({ "flags": libc::O_RDONLY });
+        let missing = json!({ "name_bytes": b"missing" });
+        // In-group requests: a worker thread reads, the main thread only opens or queries.
+        s.observe_in_group(tid, pgid, "open", welcome, &readable, None, None);
+        s.observe_in_group(tid, pgid, "read", welcome, &none, None, Some(5));
+        s.observe_in_group(tid, pgid, "read", welcome, &none, None, Some(0));
+        s.observe_in_group(me, pgid, "open", example, &readable, None, None);
+        s.observe_in_group(me, pgid, "getattr", notes, &none, None, None);
+        s.observe_in_group(me, pgid, "opendir", root, &none, None, None);
+        s.observe_in_group(me, pgid, "readdir", root, &none, None, None);
+        s.observe_in_group(me, pgid, "lookup", link, &none, None, None);
+        s.observe_in_group(me, pgid, "readlink", link, &none, None, Some(11));
+        s.observe_in_group(me, pgid, "lookup", root, &missing, Some(libc::ENOENT), None);
+        s.observe_in_group(me, pgid, "lookup", notes, &missing, Some(libc::ENOENT), None);
+        s.observe_in_group(me, pgid, "open", business, &readable, None, None);
+        s.observe_in_group(me, pgid, "read", business, &none, None, Some(3));
+        let write_only = json!({ "flags": libc::O_WRONLY });
+        s.observe_in_group(me, pgid, "open", business, &write_only, None, None);
+        // Other groups: counted on the pinned snapshot only, never attributed.
+        s.observe_in_group(tid, pgid + 1, "read", welcome, &none, None, Some(7));
+        s.observe_in_group(tid, pgid + 1, "getattr", welcome, &none, None, None);
+        s.observe_in_group(tid, pgid + 1, "read", business, &none, None, Some(7));
+        s.observe_experiment(me, "read", welcome, &none, None, Some(7));
+        s.observe_experiment(0, "read", welcome, &none, None, Some(99));
+        done_tx.send(()).unwrap();
+        worker.join().unwrap();
+        let capture = s.finish_experiment("unit").unwrap();
+        leader.kill().unwrap();
+        leader.wait().unwrap();
+
+        let row = |list: &str, path: &[u8]| -> serde_json::Value {
+            capture[list]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|r| r["path_bytes"] == json!(path))
+                .cloned()
+                .unwrap_or_else(|| panic!("{list} lacks {path:?}: {capture:#}"))
+        };
+        assert_eq!(capture["inputs"].as_array().unwrap().len(), 2);
+        let read = row("inputs", b"welcome.txt");
+        assert_eq!(read["access_class"], "content_read");
+        assert_eq!((read["read_calls"].clone(), read["read_bytes"].clone()), (json!(2), json!(5)));
+        assert_eq!(read["pids"], json!([me]), "thread IDs are reported as their process");
+        assert_eq!(row("inputs", b"notes/example.txt")["access_class"], "opened_only");
+        assert_eq!(row("metadata_accesses", b"")["access_class"], "directory_listing");
+        assert_eq!(row("metadata_accesses", b"notes")["access_class"], "attribute_only");
+        let link = row("metadata_accesses", b"link");
+        assert_eq!(link["access_class"], "link_read");
+        assert_eq!(link["link_may_escape_input"], false);
+        let errors: Vec<_> = capture["errors"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|e| (e["path_display"].clone(), e["errno"].clone()))
+            .collect();
+        assert_eq!(
+            errors,
+            [(json!("missing"), json!(libc::ENOENT)), (json!("notes/missing"), json!(libc::ENOENT))]
+        );
+        let summary = &capture["summary"];
+        for (class, expected) in [
+            ("content_read", 1),
+            ("opened_only", 1),
+            ("attribute_only", 1),
+            ("directory_listing", 1),
+            ("link_read", 1),
+            ("error_requests", 2),
+        ] {
+            assert_eq!(summary[class], expected, "{class}");
+        }
+        assert_eq!(summary["processes"], json!([me]));
+        assert_eq!(capture["unpinned_mount_accesses"], 2);
+        assert_eq!(
+            capture["unpinned_mount_files"],
+            json!([{"location":"business","path_bytes":b"welcome.txt","path_display":"welcome.txt",
+                "operations":{"open":1,"read":1},"read_bytes":3}])
+        );
+        assert_eq!(capture["all_observed_content_inputs_pinned"], false);
+        assert_eq!(capture["other_group_snapshot_accesses"], 2);
+        assert_eq!(capture["other_group_pids"], json!([me]));
     }
     #[test]
     fn invalid_and_oversized_control_requests_do_not_execute() {

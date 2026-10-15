@@ -117,13 +117,19 @@ impl TeamFs {
             });
         if self.trace {
             self.sequence += 1;
+            // pid is the calling thread from the FUSE header; bytes are what the reply carries.
             let status = match &result {
-                Ok(_) => "OK".into(),
+                Ok(value) => match value.bytes() {
+                    Some(bytes) => format!("OK bytes={bytes}"),
+                    None => "OK".into(),
+                },
                 Err(e) => format!("errno={e} ({})", std::io::Error::from_raw_os_error(*e)),
             };
             eprintln!(
-                "[{:04}] {:<10} ino={ino} {detail} => {status}",
-                self.sequence, op
+                "[{:04}] {:<10} ino={ino} pid={} {detail} => {status}",
+                self.sequence,
+                op,
+                req.pid()
             );
         }
         result

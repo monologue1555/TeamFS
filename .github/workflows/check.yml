@@ -43,5 +43,6 @@ jobs:
           path: |
             artifacts/*.txt
             artifacts/*.json
+            artifacts/*.md
             artifacts/*trace.log
             artifacts/random-*.jsonl
