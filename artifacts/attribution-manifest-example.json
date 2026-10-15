@@ -1,0 +1,1048 @@
+{
+  "cancelled": false,
+  "capture": {
+    "all_observed_content_inputs_pinned": true,
+    "errors": [
+      {
+        "count": 1,
+        "errno": 2,
+        "operation": "lookup",
+        "path_bytes": [
+          100,
+          97,
+          116,
+          97,
+          47,
+          109,
+          105,
+          115,
+          115,
+          105,
+          110,
+          103,
+          46,
+          99,
+          115,
+          118
+        ],
+        "path_display": "data/missing.csv"
+      }
+    ],
+    "external_link_accesses": 0,
+    "finished_unix": 1792077516,
+    "input_version_persistent": true,
+    "inputs": [
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1792077516,
+            240606115
+          ],
+          "crtime": [
+            1792077516,
+            240606115
+          ],
+          "ctime": [
+            1792077516,
+            240929313
+          ],
+          "gid": 1001,
+          "ino": 20,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            240929313
+          ],
+          "nlink": 1,
+          "size": 32,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 1,
+          "lookup": 1,
+          "open": 1,
+          "read": 1
+        },
+        "path_bytes": [
+          99,
+          104,
+          105,
+          108,
+          100,
+          45,
+          105,
+          110,
+          112,
+          117,
+          116,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "child-input.txt",
+        "pids": [
+          2415
+        ],
+        "read_bytes": 32,
+        "read_calls": 1,
+        "sha256": "cd93782b7fb95559de14f738b65988af85d41dc1565f7c7d1ed2d035665b519c"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1792077516,
+            157531483
+          ],
+          "crtime": [
+            1792077516,
+            157531483
+          ],
+          "ctime": [
+            1792077516,
+            157761438
+          ],
+          "gid": 1001,
+          "ino": 8,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            157761438
+          ],
+          "nlink": 1,
+          "size": 4096,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 1,
+          "lookup": 1,
+          "open": 1,
+          "read": 1
+        },
+        "path_bytes": [
+          100,
+          97,
+          116,
+          97,
+          47,
+          114,
+          97,
+          119,
+          45,
+          255,
+          10,
+          46,
+          98,
+          105,
+          110
+        ],
+        "path_display": "data/raw-\\xff\\n.bin",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 4,
+        "read_calls": 1,
+        "sha256": "c8f5d0341d54d951a71b136e6e2afcb14d11ed8489a7ae126a8fee0df6ecf193"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1792077516,
+            149967627
+          ],
+          "crtime": [
+            1792077516,
+            149967627
+          ],
+          "ctime": [
+            1792077516,
+            150208477
+          ],
+          "gid": 1001,
+          "ino": 7,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            150208477
+          ],
+          "nlink": 1,
+          "size": 3000,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 1,
+          "lookup": 1,
+          "open": 1,
+          "read": 3
+        },
+        "path_bytes": [
+          100,
+          97,
+          116,
+          97,
+          47,
+          230,
+          160,
+          183,
+          230,
+          156,
+          172,
+          32,
+          49,
+          46,
+          99,
+          115,
+          118
+        ],
+        "path_display": "data/样本 1.csv",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 700,
+        "read_calls": 3,
+        "sha256": "a2170faaf1dfe509d53103c0c34ea2fba4ec5be3ea51e40021960bf89884b224"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1792077516,
+            174410461
+          ],
+          "crtime": [
+            1792077516,
+            174410461
+          ],
+          "ctime": [
+            1792077516,
+            174423977
+          ],
+          "gid": 1001,
+          "ino": 10,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            174423977
+          ],
+          "nlink": 1,
+          "size": 0,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 1,
+          "lookup": 1,
+          "open": 1,
+          "read": 1
+        },
+        "path_bytes": [
+          101,
+          109,
+          112,
+          116,
+          121,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "empty.txt",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 0,
+        "read_calls": 1,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1792077516,
+            248506749
+          ],
+          "crtime": [
+            1792077516,
+            248506749
+          ],
+          "ctime": [
+            1792077516,
+            248755065
+          ],
+          "gid": 1001,
+          "ino": 21,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            248755065
+          ],
+          "nlink": 1,
+          "size": 16,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 1,
+          "lookup": 1,
+          "open": 1,
+          "read": 1
+        },
+        "path_bytes": [
+          103,
+          114,
+          97,
+          110,
+          100,
+          99,
+          104,
+          105,
+          108,
+          100,
+          45,
+          105,
+          110,
+          112,
+          117,
+          116,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "grandchild-input.txt",
+        "pids": [
+          2416
+        ],
+        "read_bytes": 16,
+        "read_calls": 1,
+        "sha256": "b56233cba7d90e243f16c2a069895db73ef97a264b78082a38250ffccc822f2e"
+      },
+      {
+        "access_class": "opened_only",
+        "attributes": {
+          "atime": [
+            1792077516,
+            182401724
+          ],
+          "crtime": [
+            1792077516,
+            182401724
+          ],
+          "ctime": [
+            1792077516,
+            182650180
+          ],
+          "gid": 1001,
+          "ino": 11,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            182650180
+          ],
+          "nlink": 1,
+          "size": 22,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 1,
+          "lookup": 1,
+          "open": 1
+        },
+        "path_bytes": [
+          111,
+          112,
+          101,
+          110,
+          101,
+          100,
+          45,
+          111,
+          110,
+          108,
+          121,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "opened-only.txt",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 0,
+        "read_calls": 0,
+        "sha256": "a6c7db8a19d1099c91a051186aa754825d184b1aec24e65ba445c6d71c95c82a"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1792077516,
+            166404757
+          ],
+          "crtime": [
+            1792077516,
+            166404757
+          ],
+          "ctime": [
+            1792077516,
+            167113993
+          ],
+          "gid": 1001,
+          "ino": 9,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            167113993
+          ],
+          "nlink": 1,
+          "size": 28,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 2,
+          "lookup": 2,
+          "open": 1,
+          "read": 2
+        },
+        "path_bytes": [
+          112,
+          97,
+          114,
+          97,
+          109,
+          115,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "params.json",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 28,
+        "read_calls": 2,
+        "sha256": "03d798fbecac9ee2f1e204b471a080443aa666b53e877d0272b78ff9dc5b06d7"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1792077516,
+            137219639
+          ],
+          "crtime": [
+            1792077516,
+            137219639
+          ],
+          "ctime": [
+            1792077516,
+            137689858
+          ],
+          "gid": 1001,
+          "ino": 5,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            137689858
+          ],
+          "nlink": 1,
+          "size": 2693,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 10,
+          "lookup": 6,
+          "open": 2,
+          "read": 6
+        },
+        "path_bytes": [
+          112,
+          114,
+          111,
+          98,
+          101,
+          95,
+          112,
+          114,
+          111,
+          103,
+          114,
+          97,
+          109,
+          46,
+          112,
+          121
+        ],
+        "path_display": "probe_program.py",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 8101,
+        "read_calls": 6,
+        "sha256": "649f6f8a05623a298abcd65157adf81febe13482dc39ea2ae5b6a42327026c01"
+      },
+      {
+        "access_class": "content_read",
+        "attributes": {
+          "atime": [
+            1792077516,
+            230852515
+          ],
+          "crtime": [
+            1792077516,
+            230852515
+          ],
+          "ctime": [
+            1792077516,
+            231413941
+          ],
+          "gid": 1001,
+          "ino": 19,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            231413941
+          ],
+          "nlink": 1,
+          "size": 64,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 1,
+          "lookup": 1,
+          "open": 1,
+          "read": 1
+        },
+        "path_bytes": [
+          116,
+          104,
+          114,
+          101,
+          97,
+          100,
+          45,
+          105,
+          110,
+          112,
+          117,
+          116,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "thread-input.txt",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 64,
+        "read_calls": 1,
+        "sha256": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108"
+      }
+    ],
+    "metadata_accesses": [
+      {
+        "access_class": "directory_listing",
+        "attributes": {
+          "atime": [
+            1792077516,
+            84090139
+          ],
+          "crtime": [
+            1792077516,
+            84090139
+          ],
+          "ctime": [
+            1792077516,
+            274240380
+          ],
+          "gid": 1001,
+          "ino": 1,
+          "kind": "Directory",
+          "mode": 493,
+          "mtime": [
+            1792077516,
+            274240380
+          ],
+          "nlink": 6,
+          "size": 0,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 88,
+          "lookup": 71,
+          "opendir": 3,
+          "readdir": 6
+        },
+        "path_bytes": [],
+        "path_display": "",
+        "pids": [
+          2413,
+          2415,
+          2416
+        ],
+        "read_bytes": 0,
+        "read_calls": 0
+      },
+      {
+        "access_class": "attribute_only",
+        "attributes": {
+          "atime": [
+            1792077516,
+            149537528
+          ],
+          "crtime": [
+            1792077516,
+            149537528
+          ],
+          "ctime": [
+            1792077516,
+            157541074
+          ],
+          "gid": 1001,
+          "ino": 6,
+          "kind": "Directory",
+          "mode": 493,
+          "mtime": [
+            1792077516,
+            157541074
+          ],
+          "nlink": 2,
+          "size": 0,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 3,
+          "lookup": 3
+        },
+        "path_bytes": [
+          100,
+          97,
+          116,
+          97
+        ],
+        "path_display": "data",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 0,
+        "read_calls": 0
+      },
+      {
+        "access_class": "link_read",
+        "attributes": {
+          "atime": [
+            1792077516,
+            274229442
+          ],
+          "crtime": [
+            1792077516,
+            274229442
+          ],
+          "ctime": [
+            1792077516,
+            274229442
+          ],
+          "gid": 1001,
+          "ino": 24,
+          "kind": "Symlink",
+          "mode": 511,
+          "mtime": [
+            1792077516,
+            274229442
+          ],
+          "nlink": 1,
+          "size": 11,
+          "uid": 1000
+        },
+        "link_may_escape_input": false,
+        "link_target_bytes": [
+          112,
+          97,
+          114,
+          97,
+          109,
+          115,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "link_target_display": "params.json",
+        "operations": {
+          "lookup": 1,
+          "readlink": 1
+        },
+        "path_bytes": [
+          108,
+          105,
+          110,
+          107,
+          45,
+          116,
+          111,
+          45,
+          112,
+          97,
+          114,
+          97,
+          109,
+          115
+        ],
+        "path_display": "link-to-params",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 0,
+        "read_calls": 0
+      },
+      {
+        "access_class": "directory_listing",
+        "attributes": {
+          "atime": [
+            1792077516,
+            204498729
+          ],
+          "crtime": [
+            1792077516,
+            204498729
+          ],
+          "ctime": [
+            1792077516,
+            222879162
+          ],
+          "gid": 1001,
+          "ino": 15,
+          "kind": "Directory",
+          "mode": 493,
+          "mtime": [
+            1792077516,
+            222879162
+          ],
+          "nlink": 2,
+          "size": 0,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 2,
+          "lookup": 1,
+          "opendir": 1,
+          "readdir": 2
+        },
+        "path_bytes": [
+          108,
+          105,
+          115,
+          116,
+          105,
+          110,
+          103
+        ],
+        "path_display": "listing",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 0,
+        "read_calls": 0
+      },
+      {
+        "access_class": "attribute_only",
+        "attributes": {
+          "atime": [
+            1792077516,
+            189072600
+          ],
+          "crtime": [
+            1792077516,
+            189072600
+          ],
+          "ctime": [
+            1792077516,
+            189330618
+          ],
+          "gid": 1001,
+          "ino": 12,
+          "kind": "File",
+          "mode": 420,
+          "mtime": [
+            1792077516,
+            189330618
+          ],
+          "nlink": 1,
+          "size": 10,
+          "uid": 1000
+        },
+        "operations": {
+          "getattr": 1,
+          "lookup": 1
+        },
+        "path_bytes": [
+          115,
+          116,
+          97,
+          116,
+          45,
+          111,
+          110,
+          108,
+          121,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "stat-only.txt",
+        "pids": [
+          2413
+        ],
+        "read_bytes": 0,
+        "read_calls": 0
+      }
+    ],
+    "other_group_pids": [
+      2388,
+      2417
+    ],
+    "other_group_snapshot_accesses": 11,
+    "process_group": 2413,
+    "scope": "Only requests from this process group against this immutable snapshot are attributed; thread IDs are reported as their process IDs. Hashes cover full file versions, even when only a portion was read. Opened-only files are not claimed to have been consumed. Requests rejected by the kernel before FUSE (permission checks, non-directory path components) are not seen. Other process groups reading this snapshot are counted, never attributed. External dependencies and processes leaving the group are outside this capture.",
+    "snapshot": "experiment.classified",
+    "started_unix": 1792077516,
+    "summary": {
+      "attribute_only": 2,
+      "content_read": 8,
+      "directory_listing": 2,
+      "error_requests": 1,
+      "link_read": 1,
+      "opened_only": 1,
+      "processes": [
+        2413,
+        2415,
+        2416
+      ]
+    },
+    "unpinned_mount_accesses": 0,
+    "unpinned_mount_files": []
+  },
+  "capture_complete": true,
+  "command_bytes": [
+    [
+      112,
+      121,
+      116,
+      104,
+      111,
+      110,
+      51
+    ],
+    [
+      112,
+      114,
+      111,
+      98,
+      101,
+      95,
+      112,
+      114,
+      111,
+      103,
+      114,
+      97,
+      109,
+      46,
+      112,
+      121
+    ]
+  ],
+  "command_display": [
+    "python3",
+    "probe_program.py"
+  ],
+  "exit_code": 0,
+  "experiment": "classified",
+  "finished_unix": 1792077516,
+  "input_directory_bytes": [
+    47,
+    104,
+    111,
+    109,
+    101,
+    47,
+    117,
+    98,
+    117,
+    110,
+    116,
+    117,
+    47,
+    116,
+    101,
+    97,
+    109,
+    102,
+    115,
+    45,
+    97,
+    116,
+    116,
+    114,
+    105,
+    98,
+    117,
+    116,
+    105,
+    111,
+    110,
+    45,
+    99,
+    97,
+    99,
+    104,
+    101,
+    100,
+    45,
+    53,
+    101,
+    122,
+    99,
+    121,
+    108,
+    104,
+    48,
+    47,
+    109,
+    110,
+    116,
+    47,
+    46,
+    116,
+    101,
+    97,
+    109,
+    102,
+    115,
+    47,
+    115,
+    110,
+    97,
+    112,
+    115,
+    104,
+    111,
+    116,
+    115,
+    47,
+    101,
+    120,
+    112,
+    101,
+    114,
+    105,
+    109,
+    101,
+    110,
+    116,
+    46,
+    99,
+    108,
+    97,
+    115,
+    115,
+    105,
+    102,
+    105,
+    101,
+    100
+  ],
+  "mode": "persistent",
+  "output_directory_bytes": [
+    47,
+    104,
+    111,
+    109,
+    101,
+    47,
+    117,
+    98,
+    117,
+    110,
+    116,
+    117,
+    47,
+    116,
+    101,
+    97,
+    109,
+    102,
+    115,
+    45,
+    97,
+    116,
+    116,
+    114,
+    105,
+    98,
+    117,
+    116,
+    105,
+    111,
+    110,
+    45,
+    99,
+    97,
+    99,
+    104,
+    101,
+    100,
+    45,
+    53,
+    101,
+    122,
+    99,
+    121,
+    108,
+    104,
+    48,
+    47,
+    114,
+    101,
+    112,
+    111,
+    114,
+    116,
+    45,
+    99,
+    108,
+    97,
+    115,
+    115,
+    105,
+    102,
+    105,
+    101,
+    100
+  ],
+  "phase": "finished",
+  "process_group": 2413,
+  "replay_source_snapshot": null,
+  "schema_version": 1,
+  "scope": "Pinned TeamFS snapshot and this process group only. External files, network inputs, software environment and processes leaving the group are not tracked. FUSE read bytes do not prove algorithmic use; metadata-only and opened-only accesses are separate. Requests the kernel rejects or serves from its caches never reach FUSE. Snapshot files use direct I/O: shared mmap is unsupported, private read-only mappings are read through the page cache at readahead granularity.",
+  "signal": null,
+  "snapshot": "experiment.classified",
+  "started_unix": 1792077516,
+  "teamfs": "0.8.0"
+}

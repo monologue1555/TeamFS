@@ -1,0 +1,798 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-10-15T23:18:40+0800",
+  "suite": "attribution-acceptance",
+  "completed": true,
+  "environment": {
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "uid": 1000
+  },
+  "context": {
+    "request_report_crosscheck": {
+      "direct": {
+        "program_accounting": {
+          "pid": 2396,
+          "pgid": 2396,
+          "thread_tid": 2397,
+          "child": 2398,
+          "grandchild": 2399,
+          "setsid": 2400,
+          "setsid_group": 2400,
+          "reads": {
+            "data/样本 1.csv": [
+              3,
+              700
+            ],
+            "646174612f7261772dff0a2e62696e": [
+              1,
+              4
+            ],
+            "params.json": [
+              2,
+              28
+            ],
+            "empty.txt": [
+              1,
+              0
+            ],
+            "thread-input.txt": [
+              1,
+              64
+            ],
+            "child-input.txt": [
+              1,
+              32
+            ],
+            "grandchild-input.txt": [
+              1,
+              16
+            ]
+          },
+          "errors": {
+            "data/missing.csv": 2
+          },
+          "listed": [
+            "item-0.csv",
+            "item-1.csv",
+            "item-2.csv"
+          ]
+        },
+        "report_summary": {
+          "attribute_only": 2,
+          "content_read": 8,
+          "directory_listing": 2,
+          "error_requests": 1,
+          "link_read": 1,
+          "opened_only": 1,
+          "processes": [
+            2396,
+            2398,
+            2399
+          ]
+        },
+        "nodes": [
+          {
+            "path": "",
+            "access_class": "directory_listing",
+            "callback_operations": {
+              "lookup": 71,
+              "getattr": 88,
+              "opendir": 3,
+              "readdir": 6
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2396,
+              2397,
+              2398,
+              2399
+            ],
+            "report_pids": [
+              2396,
+              2398,
+              2399
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "child-input.txt",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 32,
+            "callback_thread_ids": [
+              2398
+            ],
+            "report_pids": [
+              2398
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 32
+          },
+          {
+            "path": "data",
+            "access_class": "attribute_only",
+            "callback_operations": {
+              "lookup": 3,
+              "getattr": 3
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "data/raw-\\xff\\n.bin",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 4,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 4
+          },
+          {
+            "path": "data/样本 1.csv",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 3
+            },
+            "callback_read_bytes": 700,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 3,
+            "report_read_bytes": 700
+          },
+          {
+            "path": "empty.txt",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "grandchild-input.txt",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 16,
+            "callback_thread_ids": [
+              2399
+            ],
+            "report_pids": [
+              2399
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 16
+          },
+          {
+            "path": "link-to-params",
+            "access_class": "link_read",
+            "callback_operations": {
+              "lookup": 1,
+              "readlink": 1
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "listing",
+            "access_class": "directory_listing",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 2,
+              "opendir": 1,
+              "readdir": 2
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "opened-only.txt",
+            "access_class": "opened_only",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "params.json",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 2,
+              "getattr": 2,
+              "open": 1,
+              "read": 2
+            },
+            "callback_read_bytes": 28,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 2,
+            "report_read_bytes": 28
+          },
+          {
+            "path": "probe_program.py",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 6,
+              "getattr": 10,
+              "open": 2,
+              "read": 6
+            },
+            "callback_read_bytes": 8101,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 6,
+            "report_read_bytes": 8101
+          },
+          {
+            "path": "stat-only.txt",
+            "access_class": "attribute_only",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2396
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "thread-input.txt",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 64,
+            "callback_thread_ids": [
+              2397
+            ],
+            "report_pids": [
+              2396
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 64
+          }
+        ],
+        "errors": [
+          {
+            "path": "data/missing.csv",
+            "operation": "lookup",
+            "errno": 2,
+            "count": 1
+          }
+        ],
+        "other_group_content_requests": {
+          "2388": 9,
+          "2400": 2
+        },
+        "callbacks_examined": 870
+      },
+      "cached": {
+        "program_accounting": {
+          "pid": 2413,
+          "pgid": 2413,
+          "thread_tid": 2414,
+          "child": 2415,
+          "grandchild": 2416,
+          "setsid": 2417,
+          "setsid_group": 2417,
+          "reads": {
+            "data/样本 1.csv": [
+              3,
+              700
+            ],
+            "646174612f7261772dff0a2e62696e": [
+              1,
+              4
+            ],
+            "params.json": [
+              2,
+              28
+            ],
+            "empty.txt": [
+              1,
+              0
+            ],
+            "thread-input.txt": [
+              1,
+              64
+            ],
+            "child-input.txt": [
+              1,
+              32
+            ],
+            "grandchild-input.txt": [
+              1,
+              16
+            ]
+          },
+          "errors": {
+            "data/missing.csv": 2
+          },
+          "listed": [
+            "item-0.csv",
+            "item-1.csv",
+            "item-2.csv"
+          ]
+        },
+        "report_summary": {
+          "attribute_only": 2,
+          "content_read": 8,
+          "directory_listing": 2,
+          "error_requests": 1,
+          "link_read": 1,
+          "opened_only": 1,
+          "processes": [
+            2413,
+            2415,
+            2416
+          ]
+        },
+        "nodes": [
+          {
+            "path": "",
+            "access_class": "directory_listing",
+            "callback_operations": {
+              "lookup": 71,
+              "getattr": 88,
+              "opendir": 3,
+              "readdir": 6
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2413,
+              2414,
+              2415,
+              2416
+            ],
+            "report_pids": [
+              2413,
+              2415,
+              2416
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "child-input.txt",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 32,
+            "callback_thread_ids": [
+              2415
+            ],
+            "report_pids": [
+              2415
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 32
+          },
+          {
+            "path": "data",
+            "access_class": "attribute_only",
+            "callback_operations": {
+              "lookup": 3,
+              "getattr": 3
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "data/raw-\\xff\\n.bin",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 4,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 4
+          },
+          {
+            "path": "data/样本 1.csv",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 3
+            },
+            "callback_read_bytes": 700,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 3,
+            "report_read_bytes": 700
+          },
+          {
+            "path": "empty.txt",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "grandchild-input.txt",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 16,
+            "callback_thread_ids": [
+              2416
+            ],
+            "report_pids": [
+              2416
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 16
+          },
+          {
+            "path": "link-to-params",
+            "access_class": "link_read",
+            "callback_operations": {
+              "lookup": 1,
+              "readlink": 1
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "listing",
+            "access_class": "directory_listing",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 2,
+              "opendir": 1,
+              "readdir": 2
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "opened-only.txt",
+            "access_class": "opened_only",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "params.json",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 2,
+              "getattr": 2,
+              "open": 1,
+              "read": 2
+            },
+            "callback_read_bytes": 28,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 2,
+            "report_read_bytes": 28
+          },
+          {
+            "path": "probe_program.py",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 6,
+              "getattr": 10,
+              "open": 2,
+              "read": 6
+            },
+            "callback_read_bytes": 8101,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 6,
+            "report_read_bytes": 8101
+          },
+          {
+            "path": "stat-only.txt",
+            "access_class": "attribute_only",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1
+            },
+            "callback_read_bytes": 0,
+            "callback_thread_ids": [
+              2413
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 0,
+            "report_read_bytes": 0
+          },
+          {
+            "path": "thread-input.txt",
+            "access_class": "content_read",
+            "callback_operations": {
+              "lookup": 1,
+              "getattr": 1,
+              "open": 1,
+              "read": 1
+            },
+            "callback_read_bytes": 64,
+            "callback_thread_ids": [
+              2414
+            ],
+            "report_pids": [
+              2413
+            ],
+            "report_read_calls": 1,
+            "report_read_bytes": 64
+          }
+        ],
+        "errors": [
+          {
+            "path": "data/missing.csv",
+            "operation": "lookup",
+            "errno": 2,
+            "count": 1
+          }
+        ],
+        "other_group_content_requests": {
+          "2388": 9,
+          "2417": 2
+        },
+        "callbacks_examined": 870
+      }
+    },
+    "beyond_audit_window": {
+      "program": {
+        "reads": 2700,
+        "bytes": 83340
+      },
+      "report_read_calls": 2700,
+      "report_read_bytes": 83340,
+      "audit_window_retained": 2048,
+      "audit_evicted_during_mount": 679,
+      "callbacks_examined": 2925
+    },
+    "tools_in_experiments": {
+      "ls -laR": "metadata only",
+      "find": "directory listing only",
+      "stat": "attribute only",
+      "head -c 10": "partial read 10 bytes, full-file SHA256",
+      "wc -c": "opened_only (0 reads; size from fstat)",
+      "sha256sum": "tool digests equal report SHA256, empty file is a 0-byte read",
+      "tar": "archived files content_read, link recorded as link_read",
+      "rsync -a": "copy byte-exact; inputs content_read; verify passes",
+      "git show": "6 repository files read; 18 optional paths probed with errno",
+      "vim -es": "read pinned file, wrote copy outside the mount"
+    }
+  },
+  "summary": {
+    "pass": 9,
+    "unsupported": 1
+  },
+  "cases": [
+    {
+      "name": "direct / request-report reconciliation, classes, threads, children, other groups",
+      "status": "pass",
+      "seconds": 0.5620873390000014,
+      "detail": "870 callbacks reconciled; 14 nodes, other-group requests 11"
+    },
+    {
+      "name": "cached / request-report reconciliation, classes, threads, children, other groups",
+      "status": "pass",
+      "seconds": 0.6388405170000055,
+      "detail": "870 callbacks reconciled; 14 nodes, other-group requests 11"
+    },
+    {
+      "name": "2700 reads beyond the audit window while the same-named file changes",
+      "status": "pass",
+      "seconds": 0.5515017479999926,
+      "detail": "2700 variable-size reads, 83340 bytes, exact after the 2048-event audit window evicted 679"
+    },
+    {
+      "name": "Chinese, invalid UTF-8, control-character names and partial binary reads",
+      "status": "pass",
+      "seconds": 0.21340768200001037,
+      "detail": "nested Chinese directories, invalid UTF-8, newline/tab/backslash names, binary partial read, empty file"
+    },
+    {
+      "name": "missing inputs keep errno; kernel-decided failures are not invented",
+      "status": "pass",
+      "seconds": 0.22445720000000335,
+      "detail": "application saw {'missing.csv': 2, 'sub/missing.csv': 2, 'data.txt/x': 20, 'write data.txt': 13}; report holds only the FUSE-visible errors [('missing.csv', 'lookup'), ('sub/missing.csv', 'lookup')]"
+    },
+    {
+      "name": "unpinned business, snapshot and trash reads are listed and block verify",
+      "status": "pass",
+      "seconds": 0.22307973099999856,
+      "detail": "12 unpinned requests listed by location and path; verify refuses"
+    },
+    {
+      "name": "symlink chains, escapes and dangling targets",
+      "status": "pass",
+      "seconds": 0.2046811719999937,
+      "detail": "in-tree chains certified; absolute, into-mount and ../ escapes flagged; dangling target errno kept"
+    },
+    {
+      "name": "private mmap of a pinned input",
+      "status": "pass",
+      "seconds": 0.26359020200000316,
+      "detail": "private read-only mapping touched 100 bytes; page-cache readahead requested 100000 bytes in 1 read(s)"
+    },
+    {
+      "name": "shared mmap of a pinned input",
+      "status": "unsupported",
+      "seconds": 0.2127336100000008,
+      "detail": "shared mmap of pinned inputs fails with ENODEV (direct I/O); the open is still recorded"
+    },
+    {
+      "name": "ls, find, stat, head, wc, sha256sum, tar, rsync, git and vim as experiment commands",
+      "status": "pass",
+      "seconds": 2.4038468359999996,
+      "detail": {
+        "ls -laR": "metadata only",
+        "find": "directory listing only",
+        "stat": "attribute only",
+        "head -c 10": "partial read 10 bytes, full-file SHA256",
+        "wc -c": "opened_only (0 reads; size from fstat)",
+        "sha256sum": "tool digests equal report SHA256, empty file is a 0-byte read",
+        "tar": "archived files content_read, link recorded as link_read",
+        "rsync -a": "copy byte-exact; inputs content_read; verify passes",
+        "git show": "6 repository files read; 18 optional paths probed with errno",
+        "vim -es": "read pinned file, wrote copy outside the mount"
+      }
+    }
+  ]
+}

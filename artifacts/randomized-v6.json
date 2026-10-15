@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "measured_at": "2026-10-15T13:05:57+0800",
+  "measured_at": "2026-10-15T23:18:27+0800",
   "suite": "randomized-v6",
   "completed": true,
   "environment": {
-    "kernel": "6.6.114.1-microsoft-standard-WSL2",
-    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
     "python": "3.12.3",
     "uid": 1000
   },
@@ -20,7 +20,7 @@
     {
       "name": "direct seed=1555 steps=180",
       "status": "pass",
-      "seconds": 12.743636986000006,
+      "seconds": 10.824901279999999,
       "detail": {
         "seed": 1555,
         "steps": 180,
@@ -32,7 +32,7 @@
     {
       "name": "direct seed=20261007 steps=180",
       "status": "pass",
-      "seconds": 10.348602894999999,
+      "seconds": 8.067173359000002,
       "detail": {
         "seed": 20261007,
         "steps": 180,
@@ -44,7 +44,7 @@
     {
       "name": "direct seed=42 steps=180",
       "status": "pass",
-      "seconds": 9.794824805999994,
+      "seconds": 7.985309837999992,
       "detail": {
         "seed": 42,
         "steps": 180,
@@ -56,7 +56,7 @@
     {
       "name": "cached seed=1555 steps=180",
       "status": "pass",
-      "seconds": 15.145398205000006,
+      "seconds": 10.498191338999987,
       "detail": {
         "seed": 1555,
         "steps": 180,
@@ -68,7 +68,7 @@
     {
       "name": "cached seed=20261007 steps=180",
       "status": "pass",
-      "seconds": 9.158367659999996,
+      "seconds": 8.56900603599999,
       "detail": {
         "seed": 20261007,
         "steps": 180,
@@ -80,7 +80,7 @@
     {
       "name": "cached seed=42 steps=180",
       "status": "pass",
-      "seconds": 8.178533123999998,
+      "seconds": 7.771256698999991,
       "detail": {
         "seed": 42,
         "steps": 180,

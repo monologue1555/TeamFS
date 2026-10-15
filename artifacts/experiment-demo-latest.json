@@ -1,8 +1,8 @@
 {
-  "directory": "/mnt/d/PyProject/operating system/Teamwork/artifacts/experiment-demo/20261015-001344-teamfs-experiment-demo-u7ljbkq1",
+  "directory": "/mnt/d/TeamFS/TeamFS/artifacts/experiment-demo/20261015-231908-teamfs-experiment-demo-fxogxugw",
   "summary": {
-    "measured_at": "2026-10-15T00:13:45+0800",
-    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "measured_at": "2026-10-15T23:19:09+0800",
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
     "version": "0.8.0",
     "baseline": {
       "calibrated_mean": 41.5,

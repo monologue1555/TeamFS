@@ -1,0 +1,12 @@
+PASS: direct / request-report reconciliation, classes, threads, children, other groups
+PASS: cached / request-report reconciliation, classes, threads, children, other groups
+PASS: 2700 reads beyond the audit window while the same-named file changes
+PASS: Chinese, invalid UTF-8, control-character names and partial binary reads
+PASS: missing inputs keep errno; kernel-decided failures are not invented
+PASS: unpinned business, snapshot and trash reads are listed and block verify
+PASS: symlink chains, escapes and dangling targets
+PASS: private mmap of a pinned input
+UNSUPPORTED: shared mmap of a pinned input
+shared mmap of pinned inputs fails with ENODEV (direct I/O); the open is still recorded
+PASS: ls, find, stat, head, wc, sha256sum, tar, rsync, git and vim as experiment commands
+RESULT {'pass': 9, 'unsupported': 1}; report: /mnt/d/TeamFS/TeamFS/artifacts/attribution-acceptance.json

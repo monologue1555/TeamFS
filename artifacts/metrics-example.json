@@ -4,151 +4,151 @@
       "calls": 1,
       "commit_total_us": 0,
       "errors": 0,
-      "lock_wait_total_us": 1,
-      "max_us": 108,
-      "mean_us": 108.0,
+      "lock_wait_total_us": 0,
+      "max_us": 31,
+      "mean_us": 31.0,
       "operation": "fuse.create",
-      "p50_us": 108,
-      "p95_us": 108,
-      "p99_us": 108,
+      "p50_us": 31,
+      "p95_us": 31,
+      "p99_us": 31,
       "sample_count": 1,
-      "service_total_us": 44,
-      "total_us": 108
+      "service_total_us": 25,
+      "total_us": 31
     },
     {
       "calls": 4,
       "commit_total_us": 0,
       "errors": 0,
       "lock_wait_total_us": 0,
-      "max_us": 28,
-      "mean_us": 13.5,
+      "max_us": 13,
+      "mean_us": 6.25,
       "operation": "fuse.flush",
-      "p50_us": 7,
-      "p95_us": 28,
-      "p99_us": 28,
+      "p50_us": 4,
+      "p95_us": 13,
+      "p99_us": 13,
       "sample_count": 4,
-      "service_total_us": 5,
-      "total_us": 54
+      "service_total_us": 1,
+      "total_us": 25
     },
     {
       "calls": 1,
-      "commit_total_us": 5975,
+      "commit_total_us": 6727,
       "errors": 0,
-      "lock_wait_total_us": 1,
-      "max_us": 6074,
-      "mean_us": 6074.0,
+      "lock_wait_total_us": 0,
+      "max_us": 6784,
+      "mean_us": 6784.0,
       "operation": "fuse.fsync",
-      "p50_us": 6074,
-      "p95_us": 6074,
-      "p99_us": 6074,
+      "p50_us": 6784,
+      "p95_us": 6784,
+      "p99_us": 6784,
       "sample_count": 1,
-      "service_total_us": 6067,
-      "total_us": 6074
+      "service_total_us": 6780,
+      "total_us": 6784
     },
     {
       "calls": 1,
       "commit_total_us": 0,
       "errors": 1,
       "lock_wait_total_us": 0,
-      "max_us": 15,
-      "mean_us": 15.0,
+      "max_us": 9,
+      "mean_us": 9.0,
       "operation": "fuse.lookup",
-      "p50_us": 15,
-      "p95_us": 15,
-      "p99_us": 15,
+      "p50_us": 9,
+      "p95_us": 9,
+      "p99_us": 9,
       "sample_count": 1,
-      "service_total_us": 5,
-      "total_us": 15
+      "service_total_us": 3,
+      "total_us": 9
     },
     {
       "calls": 3,
       "commit_total_us": 0,
       "errors": 0,
-      "lock_wait_total_us": 1,
-      "max_us": 19,
-      "mean_us": 12.333333333333334,
+      "lock_wait_total_us": 0,
+      "max_us": 5,
+      "mean_us": 4.666666666666667,
       "operation": "fuse.open",
-      "p50_us": 10,
-      "p95_us": 19,
-      "p99_us": 19,
+      "p50_us": 5,
+      "p95_us": 5,
+      "p99_us": 5,
       "sample_count": 3,
-      "service_total_us": 11,
-      "total_us": 37
+      "service_total_us": 5,
+      "total_us": 14
     },
     {
       "calls": 2,
       "commit_total_us": 0,
       "errors": 0,
       "lock_wait_total_us": 0,
-      "max_us": 159,
-      "mean_us": 84.5,
+      "max_us": 92,
+      "mean_us": 49.5,
       "operation": "fuse.read",
-      "p50_us": 10,
-      "p95_us": 159,
-      "p99_us": 159,
+      "p50_us": 7,
+      "p95_us": 92,
+      "p99_us": 92,
       "sample_count": 2,
-      "service_total_us": 156,
-      "total_us": 169
+      "service_total_us": 90,
+      "total_us": 99
     },
     {
       "calls": 4,
       "commit_total_us": 0,
       "errors": 0,
-      "lock_wait_total_us": 1,
-      "max_us": 14,
-      "mean_us": 13.5,
+      "lock_wait_total_us": 0,
+      "max_us": 7,
+      "mean_us": 6.75,
       "operation": "fuse.release",
-      "p50_us": 13,
-      "p95_us": 14,
-      "p99_us": 14,
+      "p50_us": 7,
+      "p95_us": 7,
+      "p99_us": 7,
       "sample_count": 4,
-      "service_total_us": 25,
-      "total_us": 54
+      "service_total_us": 14,
+      "total_us": 27
     },
     {
       "calls": 1,
       "commit_total_us": 0,
       "errors": 0,
-      "lock_wait_total_us": 1,
-      "max_us": 23,
-      "mean_us": 23.0,
+      "lock_wait_total_us": 0,
+      "max_us": 8,
+      "mean_us": 8.0,
       "operation": "fuse.setattr",
-      "p50_us": 23,
-      "p95_us": 23,
-      "p99_us": 23,
+      "p50_us": 8,
+      "p95_us": 8,
+      "p99_us": 8,
       "sample_count": 1,
-      "service_total_us": 11,
-      "total_us": 23
+      "service_total_us": 4,
+      "total_us": 8
     },
     {
       "calls": 2,
       "commit_total_us": 0,
       "errors": 0,
-      "lock_wait_total_us": 7,
-      "max_us": 62,
-      "mean_us": 57.0,
+      "lock_wait_total_us": 0,
+      "max_us": 36,
+      "mean_us": 30.5,
       "operation": "fuse.write",
-      "p50_us": 52,
-      "p95_us": 62,
-      "p99_us": 62,
+      "p50_us": 25,
+      "p95_us": 36,
+      "p99_us": 36,
       "sample_count": 2,
-      "service_total_us": 88,
-      "total_us": 114
+      "service_total_us": 54,
+      "total_us": 61
     },
     {
       "calls": 2,
-      "commit_total_us": 12127,
+      "commit_total_us": 12351,
       "errors": 0,
       "lock_wait_total_us": 0,
-      "max_us": 6152,
-      "mean_us": 6063.5,
+      "max_us": 6727,
+      "mean_us": 6175.5,
       "operation": "sync.commit",
-      "p50_us": 5975,
-      "p95_us": 6152,
-      "p99_us": 6152,
+      "p50_us": 5624,
+      "p95_us": 6727,
+      "p99_us": 6727,
       "sample_count": 2,
-      "service_total_us": 12127,
-      "total_us": 12127
+      "service_total_us": 12351,
+      "total_us": 12351
     }
   ],
   "percentile_scope": "most recent samples per operation; counters cover this mount",
@@ -158,20 +158,6 @@
   "slowest": [
     {
       "errno": null,
-      "operation": "sync.commit",
-      "path_bytes": null,
-      "path_display": null,
-      "pid": null,
-      "sequence": 1,
-      "timing": {
-        "commit_us": 6152,
-        "lock_wait_us": 0,
-        "service_us": 6152,
-        "total_us": 6152
-      }
-    },
-    {
-      "errno": null,
       "operation": "fuse.fsync",
       "path_bytes": [
         116,
@@ -182,13 +168,13 @@
         103
       ],
       "path_display": "timing",
-      "pid": 1119,
+      "pid": 1012,
       "sequence": 9,
       "timing": {
-        "commit_us": 5975,
-        "lock_wait_us": 1,
-        "service_us": 6067,
-        "total_us": 6074
+        "commit_us": 6727,
+        "lock_wait_us": 0,
+        "service_us": 6780,
+        "total_us": 6784
       }
     },
     {
@@ -196,13 +182,27 @@
       "operation": "sync.commit",
       "path_bytes": null,
       "path_display": null,
-      "pid": 1119,
+      "pid": 1012,
       "sequence": 8,
       "timing": {
-        "commit_us": 5975,
+        "commit_us": 6727,
         "lock_wait_us": 0,
-        "service_us": 5975,
-        "total_us": 5975
+        "service_us": 6727,
+        "total_us": 6727
+      }
+    },
+    {
+      "errno": null,
+      "operation": "sync.commit",
+      "path_bytes": null,
+      "path_display": null,
+      "pid": null,
+      "sequence": 1,
+      "timing": {
+        "commit_us": 5624,
+        "lock_wait_us": 0,
+        "service_us": 5624,
+        "total_us": 5624
       }
     },
     {
@@ -217,13 +217,34 @@
         103
       ],
       "path_display": "timing",
-      "pid": 1119,
+      "pid": 1012,
       "sequence": 13,
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
-        "service_us": 153,
-        "total_us": 159
+        "service_us": 88,
+        "total_us": 92
+      }
+    },
+    {
+      "errno": null,
+      "operation": "fuse.write",
+      "path_bytes": [
+        116,
+        105,
+        109,
+        105,
+        110,
+        103
+      ],
+      "path_display": "timing",
+      "pid": 1012,
+      "sequence": 4,
+      "timing": {
+        "commit_us": 0,
+        "lock_wait_us": 0,
+        "service_us": 32,
+        "total_us": 36
       }
     },
     {
@@ -238,13 +259,13 @@
         103
       ],
       "path_display": "timing",
-      "pid": 1119,
+      "pid": 1012,
       "sequence": 3,
       "timing": {
         "commit_us": 0,
-        "lock_wait_us": 1,
-        "service_us": 44,
-        "total_us": 108
+        "lock_wait_us": 0,
+        "service_us": 25,
+        "total_us": 31
       }
     },
     {
@@ -259,34 +280,13 @@
         103
       ],
       "path_display": "timing",
-      "pid": 1119,
-      "sequence": 4,
-      "timing": {
-        "commit_us": 0,
-        "lock_wait_us": 7,
-        "service_us": 42,
-        "total_us": 62
-      }
-    },
-    {
-      "errno": null,
-      "operation": "fuse.write",
-      "path_bytes": [
-        116,
-        105,
-        109,
-        105,
-        110,
-        103
-      ],
-      "path_display": "timing",
-      "pid": 1119,
+      "pid": 1012,
       "sequence": 19,
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
-        "service_us": 46,
-        "total_us": 52
+        "service_us": 22,
+        "total_us": 25
       }
     },
     {
@@ -301,55 +301,13 @@
         103
       ],
       "path_display": "timing",
-      "pid": 1119,
+      "pid": 1012,
       "sequence": 10,
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
-        "service_us": 3,
-        "total_us": 28
-      }
-    },
-    {
-      "errno": null,
-      "operation": "fuse.setattr",
-      "path_bytes": [
-        116,
-        105,
-        109,
-        105,
-        110,
-        103
-      ],
-      "path_display": "timing",
-      "pid": 1119,
-      "sequence": 18,
-      "timing": {
-        "commit_us": 0,
-        "lock_wait_us": 1,
-        "service_us": 11,
-        "total_us": 23
-      }
-    },
-    {
-      "errno": null,
-      "operation": "fuse.open",
-      "path_bytes": [
-        116,
-        105,
-        109,
-        105,
-        110,
-        103
-      ],
-      "path_display": "timing",
-      "pid": 1119,
-      "sequence": 17,
-      "timing": {
-        "commit_us": 0,
-        "lock_wait_us": 1,
-        "service_us": 4,
-        "total_us": 19
+        "service_us": 1,
+        "total_us": 13
       }
     },
     {
@@ -364,18 +322,18 @@
         103
       ],
       "path_display": "timing",
-      "pid": 1119,
+      "pid": 1012,
       "sequence": 2,
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
-        "service_us": 5,
-        "total_us": 15
+        "service_us": 3,
+        "total_us": 9
       }
     },
     {
       "errno": null,
-      "operation": "fuse.release",
+      "operation": "fuse.setattr",
       "path_bytes": [
         116,
         105,
@@ -385,55 +343,13 @@
         103
       ],
       "path_display": "timing",
-      "pid": 0,
-      "sequence": 11,
-      "timing": {
-        "commit_us": 0,
-        "lock_wait_us": 1,
-        "service_us": 7,
-        "total_us": 14
-      }
-    },
-    {
-      "errno": null,
-      "operation": "fuse.release",
-      "path_bytes": [
-        116,
-        105,
-        109,
-        105,
-        110,
-        103
-      ],
-      "path_display": "timing",
-      "pid": 0,
-      "sequence": 16,
+      "pid": 1012,
+      "sequence": 18,
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
         "service_us": 4,
-        "total_us": 14
-      }
-    },
-    {
-      "errno": null,
-      "operation": "fuse.flush",
-      "path_bytes": [
-        116,
-        105,
-        109,
-        105,
-        110,
-        103
-      ],
-      "path_display": "timing",
-      "pid": 1119,
-      "sequence": 5,
-      "timing": {
-        "commit_us": 0,
-        "lock_wait_us": 0,
-        "service_us": 2,
-        "total_us": 13
+        "total_us": 8
       }
     },
     {
@@ -453,8 +369,71 @@
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
-        "service_us": 7,
-        "total_us": 13
+        "service_us": 4,
+        "total_us": 7
+      }
+    },
+    {
+      "errno": null,
+      "operation": "fuse.release",
+      "path_bytes": [
+        116,
+        105,
+        109,
+        105,
+        110,
+        103
+      ],
+      "path_display": "timing",
+      "pid": 0,
+      "sequence": 11,
+      "timing": {
+        "commit_us": 0,
+        "lock_wait_us": 0,
+        "service_us": 4,
+        "total_us": 7
+      }
+    },
+    {
+      "errno": null,
+      "operation": "fuse.read",
+      "path_bytes": [
+        116,
+        105,
+        109,
+        105,
+        110,
+        103
+      ],
+      "path_display": "timing",
+      "pid": 1012,
+      "sequence": 14,
+      "timing": {
+        "commit_us": 0,
+        "lock_wait_us": 0,
+        "service_us": 2,
+        "total_us": 7
+      }
+    },
+    {
+      "errno": null,
+      "operation": "fuse.release",
+      "path_bytes": [
+        116,
+        105,
+        109,
+        105,
+        110,
+        103
+      ],
+      "path_display": "timing",
+      "pid": 0,
+      "sequence": 16,
+      "timing": {
+        "commit_us": 0,
+        "lock_wait_us": 0,
+        "service_us": 3,
+        "total_us": 7
       }
     },
     {
@@ -474,8 +453,8 @@
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
-        "service_us": 7,
-        "total_us": 13
+        "service_us": 3,
+        "total_us": 6
       }
     },
     {
@@ -490,34 +469,13 @@
         103
       ],
       "path_display": "timing",
-      "pid": 1119,
+      "pid": 1012,
       "sequence": 12,
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
-        "service_us": 4,
-        "total_us": 10
-      }
-    },
-    {
-      "errno": null,
-      "operation": "fuse.read",
-      "path_bytes": [
-        116,
-        105,
-        109,
-        105,
-        110,
-        103
-      ],
-      "path_display": "timing",
-      "pid": 1119,
-      "sequence": 14,
-      "timing": {
-        "commit_us": 0,
-        "lock_wait_us": 0,
-        "service_us": 3,
-        "total_us": 10
+        "service_us": 2,
+        "total_us": 5
       }
     },
     {
@@ -532,13 +490,13 @@
         103
       ],
       "path_display": "timing",
-      "pid": 1119,
-      "sequence": 7,
+      "pid": 1012,
+      "sequence": 17,
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
-        "service_us": 3,
-        "total_us": 8
+        "service_us": 2,
+        "total_us": 5
       }
     },
     {
@@ -553,13 +511,55 @@
         103
       ],
       "path_display": "timing",
-      "pid": 1119,
-      "sequence": 20,
+      "pid": 1012,
+      "sequence": 5,
       "timing": {
         "commit_us": 0,
         "lock_wait_us": 0,
         "service_us": 0,
-        "total_us": 7
+        "total_us": 4
+      }
+    },
+    {
+      "errno": null,
+      "operation": "fuse.open",
+      "path_bytes": [
+        116,
+        105,
+        109,
+        105,
+        110,
+        103
+      ],
+      "path_display": "timing",
+      "pid": 1012,
+      "sequence": 7,
+      "timing": {
+        "commit_us": 0,
+        "lock_wait_us": 0,
+        "service_us": 1,
+        "total_us": 4
+      }
+    },
+    {
+      "errno": null,
+      "operation": "fuse.flush",
+      "path_bytes": [
+        116,
+        105,
+        109,
+        105,
+        110,
+        103
+      ],
+      "path_display": "timing",
+      "pid": 1012,
+      "sequence": 15,
+      "timing": {
+        "commit_us": 0,
+        "lock_wait_us": 0,
+        "service_us": 0,
+        "total_us": 4
       }
     }
   ],
