@@ -1,0 +1,10 @@
+PASS 01: running summaries are durably published repeatedly without sealing the capture session
+PASS 02: submitted input remains byte-exact and read-only after live overwrite, truncate and deletion
+PASS 03: daemon and runner SIGKILL retain the last on-disk summary and pinned input; recovery preserves unknown gaps and exit status
+PASS 04: runner-only interruption recovers live observations without inventing command termination results
+PASS 05: success, command failure and cancellation retain distinct observed outcomes; cancellation during input commit never releases the command
+PASS 06: daemon-only crash makes the runner fail explicitly while preserving its last persisted evidence
+PASS 07: blobs/nodes/metadata transaction failures preserve the old commit, never release the exec gate, and permit explicit retry
+PASS 08: report-plus-backup migration preserves checkpoint input SHA256; corrupt backups and existing targets are refused
+PASS 09: reused names cannot impersonate original input versions or seal another session; verification also detects unread tree changes
+PASS 10: memory-mode reports explicitly declare non-persistent input and remount does not pretend to retain it

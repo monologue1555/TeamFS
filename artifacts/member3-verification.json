@@ -1,0 +1,63 @@
+{
+  "verified_date_local": "2026-10-16",
+  "branch": "codex/member3-recovery",
+  "base_commit": "544ff2c92be72090ae709845eb63b13c24d8c832",
+  "working_tree_modified": true,
+  "command": "bash scripts/check.sh",
+  "exit_code": 0,
+  "environment": {
+    "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "rustc": "1.93.1",
+    "cargo": "1.93.1",
+    "libfuse": "2.9.9",
+    "uid": 1000,
+    "container": "Ubuntu 26.04 with init and /dev/fuse"
+  },
+  "results": {
+    "unit_tests_pass": 27,
+    "member3_mounted_groups_pass": 10,
+    "existing_experiment_groups_pass": 12,
+    "block_storage_groups_pass": 9,
+    "compatibility_pass": 19,
+    "compatibility_unsupported": 7,
+    "random_groups_pass": 6,
+    "random_operations": 1080,
+    "additional_self_review_pass": 4
+  },
+  "source_files_sha256": {
+    "src/audit.rs": "36436b2f3c7311c57c7363fe302c2ac69b54b662184c4debec95ed126e179042",
+    "src/autosync.rs": "2b619d999b13e2662d0df1fbeb078d3e02ce5ca4a2f4f5c9e083ab88936bcf80",
+    "src/backup.rs": "d34caf06566dfe80a2e2df22dcb7010ed6fe70d20e4cbc702ba29ca68008b121",
+    "src/content.rs": "cb1a3d963f220d2ce84e5143b06e591156b6665cae516a3c36d147787cbd4845",
+    "src/diagnostics.rs": "875e79ddd8b671ac6964c3acf4c953e2f74c7eb7954a46f41a34b4e94f6ee7e5",
+    "src/experiment.rs": "d1aa08e2d9af01d59a3e0c0de61feb0f6a09a94d79277ce49c0f803ebf19a7c9",
+    "src/filesystem.rs": "b51a21fdcdbe55a1af9fa7aa632844c26d0776b0c7ca9cfb5b7351277b27ccdb",
+    "src/history.rs": "2b4383c706bf5b0ee4a93baaf3f371f25a59f829cfa0884a3508264bb6e3b86a",
+    "src/main.rs": "f1dafb4624bf6e101fe16274707b643326a7a0c69ede2f074439825bba415b83",
+    "src/metrics.rs": "f2d3356747271663c31569b87c0d32aeb26e4b1e5f048246b80945923d2b48c2",
+    "src/model.rs": "babd01839773c4ff8e0df0435cc6c338e5a84e2f0f874e3f413f81dbbc798e1e",
+    "src/service.rs": "4912f1639ce832534a6baa2ffb8ff553ee28a10ffaa5ce9612ffbe08b9f8ca4c",
+    "src/store.rs": "9639f1e8ebf894396981e77afc758a7cd0259f4b9909a3de6fae64971a8c2803",
+    "Cargo.toml": "b45abacdf123522b3bb2bbcba04faff605685a6557d830ad4ca064ae0af0a8c7",
+    "Cargo.lock": "cebe406784eabcf288c16527844ca4a44011812a616495c9d253172b91e94078",
+    "tests/member3.py": "11285151c76abe787498be0d72f3e90e475cd0ce907c3c1f6c580a679df4a54c",
+    "scripts/test-member3.sh": "db3c527c163dd1d2e5a842d29a937524b78dcecbd6b4a0cc17160b278344bcde",
+    "scripts/check.sh": "b53cd0f14a16be7b7546026e364a0492e7e146122a8a02958b6e73f948067f9a"
+  },
+  "evidence_sha256": {
+    "artifacts/member3-acceptance.json": "a4e07c9479c02d772f3c2ebe565462a0387a2843e0612f9abf96331364c88b7a",
+    "artifacts/member3-full-check.txt": "0eb47352adb8e96ff85b3ced54ee988839d020243b6c2cd287c578ccc95a5f2d",
+    "artifacts/member3-self-review.txt": "555066eb15c8a528c20613cdf045017c999444327c68039c180abd450375b7b5"
+  },
+  "limitations": [
+    "Rust 1.75 and remote CI were not executed in this local verification.",
+    "Unsupported compatibility cases are not counted as passed.",
+    "Only the final saved summary survives daemon loss; observations after it remain unknown."
+  ],
+  "verified_at": "2026-10-16T15:36:41+0000",
+  "self_review_fixes": [
+    "Compare immutable input tree contents and metadata, not reusable snapshot names; refuse substituted versions during recovery and verification.",
+    "Do not release the command gate after cancellation delivered while the initial input commit waits."
+  ],
+  "self_review_script_sha256": "d26bf585304ccf1b59fb72a2f5054a8cffe958e9f031ac5bbe3a2a0859eb5385"
+}

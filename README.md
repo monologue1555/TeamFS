@@ -6,6 +6,8 @@ TeamFS 使用原版 `fuse = 0.3.1`，在 Linux 用户空间处理普通文件操
 
 主线：一次科研程序运行，实际读取了哪些输入，使用的是哪一版，当前同名文件改变后能否取回旧输入并重放。新增 `experiment run/show/verify/replay/restore/delete/recover`，以固定只读快照运行命令，按独立进程组记录真实 FUSE 访问，导出命令、文件版本 SHA256、正文/仅打开/元数据访问、退出结果与中断状态。报告不依赖普通日志窗口。
 
+成员 3 补充：运行器在放行命令前及运行中约每秒原子保存采集摘要；daemon 重启后可通过 recover 保留最后摘要，未知尾部仍标记不完整，不补造退出码或读取记录。输入版本与报告需分别备份留存；memory 模式输入不跨重启保留。实现、保存时序、故障状态与迁移步骤见 [输入留存与中断恢复](docs/member3-recovery.md)，真实挂载验收入口为 `bash scripts/test-member3.sh`。
+
 ```bash
 bash scripts/demo-experiment.sh      # 隔离真实演示：原结果→改数据→旧输入重放→SHA256 一致
 bash scripts/test-experiments.sh     # 真实挂载验收

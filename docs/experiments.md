@@ -64,7 +64,9 @@ snapshot 名称固定一个不可变树，文件 SHA256 标识正文内容，路
 
 ## 留存、中断与边界
 
-报告保存在挂载点外，已成功建立的输入快照随存储同步持久化。运行期间采集状态在 daemon 内存中；daemon 异常退出丢失尚未导出的会话，不宣称追踪结果崩溃安全。报告先保存 prepared/running 状态，后续失败不会伪装成完整实验。
+报告保存在挂载点外，已成功建立的输入快照随存储同步持久化。运行期间完整采集会话在 daemon 内存中；运行器在放行命令前保存初始摘要，随后约每秒请求一次非结束式摘要，通过临时文件、文件 fsync、rename 和目录 fsync 更新 manifest.json。摘要包含当时已观察的输入 SHA256、分类、访问计数和错误，设置 capture_complete=false，不会结束采集，也不触发业务树同步。实际间隔还受哈希、服务锁和报告磁盘耗时影响，不是严格一秒无损日志。
+
+daemon 或运行器崩溃后，最后一次成功发布的摘要仍在外部报告中；摘要之后尚未保存的访问不能恢复。checkpoint_sequence、checkpoint_unix 和 capture_source 标识证据截至何处；恢复后的 unknown_after_checkpoint=true 明确表示存在未知尾部。不会补造缺失读取、退出码或信号。初始摘要也可能尚无正文输入，不能把它当作完整清单。报告保存失败会中止实验并报告错误，保留最后已成功保存的版本，而非静默继续采集。
 
 运行器被 SIGKILL 后，主命令通过 Linux parent-death signal 终止；普通子进程并不因此全部保证终止。它们如仍在原组内，daemon 继续观察，但 recover 必须等该组已不再运行。留在系统外、主动离开进程组的进程不在追踪保证内。
 
@@ -74,7 +76,9 @@ snapshot 名称固定一个不可变树，文件 SHA256 标识正文内容，路
 "$TEAMFS" experiment recover "$MOUNT" analysis-01 "$HOME/analysis-01-report"
 ```
 
-它明确输出 interrupted、不完整报告，不补造未知退出码。若 daemon 已重启，运行计数不能恢复，但已提交输入仍可通过 experiment restore 取回。
+原 daemon 仍在时，它必须确认进程组已经结束，再取回现存记录。若 daemon 已重启，则保留最后已保存摘要，输出 daemon_interrupted 和不完整状态；不会用相同名称的新会话替换旧记录。若没有有效摘要，明确拒绝恢复采集，仅可尝试用 experiment restore 取回已提交输入。input_version_available 表示当前挂载中是否仍有对应版本，memory 重启或版本已清理时为 false。恢复后的不完整报告始终不能通过 verify 或自动 replay。
+
+phase 保留 prepared/running/finished/failed/interrupted 的兼容字段；新增 outcome 区分 succeeded、program_failed、cancelled、start_failed、capture_failed、daemon_unavailable、runner_interrupted 与 daemon_interrupted。capture_complete 表示观测是否完整收尾，不代表命令成功：非零退出与取消仍可完整保存实际观测。daemon_unavailable 只表示原服务不可用，不据此判断硬件故障或进程崩溃原因。详见 [成员 3 保存与恢复说明](member3-recovery.md)。
 
 实验快照不能用普通 snapshot delete 删除，防止误删报告对应版本；完成或显式 recover 后，可用 `experiment delete <挂载点> <名称>` 清理。该操作提交删除结果，外部报告保留，但以后不能从此存储恢复该输入版本。使用原有快照条数与逻辑容量规则，没有新增实验配额。memory 模式只能教学体验，重挂载后输入版本丢失，报告明确标注。
 
@@ -86,6 +90,7 @@ verify 对报告中的文件 SHA256 与对应快照重新比较，不执行实�
 
 ```bash
 bash scripts/test-experiments.sh
+bash scripts/test-member3.sh
 bash scripts/check.sh
 ```
 

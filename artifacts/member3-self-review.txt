@@ -1,0 +1,4 @@
+PASS: cancellation before input commit does not execute the command and is recorded as cancellation
+PASS: checkpoint publication failure stops the run, preserves the previous report, and supports explicit incomplete recovery
+PASS: recovery refuses to seal an experiment process group that is still active
+PASS: reusing a deleted experiment name cannot be mistaken for retaining the old input version
