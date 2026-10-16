@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "measured_at": "2026-10-15T13:04:45+0800",
+  "measured_at": "2026-10-15T23:17:27+0800",
   "suite": "v6-acceptance",
   "completed": true,
   "environment": {
-    "kernel": "6.6.114.1-microsoft-standard-WSL2",
-    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
     "python": "3.12.3",
     "uid": 1000
   },
@@ -17,25 +17,25 @@
     {
       "name": "phase metrics, frozen reads, read-only and no self-observation",
       "status": "pass",
-      "seconds": 0.2651055570000054,
+      "seconds": 0.19291480399999728,
       "detail": null
     },
     {
       "name": "busy store rejection and environment/mount diagnostics",
       "status": "pass",
-      "seconds": 0.3420732879999946,
+      "seconds": 0.004257111999997676,
       "detail": null
     },
     {
       "name": "offline integrity, corrupt/unknown/missing-reference refusal, no data mutation",
       "status": "pass",
-      "seconds": 0.10279370900000373,
+      "seconds": 0.11282961899999933,
       "detail": null
     },
     {
       "name": "transaction fault blobs / sync",
       "status": "pass",
-      "seconds": 0.2758976209999986,
+      "seconds": 0.275048604000002,
       "detail": {
         "failure_point": "blobs",
         "command": "sync",
@@ -46,7 +46,7 @@
     {
       "name": "transaction fault blobs / snapshot",
       "status": "pass",
-      "seconds": 0.2704857979999957,
+      "seconds": 0.27391493300000036,
       "detail": {
         "failure_point": "blobs",
         "command": "snapshot",
@@ -57,7 +57,7 @@
     {
       "name": "transaction fault blobs / purge",
       "status": "pass",
-      "seconds": 0.2728627709999998,
+      "seconds": 0.33145220599999803,
       "detail": {
         "failure_point": "blobs",
         "command": "purge",
@@ -68,7 +68,7 @@
     {
       "name": "transaction fault nodes / sync",
       "status": "pass",
-      "seconds": 0.2754412900000034,
+      "seconds": 0.32842121499999877,
       "detail": {
         "failure_point": "nodes",
         "command": "sync",
@@ -79,7 +79,7 @@
     {
       "name": "transaction fault nodes / snapshot",
       "status": "pass",
-      "seconds": 0.38159203500000416,
+      "seconds": 0.2781982599999999,
       "detail": {
         "failure_point": "nodes",
         "command": "snapshot",
@@ -90,7 +90,7 @@
     {
       "name": "transaction fault nodes / purge",
       "status": "pass",
-      "seconds": 0.2752277100000029,
+      "seconds": 0.27656788200000193,
       "detail": {
         "failure_point": "nodes",
         "command": "purge",
@@ -101,7 +101,7 @@
     {
       "name": "transaction fault metadata / sync",
       "status": "pass",
-      "seconds": 0.263963497000006,
+      "seconds": 0.2703924329999978,
       "detail": {
         "failure_point": "metadata",
         "command": "sync",
@@ -112,7 +112,7 @@
     {
       "name": "transaction fault metadata / snapshot",
       "status": "pass",
-      "seconds": 0.27207661599999966,
+      "seconds": 0.2733850259999997,
       "detail": {
         "failure_point": "metadata",
         "command": "snapshot",
@@ -123,7 +123,7 @@
     {
       "name": "transaction fault metadata / purge",
       "status": "pass",
-      "seconds": 0.27436498099999795,
+      "seconds": 0.28912300400000035,
       "detail": {
         "failure_point": "metadata",
         "command": "purge",
@@ -134,24 +134,24 @@
     {
       "name": "SQLite writer contention waits, timeout retains dirty and retry saves",
       "status": "pass",
-      "seconds": 2.915143213999997,
+      "seconds": 2.926142286000001,
       "detail": [
         {
           "writer_lock_seconds": 0.2,
           "sync_succeeded": true,
-          "seconds_including_release_wait": 0.24282214099999777
+          "seconds_including_release_wait": 0.25240574200000054
         },
         {
           "writer_lock_seconds": 2.5,
           "sync_succeeded": false,
-          "seconds_including_release_wait": 2.5003783189999993
+          "seconds_including_release_wait": 2.500367208
         }
       ]
     },
     {
       "name": "120 lifecycle rounds: open/unlink/purge/close and retired-content reclamation",
       "status": "pass",
-      "seconds": 4.042727118000002,
+      "seconds": 4.109500797999999,
       "detail": {
         "iterations": 120,
         "samples": [

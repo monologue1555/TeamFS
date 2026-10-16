@@ -1,6 +1,6 @@
 {
-  "measured_at": "2026-10-15T13:06:01+0800",
-  "kernel": "6.6.114.1-microsoft-standard-WSL2",
+  "measured_at": "2026-10-15T23:18:31+0800",
+  "kernel": "6.18.33.2-microsoft-standard-WSL2",
   "build": "debug",
   "version": "0.8.0",
   "block_bytes": 65536,
@@ -11,24 +11,24 @@
       "new_payload_bytes": 65536,
       "new_blocks": 1,
       "shared_blocks": 255,
-      "write_ms": 0.7679550000005975,
-      "sync_cli_ms": 27.19040700000619
+      "write_ms": 0.47514899999612226,
+      "sync_cli_ms": 22.164845999995464
     },
     {
       "changed_bytes": 4096,
       "new_payload_bytes": 65536,
       "new_blocks": 1,
       "shared_blocks": 255,
-      "write_ms": 0.564104999995152,
-      "sync_cli_ms": 20.20072399999151
+      "write_ms": 0.5251150000020743,
+      "sync_cli_ms": 17.135992999996574
     },
     {
       "changed_bytes": 4096,
       "new_payload_bytes": 65536,
       "new_blocks": 1,
       "shared_blocks": 255,
-      "write_ms": 0.5165930000003982,
-      "sync_cli_ms": 20.86273899999469
+      "write_ms": 0.4079959999927496,
+      "sync_cli_ms": 17.494896000002313
     }
   ],
   "recovered_sha256": "b770579606fa38c4d266f246ac3078899556f1187de336b325c29762837c4479",

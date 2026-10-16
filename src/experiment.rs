@@ -96,6 +96,14 @@ pub struct Access {
     pub read_calls: u64,
     pub read_bytes: u64,
 }
+/// Content requests from the group on mount files outside its pinned snapshot.
+#[derive(Default)]
+pub struct Unpinned {
+    pub operations: BTreeMap<String, u64>,
+    pub read_bytes: u64,
+}
+/// Distinct process IDs kept for requests from other process groups; the count stays exact.
+pub const OTHER_GROUP_PIDS: usize = 16;
 pub struct Session {
     pub snapshot: String,
     pub pgid: u32,
@@ -103,6 +111,12 @@ pub struct Session {
     pub accesses: BTreeMap<usize, Access>,
     pub errors: BTreeMap<(Vec<u8>, String, i32), u64>,
     pub unpinned_accesses: u64,
+    /// Keyed by location (business/snapshot/trash) and the path at access time, if any.
+    pub unpinned: BTreeMap<(&'static str, Option<Vec<u8>>), Unpinned>,
+    /// Pinned snapshot content requested by processes outside the group; never attributed.
+    pub other_group_accesses: u64,
+    pub other_group_pids: BTreeSet<u32>,
+    threads: std::collections::HashMap<u32, u32>,
     pub finished: Option<Value>,
 }
 impl Session {
@@ -114,9 +128,29 @@ impl Session {
             accesses: BTreeMap::new(),
             errors: BTreeMap::new(),
             unpinned_accesses: 0,
+            unpinned: BTreeMap::new(),
+            other_group_accesses: 0,
+            other_group_pids: BTreeSet::new(),
+            threads: std::collections::HashMap::new(),
             finished: None,
         }
     }
+    /// Process ID of a calling thread, cached for the session's lifetime.
+    pub fn process(&mut self, tid: u32) -> u32 {
+        *self.threads.entry(tid).or_insert_with(|| process_id(tid))
+    }
+}
+/// FUSE request headers carry the calling thread ID; map it to its thread group (process).
+/// Falls back to the given ID when /proc no longer has the task.
+pub fn process_id(tid: u32) -> u32 {
+    std::fs::read_to_string(format!("/proc/{tid}/status"))
+        .ok()
+        .and_then(|status| {
+            status
+                .lines()
+                .find_map(|line| line.strip_prefix("Tgid:")?.trim().parse().ok())
+        })
+        .unwrap_or(tid)
 }
 pub fn digest(node: &SavedNode) -> FsResult<String> {
     let mut hash = Sha256::new();
@@ -154,9 +188,7 @@ fn request(mount: &OsStr, command: crate::service::Command) -> Result<Value, Str
     control
         .write_all(&serde_json::to_vec(&command).map_err(|e| e.to_string())?)
         .map_err(|e| e.to_string())?;
-    control
-        .sync_all()
-        .map_err(|e| format!("实验管理请求失败：{e}"))?;
+    control.sync_all().map_err(|e| management_error(&e))?;
     control
         .seek(SeekFrom::Start(0))
         .map_err(|e| e.to_string())?;
@@ -167,6 +199,86 @@ fn request(mount: &OsStr, command: crate::service::Command) -> Result<Value, Str
     } else {
         serde_json::from_slice(&bytes).map_err(|e| e.to_string())
     }
+}
+/// errno from the control request, with the experiment-specific reason it usually means.
+fn management_error(error: &std::io::Error) -> String {
+    let hint = match error.raw_os_error() {
+        Some(libc::ENOSPC) => format!(
+            "；快照条数（含实验输入，最多 {} 个）或历史内容（最多 {} MiB）已满，请先用 experiment delete 清理不再需要的实验输入",
+            crate::store::MAX_SNAPSHOTS,
+            crate::store::SNAPSHOT_CAPACITY / (1024 * 1024)
+        ),
+        Some(libc::EEXIST) => "；同名实验输入快照已存在，请换一个实验名称".into(),
+        Some(libc::EBUSY) => "；该实验或进程组仍在采集中".into(),
+        Some(libc::ENOENT) => "；挂载中没有这个实验的输入快照或采集会话".into(),
+        Some(libc::EIO) => "；后端保存失败，请查看 .teamfs/status.json 的 last_sync_error".into(),
+        _ => String::new(),
+    };
+    format!("实验管理请求失败：{error}{hint}")
+}
+/// Capture conditions that limit what the report may be used for, in plain language.
+/// Unpinned and escaping-link reads block verify/replay; other-group requests are a notice.
+fn capture_warnings(capture: &Value) -> Vec<(bool, String)> {
+    let mut warnings = Vec::new();
+    let count = |key: &str| capture[key].as_u64().unwrap_or(0);
+    if count("unpinned_mount_accesses") > 0 {
+        let files: Vec<String> = capture["unpinned_mount_files"]
+            .as_array()
+            .map(|rows| {
+                rows.iter()
+                    .map(|row| {
+                        format!(
+                            "{}:{}",
+                            row["location"].as_str().unwrap_or("?"),
+                            row["path_display"].as_str().unwrap_or("<已不在原路径>")
+                        )
+                    })
+                    .collect()
+            })
+            .unwrap_or_default();
+        warnings.push((
+            true,
+            format!(
+                "打开或读取了 {} 次本实验输入快照之外的挂载内文件{}；这些内容没有固定",
+                count("unpinned_mount_accesses"),
+                if files.is_empty() {
+                    String::new()
+                } else {
+                    format!("（{}）", files.join("，"))
+                }
+            ),
+        ));
+    }
+    if count("external_link_accesses") > 0 {
+        let links: Vec<&str> = capture["metadata_accesses"]
+            .as_array()
+            .map(|rows| {
+                rows.iter()
+                    .filter(|row| row["link_may_escape_input"] == true)
+                    .filter_map(|row| row["path_display"].as_str())
+                    .collect()
+            })
+            .unwrap_or_default();
+        warnings.push((
+            true,
+            format!(
+                "经由可能离开输入目录的软链接访问 {} 次（{}）；链接目标没有固定",
+                count("external_link_accesses"),
+                links.join("，")
+            ),
+        ));
+    }
+    if count("other_group_snapshot_accesses") > 0 {
+        warnings.push((
+            false,
+            format!(
+                "运行期间有本进程组之外的进程打开或读取同一输入快照 {} 次（进程 {}），未计入本实验；若其中有离开进程组的实验进程，本次采集不完整",
+                count("other_group_snapshot_accesses"),
+                capture["other_group_pids"]
+            ),
+        ));
+    }
+    warnings
 }
 fn save_report(dir: &Path, report: &Value) -> Result<(), String> {
     let temporary = dir.join(format!(
@@ -415,7 +527,7 @@ fn run(
         "command_bytes":command.iter().map(|s|s.as_bytes()).collect::<Vec<_>>(),
         "command_display":command.iter().map(|s|crate::history::display_path(s.as_bytes())).collect::<Vec<_>>(),
         "input_directory_bytes":input.as_os_str().as_bytes(),"output_directory_bytes":output.as_os_str().as_bytes(),
-        "scope":"Pinned TeamFS snapshot and this process group only. External files, network inputs, software environment and processes leaving the group are not tracked. FUSE read bytes do not prove algorithmic use; metadata-only and opened-only accesses are separate. Snapshot files use direct I/O; mmap is unsupported."});
+        "scope":"Pinned TeamFS snapshot and this process group only. External files, network inputs, software environment and processes leaving the group are not tracked. FUSE read bytes do not prove algorithmic use; metadata-only and opened-only accesses are separate. Requests the kernel rejects or serves from its caches never reach FUSE. Snapshot files use direct I/O: shared mmap is unsupported, private read-only mappings are read through the page cache at readahead granularity."});
     save_report(&output, &report)?;
     if state["mode"] == "memory" {
         eprintln!("memory 模式：摘要可保留在外部报告中，但输入版本不会跨 daemon 重启保留。");
@@ -580,6 +692,9 @@ fn run(
         output.join("manifest.json").display(),
         input.display()
     );
+    for (_, warning) in capture_warnings(&report["capture"]) {
+        eprintln!("警告：{warning}");
+    }
     if !status.success() {
         std::process::exit(status.code().unwrap_or(128 + status.signal().unwrap_or(1)));
     }
@@ -610,19 +725,19 @@ fn verify(mount: &OsStr, dir: &Path) -> Result<(), String> {
         .as_u64()
         .unwrap_or(0)
         > 0
+        || report["capture"]["external_link_accesses"]
+            .as_u64()
+            .unwrap_or(0)
+            > 0
     {
-        return Err(
-            "存在对本实验输入快照之外文件的访问；不能作为全部挂载内输入已固定的实验重放".into(),
-        );
-    }
-    if report["capture"]["external_link_accesses"]
-        .as_u64()
-        .unwrap_or(0)
-        > 0
-    {
-        return Err(
-            "报告涉及可能离开固定输入目录的软链接；不能将外部目标作为已固定输入验证或重放".into(),
-        );
+        let reasons: Vec<String> = capture_warnings(&report["capture"])
+            .into_iter()
+            .filter_map(|(blocking, warning)| blocking.then_some(warning))
+            .collect();
+        return Err(format!(
+            "{}；不能作为全部挂载内输入已固定的实验验证或重放",
+            reasons.join("；")
+        ));
     }
     let name = report["experiment"].as_str().unwrap();
     let snapshot = snapshot_name(name).map_err(|_| "无效实验名称")?;
@@ -668,6 +783,9 @@ fn verify(mount: &OsStr, dir: &Path) -> Result<(), String> {
         }
     }
     println!("验证通过：{} 个文件与实验输入版本一致。", inputs.len());
+    for (_, notice) in capture_warnings(&report["capture"]) {
+        println!("注意：{notice}");
+    }
     Ok(())
 }
 
@@ -778,5 +896,37 @@ mod tests {
         assert!(check(escape));
         assert!(check(chain));
         assert!(check(a));
+    }
+    #[test]
+    fn thread_ids_resolve_to_their_process() {
+        let (tid_tx, tid_rx) = std::sync::mpsc::channel();
+        let (done_tx, done_rx) = std::sync::mpsc::channel::<()>();
+        let worker = std::thread::spawn(move || {
+            tid_tx
+                .send(unsafe { libc::syscall(libc::SYS_gettid) } as u32)
+                .unwrap();
+            let _ = done_rx.recv();
+        });
+        let tid = tid_rx.recv().unwrap();
+        assert_ne!(tid, std::process::id());
+        assert_eq!(process_id(tid), std::process::id());
+        assert_eq!(process_id(std::process::id()), std::process::id());
+        let mut session = Session::new("experiment.unit".into(), 1);
+        assert_eq!(session.process(tid), std::process::id());
+        done_tx.send(()).unwrap();
+        worker.join().unwrap();
+        // The cached answer survives the thread; an unknown task maps to itself.
+        assert_eq!(session.process(tid), std::process::id());
+        assert_eq!(process_id(u32::MAX), u32::MAX);
+    }
+    #[test]
+    fn warnings_separate_blocking_reasons_from_notices() {
+        let capture = json!({"unpinned_mount_accesses":2,"unpinned_mount_files":[{"location":"business","path_display":"数据.csv"}],
+            "external_link_accesses":0,"other_group_snapshot_accesses":3,"other_group_pids":[42]});
+        let warnings = capture_warnings(&capture);
+        assert_eq!(warnings.len(), 2);
+        assert!(warnings[0].0 && warnings[0].1.contains("business:数据.csv"));
+        assert!(!warnings[1].0 && warnings[1].1.contains("[42]"));
+        assert!(capture_warnings(&json!({})).is_empty());
     }
 }

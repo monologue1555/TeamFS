@@ -1,4 +1,4 @@
-TeamFS v0.4 real mounted acceptance 2026-10-15T13:04:27+0800
+TeamFS v0.4 real mounted acceptance 2026-10-15T23:17:11+0800
 PASS 01: directory preview and whole-tree restore preserve hierarchy, raw names, bytes, permissions and links
 PASS 02: conflicts and bad paths leave no partial tree; root excludes management data; unsynced restore rolls back on crash
 PASS 03: relative/dangling symlinks survive restart, snapshot and trash recovery without dereferencing targets

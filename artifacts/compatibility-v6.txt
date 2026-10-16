@@ -31,4 +31,4 @@ hardlink is explicitly unsupported, errno=1
 UNSUPPORTED: cached / xattr capability
 xattr is explicitly unsupported, errno=95
 PASS: cached / clean unmount
-RESULT {'pass': 19, 'unsupported': 7}; report: /mnt/d/PyProject/operating system/Teamwork/artifacts/compatibility-v6.json
+RESULT {'pass': 19, 'unsupported': 7}; report: /mnt/d/TeamFS/TeamFS/artifacts/compatibility-v6.json

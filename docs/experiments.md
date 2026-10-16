@@ -48,16 +48,18 @@ MOUNT="$HOME/teamfs-mount"
 1. 运行器先启动一个独立进程组的执行门控程序。用户命令尚未运行。
 2. 管理请求通过 `.teamfs/control` 创建并提交 `experiment.<名称>` 快照，再注册该进程组的采集会话。失败时不释放执行门，不运行用户命令。
 3. 释放执行门，命令在快照根目录运行。FUSE 回调在同一 Service 锁下，将同组访问聚合到专用会话；不使用会轮转或丢失的 audit ring/file。
-4. 请求按成功正文读取、仅打开文件、元数据访问和错误分类。记录原始路径字节、可读路径、inode 属性、调用 PID、操作次数及实际返回字节。目录项与缺失文件查询也能成为解释实验行为的证据。
+4. 请求分为正文读取、仅打开、属性查询、目录查询、读取软链接和错误。记录原始路径字节、可读路径、inode 属性、调用进程号（FUSE 给出的线程号换算为所属进程）、操作次数及实际返回字节。目录项与缺失文件查询也能成为解释实验行为的证据。完整的归属规则、分类条件和字段约定见 [访问记录流程与进程归属](access-recording.md)。
 5. 结束后对观察到的文件版本计算完整 SHA256，即使程序只读了局部。哈希过程不生成实验的正文读取次数。报告以临时文件 + fsync + rename + 目录 fsync 更新。
 
 `manifest.json` 同时保留原始命令参数字节、可读命令、版本、输入路径、过程状态、退出码/信号和 capture。
 
 - `capture.inputs`：成功打开或读取的普通文件。`content_read` 表示发生正文 read 请求；`opened_only` 不声称正文被使用。空文件可产生返回 0 字节的成功读取。
-- `capture.metadata_accesses`：只查属性、目录或链接等访问，不混入正文输入。
+- `capture.metadata_accesses`：只查属性、目录或链接等访问，不混入正文输入；每行的 `access_class` 为 `attribute_only`、`directory_listing` 或 `link_read`。
+- `capture.summary`：各访问类别的节点数、失败请求总数和参与进程。
 - `capture.errors`：固定快照上的失败访问及 errno，例如请求了缺失的配置文件。
-- `capture.unpinned_mount_accesses`：同组读取/打开可读的其他业务、快照或回收文件的次数；不静默声称这些输入已经固定。存在这些访问时 verify/replay 拒绝作为全部观察到的挂载内正文输入已固定的报告使用。
+- `capture.unpinned_mount_accesses`：同组读取/打开可读的其他业务、快照或回收文件的次数；`capture.unpinned_mount_files` 按位置（business / snapshot / trash）和访问时路径逐个列出。不静默声称这些输入已经固定。存在这些访问时 verify/replay 拒绝作为全部观察到的挂载内正文输入已固定的报告使用，并在错误信息中列出路径。
 - `capture.external_link_accesses`：读取了可能离开固定输入树的软链接。报告保留链接目标，基于快照树解析相对路径和中间链接；绝对链接以及无法可靠解析的循环不会被认证为固定输入，verify/replay 明确拒绝。
+- `capture.other_group_snapshot_accesses` / `other_group_pids`：运行期间本进程组之外的进程打开或读取同一固定快照的次数及进程号，不计入输入。主动离开进程组的实验进程会以这种方式显现，run 结束时给出警告。
 - `capture_complete`：本次会话采集是否正常完成，不代表算法成功，也不代表程序的全部外部依赖已经被捕获；必须同时看 phase、exit_code、signal、cancelled 和 scope。
 
 snapshot 名称固定一个不可变树，文件 SHA256 标识正文内容，路径字节避免非 UTF-8 或控制字符名称混淆。replay 复制原输入树到一个新的实验快照，复用原命令；当前业务状态仍按原同步规则一并保存，内容块可共享。
@@ -82,7 +84,7 @@ phase 保留 prepared/running/finished/failed/interrupted 的兼容字段；新�
 
 实验快照不能用普通 snapshot delete 删除，防止误删报告对应版本；完成或显式 recover 后，可用 `experiment delete <挂载点> <名称>` 清理。该操作提交删除结果，外部报告保留，但以后不能从此存储恢复该输入版本。使用原有快照条数与逻辑容量规则，没有新增实验配额。memory 模式只能教学体验，重挂载后输入版本丢失，报告明确标注。
 
-本版只追踪此挂载上的固定快照、此进程组的 FUSE 请求。外部脚本和库、其他磁盘文件、网络输入、环境变量、随机性、GPU 行为与主动离组进程未完整追踪。因此称为“文件输入可追溯”，不称为任意科研程序完全可复现。快照文件使用 direct I/O，mmap 不支持；业务树的 cached-io 配置不改变该规则。read 字节是文件系统返回的字节，不证明算法实际使用了每个字节。
+本版只追踪此挂载上的固定快照、此进程组的 FUSE 请求。外部脚本和库、其他磁盘文件、网络输入、环境变量、随机性、GPU 行为与主动离组进程未完整追踪。因此称为“文件输入可追溯”，不称为任意科研程序完全可复现。快照文件使用 direct I/O：共享 mmap 返回 ENODEV；私有只读映射经内核页缓存读取，次数和字节按预读粒度记录，已被其他映射缓存的页可能不再产生读取；业务树的 cached-io 配置不改变该规则。read 字节是文件系统返回的字节，不证明算法实际使用了每个字节。
 
 verify 对报告中的文件 SHA256 与对应快照重新比较，不执行实验，也不验证科学结论或完整运行环境。报告及后端由本机用户管理，哈希不是对抗恶意修改的签名。若要长期转移，保留报告和独立 TeamFS backup；报告自身不包含原始正文。
 
@@ -91,7 +93,9 @@ verify 对报告中的文件 SHA256 与对应快照重新比较，不执行实�
 ```bash
 bash scripts/test-experiments.sh
 bash scripts/test-member3.sh
-bash scripts/check.sh
+bash scripts/test-attribution.sh   # 回调与报告逐项对账、进程归属、分类与边界
+bash scripts/check.sh              # 全套回归，生成 artifacts/regression-summary.json/.md
+
 ```
 
 真实挂载覆盖：读过/未读过的区分、内容哈希、修改后重放、跨重启恢复、中文和非 UTF-8 名称、二进制局部读取、空文件、仅打开/仅属性查询、命令失败、普通子进程、其他进程访问隔离、超过日志窗口的 2500 次读取且并发修改当前文件、未固定输入与越界软链接提示、中断/恢复、daemon 崩溃及启动事务失败。结果保存在 experiment-acceptance.json/txt 与真实 experiments-trace.log。

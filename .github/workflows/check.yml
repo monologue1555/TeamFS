@@ -17,7 +17,7 @@ jobs:
       - name: Remove historical reports from this disposable CI checkout
         run: |
           mkdir -p artifacts
-          find artifacts -maxdepth 1 -type f \( -name '*.txt' -o -name '*.json' -o -name '*.jsonl' -o -name '*.log' \) -delete
+          find artifacts -maxdepth 1 -type f \( -name '*.txt' -o -name '*.json' -o -name '*.jsonl' -o -name '*.log' -o -name '*.md' \) -delete
       - name: Unit tests
         run: cargo test --locked
       - name: Detect real FUSE capability
@@ -43,5 +43,6 @@ jobs:
           path: |
             artifacts/*.txt
             artifacts/*.json
+            artifacts/*.md
             artifacts/*trace.log
             artifacts/random-*.jsonl
