@@ -1,48 +1,50 @@
-   Compiling teamfs v0.8.0 (/workspace)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.55s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
      Running unittests src/main.rs (/tmp/teamfs-target/debug/deps/teamfs-1df82ca09fdb8f7f)
 
-running 27 tests
+running 30 tests
 test diagnostics::tests::mountinfo_paths_decode_without_utf8_loss ... ok
 test content::tests::edits_copy_only_when_a_history_version_is_retained ... ok
 test experiment::tests::checkpoint_recovery_rejects_foreign_or_partial_evidence ... ok
 test experiment::tests::incomplete_recovery_never_invents_unknown_termination_or_counts ... ok
 test experiment::tests::link_resolution_checks_real_parent_paths_and_intermediate_links ... ok
+test experiment::tests::warnings_separate_blocking_reasons_from_notices ... ok
 test experiment::tests::input_version_digest_covers_unread_content_and_metadata_in_stable_order ... ok
+test experiment::tests::thread_ids_resolve_to_their_process ... ok
 test history::tests::comparison_detects_owner_and_directory_modes_without_contents ... ok
+test content::tests::cross_block_edits_and_truncate_growth_preserve_versions ... ok
 test history::tests::raw_paths_are_readable_and_unambiguous ... ok
 test history::tests::comparison_ignores_access_time_and_directory_mtime ... ok
 test model::tests::access_handles_and_limits ... ok
 test model::tests::directories_errors_and_snapshot ... ok
 test model::tests::offsets_eof_and_sparse_writes ... ok
-test model::tests::persisted_tree_rejects_invalid_relationships ... ok
 test model::tests::persisted_tree_preserves_raw_names_and_excludes_orphans ... ok
-test model::tests::seed_and_fresh_mount ... ok
-test model::tests::unlink_open_file_and_kernel_reference ... ok
-test metrics::tests::recent_percentiles_and_lifetime_totals_are_distinct ... ok
-test service::tests::diff_handle_and_lookup_retain_retired_view_until_both_release ... ok
-test service::tests::retired_snapshot_survives_handle_and_lookup_then_collects ... ok
+test model::tests::persisted_tree_rejects_invalid_relationships ... ok
 test model::tests::rename_replace_and_cycle ... ok
-test service::tests::retired_trash_waits_for_handle_and_lookup_then_releases_bytes ... ok
+test model::tests::seed_and_fresh_mount ... ok
 test model::tests::truncate_and_append ... ok
+test model::tests::unlink_open_file_and_kernel_reference ... ok
+test service::tests::diff_handle_and_lookup_retain_retired_view_until_both_release ... ok
+test metrics::tests::recent_percentiles_and_lifetime_totals_are_distinct ... ok
+test service::tests::retired_snapshot_survives_handle_and_lookup_then_collects ... ok
 test service::tests::invalid_and_oversized_control_requests_do_not_execute ... ok
+test service::tests::retired_trash_waits_for_handle_and_lookup_then_releases_bytes ... ok
 test service::tests::experiment_checkpoints_keep_capturing_and_reject_stale_daemons ... ok
-test content::tests::cross_block_edits_and_truncate_growth_preserve_versions ... ok
+test service::tests::experiment_capture_classifies_requests_and_separates_other_groups ... ok
 test experiment::tests::atomic_report_failure_keeps_previous_saved_summary ... ok
 test audit::tests::recent_window_reports_loss_without_refusing_records ... ok
 
-test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
 
    Compiling teamfs v0.8.0 (/workspace)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.74s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.77s
 TeamFS 实际验收
-2026-10-16T15:34:31+00:00
+2026-10-16T15:50:02+00:00
 6.18.54.1-microsoft-standard-WSL2
 rustc 1.93.1 (01f6ddf75 2026-02-11) (built from a source tarball)
 cargo 1.93.1 (083ac5135 2025-12-15) (built from a source tarball)
 libfuse: 2.9.9
 uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev)
-/home/ubuntu/teamfs-check-5zqzw5/mnt fuse.teamfs
+/home/ubuntu/teamfs-check-8wLbNG/mnt fuse.teamfs
 PASS 01: 真实挂载与预置中文文件
 PASS 02: mkdir / create / write / read：中文名称、内容与字节大小
 PASS 03: 追加与覆盖截断：更短的内容没有残留尾部
@@ -60,13 +62,13 @@ PASS 01: 卸载 / 重挂载：临时文件消失，预置内容恢复
 ALL PASS — 已完成真实挂载、读写、卸载和重挂载，测试挂载已清理。
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
 TeamFS v0.2 实际验收
-2026-10-16T15:34:33+0000
+2026-10-16T15:50:03+0000
 binary: /tmp/teamfs-target/debug/teamfs
 PASS 01: 显式同步后 SIGKILL：中文/非 UTF-8 名称、二进制、权限、mtime、inode 保留
 PASS 02: 未同步版本 B 在异常退出后丢失，恢复到已同步版本 A
 PASS 03: 正常卸载保存：创建、删除和改名跨重挂载保留
 PASS 04: 普通文件 fsync 与目录 fsync 都提交业务文件树
-PASS 05: 快照创建即保存、重启可读、inode 隔离、180 项目录续读；创建耗时 0.033349s
+PASS 05: 快照创建即保存、重启可读、inode 隔离、180 项目录续读；创建耗时 0.035763s
 PASS 06: 当前文件覆盖/删除不改变历史，快照全部写操作受保护
 cp: warning: behavior of -n is non-portable and may change in future; use --update=none instead
 恢复 SHA256: 4a2a4a92f1ff5a3a0d21b87483e1228df75c77d560380b6eb189072495c145b6
@@ -80,8 +82,8 @@ PASS 13: 10 个快照上限，超限拒绝且不自动删除旧版本
 PASS 14: 不支持的格式版本、损坏数据库明确拒绝且不覆盖
 PASS 15: 内存模式重启清空，128 MiB 快照内容上限独立生效
 ALL PASS: 15 v2 mounted scenarios; 测试挂载与临时存储将清理。
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
-TeamFS v0.3 actual mounted acceptance 2026-10-16T15:34:35+0000
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
+TeamFS v0.3 actual mounted acceptance 2026-10-16T15:50:06+0000
 binary: /tmp/teamfs-target/debug/teamfs
 PASS 01: unlink keeps immutable bytes, raw attributes and separate inode; restore is non-overwriting
 PASS 02: Chinese/non-UTF8/control names, empty file and repeated deletions retain distinct IDs
@@ -99,7 +101,7 @@ PASS 13: v1 migration preserves all stored rows; migration failure rolls back sc
 PASS 14: combined auto-sync/snapshot/trash/diff operations serialize correctly; memory resets
 ALL PASS: 14 v3 mounted scenarios
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
-TeamFS v0.4 real mounted acceptance 2026-10-16T15:34:45+0000
+TeamFS v0.4 real mounted acceptance 2026-10-16T15:50:16+0000
 PASS 01: directory preview and whole-tree restore preserve hierarchy, raw names, bytes, permissions and links
 PASS 02: conflicts and bad paths leave no partial tree; root excludes management data; unsynced restore rolls back on crash
 PASS 03: relative/dangling symlinks survive restart, snapshot and trash recovery without dereferencing targets
@@ -111,8 +113,8 @@ PASS 08: optional cached I/O supports shared mmap, msync/fsync and persistence; 
 PASS 09: whole-directory capacity preflight is atomic; configured limits persist across remount
 PASS 10: 96MiB data starts without content reads, 8MiB cache stays bounded, 4KiB change saves 4KiB; failed content commits rollback and retry
 ALL PASS: 10 v4 mounted scenarios
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
-TeamFS v0.5 structured logging / live monitor 2026-10-16T15:34:48+0000
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
+TeamFS v0.5 structured logging / live monitor 2026-10-16T15:50:19+0000
 PASS 01: real callbacks record PID/UID, raw names, paths, rename destination, actual bytes, duration and errno without file contents
 PASS 02: automatic/explicit commits and management commands logged; repeated control fsync stays idempotent; monitoring reads do not log themselves
 PASS 03: event JSON is immutable per open, read-only, refreshes on reopen, and CLI filters match actual records
@@ -179,7 +181,7 @@ PASS: cached seed=1555 steps=180
 PASS: cached seed=20261007 steps=180
 PASS: cached seed=42 steps=180
 RESULT {'pass': 6}; report: /workspace/artifacts/randomized-v6.json
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
 PASS 01: 16 MiB file / 4 KiB overwrite saves 64 KiB, shares 255 blocks; snapshot bytes remain unchanged
 PASS 02: overwriting a block with identical bytes reuses its old payload
 PASS 03: cross-block write and normal remount preserve byte-exact contents
@@ -189,7 +191,7 @@ PASS 06: SIGKILL restores the last complete commit and retains immutable history
 PASS 07: held deleted snapshot, trash restore and independent backup/import preserve shared blocks
 PASS 08: format-3 migration preserves paths, attributes and bytes; injected failure restores original schema
 PASS 09: invalid block mappings are rejected without automatic repair or erasure
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s
 PASS 01: real analysis records its source and three consumed inputs, excludes unused data, stores SHA256 and command outcome
 PASS 02: same-named current data changes the result; replaying pinned code/data returns the original byte-exact result
 PASS 03: successful input snapshots survive daemon SIGKILL, normal snapshot delete is refused, and old inputs restore to a new directory
@@ -203,6 +205,19 @@ PASS 10: SIGTERM stops and records the job; runner SIGKILL preserves an incomple
 PASS 11: daemon crash preserves submitted inputs while explicitly rejecting lost runtime capture as incomplete
 PASS 12: invalid names/output targets are rejected; snapshot transaction failure never releases the command exec gate
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
+PASS: direct / request-report reconciliation, classes, threads, children, other groups
+PASS: cached / request-report reconciliation, classes, threads, children, other groups
+PASS: 2700 reads beyond the audit window while the same-named file changes
+PASS: Chinese, invalid UTF-8, control-character names and partial binary reads
+PASS: missing inputs keep errno; kernel-decided failures are not invented
+PASS: unpinned business, snapshot and trash reads are listed and block verify
+PASS: symlink chains, escapes and dangling targets
+PASS: private mmap of a pinned input
+UNSUPPORTED: shared mmap of a pinned input
+shared mmap of pinned inputs fails with ENODEV (direct I/O); the open is still recorded
+PASS: ls, find, stat, head, wc, sha256sum, tar, rsync, git and vim as experiment commands
+RESULT {'pass': 9, 'unsupported': 1}; report: /workspace/artifacts/attribution-acceptance.json
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
 PASS 01: running summaries are durably published repeatedly without sealing the capture session
 PASS 02: submitted input remains byte-exact and read-only after live overwrite, truncate and deletion
 PASS 03: daemon and runner SIGKILL retain the last on-disk summary and pinned input; recovery preserves unknown gaps and exit status
@@ -213,3 +228,47 @@ PASS 07: blobs/nodes/metadata transaction failures preserve the old commit, neve
 PASS 08: report-plus-backup migration preserves checkpoint input SHA256; corrupt backups and existing targets are refused
 PASS 09: reused names cannot impersonate original input versions or seal another session; verification also detects unread tree changes
 PASS 10: memory-mode reports explicitly declare non-persistent input and remount does not pretend to retain it
+# TeamFS 全套回归记录
+
+- 结论：通过（`bash scripts/check.sh` 退出码 0）
+- 源码提交：`849b57e60c3baeaad58b9dc0ff550737f35c2e8e`（运行前工作区有未提交的源码修改）；分支 codex/member3-recovery
+- 环境：Ubuntu 26.04.1 LTS，内核 6.18.54.1-microsoft-standard-WSL2，rustc 1.93.1 (01f6ddf75 2026-02-11) (built from a source tarball)，libfuse 2.9.9，Python 3.14.4，uid 1000，debug 构建
+- 时间：2026-10-16T15:52:20+0000
+
+| 套件 | 退出码 | 通过 | 失败 | 未支持 | 环境跳过 | 耗时 s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| unit | 0 | 30 | 0 | 0 | 0 | 0.17 |
+| smoke | 0 | 13 | 0 | 0 | 0 | 6.97 |
+| v2 | 0 | 15 | 0 | 0 | 0 | 2.77 |
+| v3 | 0 | 14 | 0 | 0 | 0 | 9.74 |
+| v4 | 0 | 10 | 0 | 0 | 0 | 3.15 |
+| v5 | 0 | 8 | 0 | 0 | 0 | 4.33 |
+| v6 | 0 | 39 | 0 | 7 | 0 | 89.38 |
+| blocks | 0 | 9 | 0 | 0 | 0 | 5.19 |
+| experiments | 0 | 12 | 0 | 0 | 0 | 4.36 |
+| attribution | 0 | 9 | 0 | 1 | 0 | 6.95 |
+| member3 | 0 | 10 | 0 | 0 | 0 | 11.18 |
+| 合计 | | 169 | 0 | 8 | 0 | |
+
+## 应用场景（Git、Vim、rsync 及实验模式工具）
+
+- pass：v6 / direct / Git workflow
+- pass：v6 / direct / rsync round trip
+- pass：v6 / direct / repeated Vim saves
+- pass：v6 / cached / Git workflow
+- pass：v6 / cached / rsync round trip
+- pass：v6 / cached / repeated Vim saves
+- pass：attribution / ls, find, stat, head, wc, sha256sum, tar, rsync, git and vim as experiment commands
+
+## 未支持与跳过项（单列，不计为通过）
+
+- unsupported：v6 / direct / SQLite DELETE without explicit sync — Reproduced DELETE-mode durability boundary: committed 30 rows, recovered 0. Use explicit TeamFS sync or validated PERSIST mode.
+- unsupported：v6 / direct / mmap then snapshot — default direct_io intentionally does not offer shared mmap
+- unsupported：v6 / direct / hardlink capability — hardlink is explicitly unsupported, errno=1
+- unsupported：v6 / direct / xattr capability — xattr is explicitly unsupported, errno=95
+- unsupported：v6 / cached / SQLite DELETE without explicit sync — Reproduced DELETE-mode durability boundary: committed 30 rows, recovered 0. Use explicit TeamFS sync or validated PERSIST mode.
+- unsupported：v6 / cached / hardlink capability — hardlink is explicitly unsupported, errno=1
+- unsupported：v6 / cached / xattr capability — xattr is explicitly unsupported, errno=95
+- unsupported：attribution / shared mmap of a pinned input — shared mmap of pinned inputs fails with ENODEV (direct I/O); the open is still recorded
+
+Bounded mounted scenarios on this machine and build. Unsupported and environment-skip cases are listed separately and never counted as passes; this is not a POSIX, production or arbitrary-application guarantee.

@@ -36,4 +36,3 @@ run_suite experiments "bash scripts/test-experiments.sh" bash "$TEAMFS_ROOT/scri
 run_suite attribution "bash scripts/test-attribution.sh" bash "$TEAMFS_ROOT/scripts/test-attribution.sh"
 run_suite member3 "bash scripts/test-member3.sh" bash "$TEAMFS_ROOT/scripts/test-member3.sh"
 python3 "$TEAMFS_ROOT/tests/regression_summary.py" "$runs"
-
