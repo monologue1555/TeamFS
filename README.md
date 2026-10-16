@@ -15,6 +15,12 @@ bash scripts/test-experiments.sh     # 真实挂载验收
 
 访问记录与进程归属：报告把访问分为正文读取、仅打开、属性查询、目录查询和读取软链接；FUSE 给出的线程号换算为进程号；未固定的挂载内读取按路径列出，其他进程组对同一输入快照的读取单独计数、从不计入输入。`bash scripts/test-attribution.sh` 把 `--trace` 记录的真实回调与报告逐项对账。规则见 [访问记录流程](docs/access-recording.md)，应用、VFS、FUSE、Rust 与 SQLite 的调用关系见 [架构调用图](docs/architecture.md)。`bash scripts/check.sh` 运行全部套件，即使中途失败也继续，最后生成 `artifacts/regression-summary.json/.md`，列出提交号、环境、各套件结果以及单列的未支持与跳过项。
 
+### 成员 5 性能评估
+
+`bash scripts/benchmark-member5.sh --samples 3` 使用独立挂载，对照原生 Linux 目录、普通 TeamFS 和实验模式，保留原始样本、输入输出校验、内存与存储记录。已有 27 个样本的 0.8 release 基线；新增功能整合后仍须复测。
+
+入口：[测量方法](docs/member5-performance.md)、[首轮结果](docs/member5-baseline-results.md)、[成员对接与复测](docs/member5-handoff.md)、[原始证据](artifacts/member5/README.md)。`scripts/compare-member5.py` 对比两个已有正式评估目录，核对输入、输出、样本数量和测量条件；内部阶段拆分及真实科研案例仍待对接。
+
 ## 0.7 基础：局部修改的版本保存成本
 
 研究问题：在保留可恢复文件版本的前提下，减少局部覆盖修改产生的重复内容保存。0.6 的增量保存以文件为单位；0.7 将内容保存粒度改为固定 **64 KiB 块**。块大小目前固定，不宣称是最佳参数。
