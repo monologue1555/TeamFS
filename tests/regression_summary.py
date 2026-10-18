@@ -32,6 +32,7 @@ SUITES = {
     "experiments": [("experiment-acceptance.txt", None)],
     "attribution": [("attribution-acceptance.txt", "attribution-acceptance.json")],
     "member3": [("member3-acceptance.txt", None)],
+    "member4": [("member4-acceptance.txt", "member4-acceptance.json")],
 }
 HIGHLIGHTS = ("Git workflow", "rsync round trip", "repeated Vim saves", "as experiment commands")
 

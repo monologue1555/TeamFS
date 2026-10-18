@@ -1,0 +1,407 @@
+{
+  "measured_at": "2026-10-18T11:13:53+0800",
+  "kernel": "6.6.114.1-microsoft-standard-WSL2",
+  "python": "3.12.3",
+  "case": "UCI Iris（公开真实数据，非合成）",
+  "data_source": {
+    "repository": "UCI Machine Learning Repository, dataset 53",
+    "url": "https://archive.ics.uci.edu/dataset/53/iris",
+    "doi": "10.24432/C56C76",
+    "license": "CC BY 4.0",
+    "retrieved_at": "2026-10-18",
+    "data_sha256": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0",
+    "rows": 150,
+    "features": 4,
+    "classes": 3
+  },
+  "checks": {
+    "unused_file_bezdekExcluded": true,
+    "exact_inputs": [
+      "analysis-config.json",
+      "analyze_iris.py",
+      "iris-baseline.json",
+      "iris.data"
+    ],
+    "output_digest_files": [
+      "outputs/result.json",
+      "stderr.txt",
+      "stdout.txt"
+    ],
+    "baseline_result_sha256": "ef98b8d7ea211952c020d61aa2c419c19ae464c81ffd269e0f2921a0315bab62",
+    "changed_result_sha256": "10bd957f7203d814a7dfe27dbbf6c54c27e0e5ea761568030aa080bbfab00a33",
+    "replay_result_sha256": "ef98b8d7ea211952c020d61aa2c419c19ae464c81ffd269e0f2921a0315bab62",
+    "baseline_replay_byte_identical": true,
+    "changed_result_differs": true,
+    "changed_inputs": [
+      "iris.data"
+    ],
+    "changed_outputs": [
+      "outputs/result.json",
+      "stderr.txt",
+      "stdout.txt"
+    ],
+    "replay_comparison_has_no_content_change": true,
+    "verify_baseline_and_replay": true
+  },
+  "scope": "同机同环境下的确定性重放；环境摘要不是完整环境归档，公开数据案例不证明任意科研程序都可完全复现。",
+  "reports": {
+    "baseline": {
+      "experiment": "iris-baseline",
+      "snapshot": "experiment.iris-baseline",
+      "inputs": {
+        "analysis-config.json": "d526351f2fd077314fd68698f9575228d89a82c924e97429ecce00c0e17326ce",
+        "analyze_iris.py": "31f95886032397b8f45df24956d74596fcad3d767f203ae58c21a0c391cf5dca",
+        "iris-baseline.json": "cb5515e54c8b3ae2825423502e784283071c4ddea75d4c382aed1e863bf80d1a",
+        "iris.data": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0"
+      },
+      "outputs": {
+        "outputs/result.json": "ef98b8d7ea211952c020d61aa2c419c19ae464c81ffd269e0f2921a0315bab62",
+        "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout.txt": "f97da131ef74dfcb4b35bcb4d2feb3d3d8d099c48b6f7193ba1e5569cc23362f"
+      },
+      "result": {
+        "analysis": "uci-iris-class-means",
+        "baseline_check": {
+          "matched": true,
+          "mismatch_count": 0,
+          "mismatches": [],
+          "note": "该核对只比较三类 4 个特征的均值；不一致不阻止输出，但会明确标记。",
+          "tolerance": 1e-09
+        },
+        "class_means": {
+          "Iris-setosa": {
+            "petal_length_cm": 1.464,
+            "petal_width_cm": 0.244,
+            "sepal_length_cm": 5.006,
+            "sepal_width_cm": 3.418
+          },
+          "Iris-versicolor": {
+            "petal_length_cm": 4.26,
+            "petal_width_cm": 1.326,
+            "sepal_length_cm": 5.936,
+            "sepal_width_cm": 2.77
+          },
+          "Iris-virginica": {
+            "petal_length_cm": 5.552,
+            "petal_width_cm": 2.026,
+            "sepal_length_cm": 6.588,
+            "sepal_width_cm": 2.974
+          }
+        },
+        "dataset": {
+          "class_counts": {
+            "Iris-setosa": 50,
+            "Iris-versicolor": 50,
+            "Iris-virginica": 50
+          },
+          "features": [
+            "sepal_length_cm",
+            "sepal_width_cm",
+            "petal_length_cm",
+            "petal_width_cm"
+          ],
+          "rows": 150
+        },
+        "inputs": {
+          "baseline": {
+            "bytes": 632,
+            "path": "iris-baseline.json",
+            "sha256": "cb5515e54c8b3ae2825423502e784283071c4ddea75d4c382aed1e863bf80d1a"
+          },
+          "config": {
+            "bytes": 382,
+            "path": "analysis-config.json",
+            "sha256": "d526351f2fd077314fd68698f9575228d89a82c924e97429ecce00c0e17326ce"
+          },
+          "data": {
+            "bytes": 4551,
+            "path": "iris.data",
+            "sha256": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0"
+          }
+        },
+        "overall_means": {
+          "petal_length_cm": 3.758667,
+          "petal_width_cm": 1.198667,
+          "sepal_length_cm": 5.843333,
+          "sepal_width_cm": 3.054
+        },
+        "rounding_decimals": 6,
+        "scope": "只对 iris.data 的 150 行记录计算分组均值；不读取文档、未使用数据文件或网络资源，也不据此提出新的植物学结论。",
+        "status": "succeeded"
+      },
+      "environment": {
+        "captured_unix": 1792293233,
+        "cpu_count": 16,
+        "disclaimer": "轻量环境摘要，不是完整环境归档；不包含已安装软件包、库版本、全部环境变量、硬件细节或外部文件。",
+        "gid": 1000,
+        "hostname": "DESKTOP-BT7FGIT",
+        "kernel": "6.6.114.1-microsoft-standard-WSL2",
+        "machine": "x86_64",
+        "mem_total_kib": 16017484,
+        "os_release": "Ubuntu 24.04.1 LTS",
+        "python3": "Python 3.12.3",
+        "sysname": "Linux",
+        "teamfs_version": "0.8.0",
+        "uid": 1000,
+        "wsl": true
+      }
+    },
+    "changed": {
+      "experiment": "iris-data-changed",
+      "snapshot": "experiment.iris-data-changed",
+      "inputs": {
+        "analysis-config.json": "d526351f2fd077314fd68698f9575228d89a82c924e97429ecce00c0e17326ce",
+        "analyze_iris.py": "31f95886032397b8f45df24956d74596fcad3d767f203ae58c21a0c391cf5dca",
+        "iris-baseline.json": "cb5515e54c8b3ae2825423502e784283071c4ddea75d4c382aed1e863bf80d1a",
+        "iris.data": "5e52fc58e0a206e4f9aee197daef6a0a2e924d15d0c882ed9426a694e6cc64f4"
+      },
+      "outputs": {
+        "outputs/result.json": "10bd957f7203d814a7dfe27dbbf6c54c27e0e5ea761568030aa080bbfab00a33",
+        "stderr.txt": "579d439c962a3547f109339055f5ff6c35db13c7214283b35cee4b743c4f3718",
+        "stdout.txt": "d09ea0aead6d4e97df5e9c053192c5ca890454b33c1942be9f786dc5c37e2afb"
+      },
+      "result": {
+        "analysis": "uci-iris-class-means",
+        "baseline_check": {
+          "matched": false,
+          "mismatch_count": 1,
+          "mismatches": [
+            {
+              "baseline": 5.006,
+              "class": "Iris-setosa",
+              "computed": 5.008,
+              "feature": "sepal_length_cm"
+            }
+          ],
+          "note": "该核对只比较三类 4 个特征的均值；不一致不阻止输出，但会明确标记。",
+          "tolerance": 1e-09
+        },
+        "class_means": {
+          "Iris-setosa": {
+            "petal_length_cm": 1.464,
+            "petal_width_cm": 0.244,
+            "sepal_length_cm": 5.008,
+            "sepal_width_cm": 3.418
+          },
+          "Iris-versicolor": {
+            "petal_length_cm": 4.26,
+            "petal_width_cm": 1.326,
+            "sepal_length_cm": 5.936,
+            "sepal_width_cm": 2.77
+          },
+          "Iris-virginica": {
+            "petal_length_cm": 5.552,
+            "petal_width_cm": 2.026,
+            "sepal_length_cm": 6.588,
+            "sepal_width_cm": 2.974
+          }
+        },
+        "dataset": {
+          "class_counts": {
+            "Iris-setosa": 50,
+            "Iris-versicolor": 50,
+            "Iris-virginica": 50
+          },
+          "features": [
+            "sepal_length_cm",
+            "sepal_width_cm",
+            "petal_length_cm",
+            "petal_width_cm"
+          ],
+          "rows": 150
+        },
+        "inputs": {
+          "baseline": {
+            "bytes": 632,
+            "path": "iris-baseline.json",
+            "sha256": "cb5515e54c8b3ae2825423502e784283071c4ddea75d4c382aed1e863bf80d1a"
+          },
+          "config": {
+            "bytes": 382,
+            "path": "analysis-config.json",
+            "sha256": "d526351f2fd077314fd68698f9575228d89a82c924e97429ecce00c0e17326ce"
+          },
+          "data": {
+            "bytes": 4551,
+            "path": "iris.data",
+            "sha256": "5e52fc58e0a206e4f9aee197daef6a0a2e924d15d0c882ed9426a694e6cc64f4"
+          }
+        },
+        "overall_means": {
+          "petal_length_cm": 3.758667,
+          "petal_width_cm": 1.198667,
+          "sepal_length_cm": 5.844,
+          "sepal_width_cm": 3.054
+        },
+        "rounding_decimals": 6,
+        "scope": "只对 iris.data 的 150 行记录计算分组均值；不读取文档、未使用数据文件或网络资源，也不据此提出新的植物学结论。",
+        "status": "succeeded"
+      },
+      "environment": {
+        "captured_unix": 1792293234,
+        "cpu_count": 16,
+        "disclaimer": "轻量环境摘要，不是完整环境归档；不包含已安装软件包、库版本、全部环境变量、硬件细节或外部文件。",
+        "gid": 1000,
+        "hostname": "DESKTOP-BT7FGIT",
+        "kernel": "6.6.114.1-microsoft-standard-WSL2",
+        "machine": "x86_64",
+        "mem_total_kib": 16017484,
+        "os_release": "Ubuntu 24.04.1 LTS",
+        "python3": "Python 3.12.3",
+        "sysname": "Linux",
+        "teamfs_version": "0.8.0",
+        "uid": 1000,
+        "wsl": true
+      }
+    },
+    "replay": {
+      "experiment": "iris-replay",
+      "snapshot": "experiment.iris-replay",
+      "inputs": {
+        "analysis-config.json": "d526351f2fd077314fd68698f9575228d89a82c924e97429ecce00c0e17326ce",
+        "analyze_iris.py": "31f95886032397b8f45df24956d74596fcad3d767f203ae58c21a0c391cf5dca",
+        "iris-baseline.json": "cb5515e54c8b3ae2825423502e784283071c4ddea75d4c382aed1e863bf80d1a",
+        "iris.data": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0"
+      },
+      "outputs": {
+        "outputs/result.json": "ef98b8d7ea211952c020d61aa2c419c19ae464c81ffd269e0f2921a0315bab62",
+        "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout.txt": "f97da131ef74dfcb4b35bcb4d2feb3d3d8d099c48b6f7193ba1e5569cc23362f"
+      },
+      "result": {
+        "analysis": "uci-iris-class-means",
+        "baseline_check": {
+          "matched": true,
+          "mismatch_count": 0,
+          "mismatches": [],
+          "note": "该核对只比较三类 4 个特征的均值；不一致不阻止输出，但会明确标记。",
+          "tolerance": 1e-09
+        },
+        "class_means": {
+          "Iris-setosa": {
+            "petal_length_cm": 1.464,
+            "petal_width_cm": 0.244,
+            "sepal_length_cm": 5.006,
+            "sepal_width_cm": 3.418
+          },
+          "Iris-versicolor": {
+            "petal_length_cm": 4.26,
+            "petal_width_cm": 1.326,
+            "sepal_length_cm": 5.936,
+            "sepal_width_cm": 2.77
+          },
+          "Iris-virginica": {
+            "petal_length_cm": 5.552,
+            "petal_width_cm": 2.026,
+            "sepal_length_cm": 6.588,
+            "sepal_width_cm": 2.974
+          }
+        },
+        "dataset": {
+          "class_counts": {
+            "Iris-setosa": 50,
+            "Iris-versicolor": 50,
+            "Iris-virginica": 50
+          },
+          "features": [
+            "sepal_length_cm",
+            "sepal_width_cm",
+            "petal_length_cm",
+            "petal_width_cm"
+          ],
+          "rows": 150
+        },
+        "inputs": {
+          "baseline": {
+            "bytes": 632,
+            "path": "iris-baseline.json",
+            "sha256": "cb5515e54c8b3ae2825423502e784283071c4ddea75d4c382aed1e863bf80d1a"
+          },
+          "config": {
+            "bytes": 382,
+            "path": "analysis-config.json",
+            "sha256": "d526351f2fd077314fd68698f9575228d89a82c924e97429ecce00c0e17326ce"
+          },
+          "data": {
+            "bytes": 4551,
+            "path": "iris.data",
+            "sha256": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0"
+          }
+        },
+        "overall_means": {
+          "petal_length_cm": 3.758667,
+          "petal_width_cm": 1.198667,
+          "sepal_length_cm": 5.843333,
+          "sepal_width_cm": 3.054
+        },
+        "rounding_decimals": 6,
+        "scope": "只对 iris.data 的 150 行记录计算分组均值；不读取文档、未使用数据文件或网络资源，也不据此提出新的植物学结论。",
+        "status": "succeeded"
+      },
+      "environment": {
+        "captured_unix": 1792293234,
+        "cpu_count": 16,
+        "disclaimer": "轻量环境摘要，不是完整环境归档；不包含已安装软件包、库版本、全部环境变量、硬件细节或外部文件。",
+        "gid": 1000,
+        "hostname": "DESKTOP-BT7FGIT",
+        "kernel": "6.6.114.1-microsoft-standard-WSL2",
+        "machine": "x86_64",
+        "mem_total_kib": 16017484,
+        "os_release": "Ubuntu 24.04.1 LTS",
+        "python3": "Python 3.12.3",
+        "sysname": "Linux",
+        "teamfs_version": "0.8.0",
+        "uid": 1000,
+        "wsl": true
+      }
+    }
+  },
+  "comparisons": {
+    "changed": {
+      "artifact": "/mnt/c/Users/WenJingHan/大学/大三上/操作系统/TeamFS/TeamFS/artifacts/member4-compare-changed.json",
+      "inputs": {
+        "access_class_changed": 0,
+        "added": 0,
+        "content_changed": 1,
+        "removed": 0,
+        "unchanged": 3
+      },
+      "outputs": {
+        "added": 0,
+        "changed": 3,
+        "removed": 0,
+        "unchanged": 0
+      },
+      "verdict": {
+        "both_capture_complete": true,
+        "inputs_access_identical": true,
+        "inputs_content_identical": false,
+        "note": "inputs_content_identical 只比较路径与 SHA256；访问分类变化单独列出。outputs_identical 仅在两个报告都采集了输出摘要时成立。",
+        "outputs_identical": false
+      }
+    },
+    "replay": {
+      "artifact": "/mnt/c/Users/WenJingHan/大学/大三上/操作系统/TeamFS/TeamFS/artifacts/member4-compare-replay.json",
+      "inputs": {
+        "access_class_changed": 0,
+        "added": 0,
+        "content_changed": 0,
+        "removed": 0,
+        "unchanged": 4
+      },
+      "outputs": {
+        "added": 0,
+        "changed": 0,
+        "removed": 0,
+        "unchanged": 3
+      },
+      "verdict": {
+        "both_capture_complete": true,
+        "inputs_access_identical": true,
+        "inputs_content_identical": true,
+        "note": "inputs_content_identical 只比较路径与 SHA256；访问分类变化单独列出。outputs_identical 仅在两个报告都采集了输出摘要时成立。",
+        "outputs_identical": true
+      }
+    }
+  }
+}

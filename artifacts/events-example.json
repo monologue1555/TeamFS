@@ -1,5 +1,5 @@
 {
-  "session_id": "1792077433-819332308-896",
+  "session_id": "1792292957-861622920-1618",
   "events": [
     {
       "actual_bytes": null,
@@ -13,7 +13,7 @@
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": false,
-      "duration_us": 5488,
+      "duration_us": 3454,
       "errno": null,
       "error_message": null,
       "inode": null,
@@ -23,9 +23,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 1,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "sync",
-      "timestamp_unix_ms": 1792077433824
+      "timestamp_unix_ms": 1792292957865
     },
     {
       "actual_bytes": null,
@@ -46,9 +46,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 2,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "lifecycle",
-      "timestamp_unix_ms": 1792077433825
+      "timestamp_unix_ms": 1792292957867
     },
     {
       "actual_bytes": null,
@@ -64,20 +64,20 @@
         ],
         "timing_us": {
           "commit_us": 0,
-          "lock_wait_us": 0,
-          "service_us": 2,
-          "total_us": 8
+          "lock_wait_us": 11,
+          "service_us": 8,
+          "total_us": 38
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": false,
-      "duration_us": 8,
+      "duration_us": 38,
       "errno": 2,
       "error_message": "No such file or directory (os error 2)",
       "inode": 1,
@@ -95,9 +95,9 @@
       "result": "error",
       "schema_version": 1,
       "seq": 3,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433831
+      "timestamp_unix_ms": 1792292957884
     },
     {
       "actual_bytes": null,
@@ -114,20 +114,20 @@
         ],
         "timing_us": {
           "commit_us": 0,
-          "lock_wait_us": 0,
-          "service_us": 23,
-          "total_us": 30
+          "lock_wait_us": 1,
+          "service_us": 73,
+          "total_us": 83
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 30,
+      "duration_us": 83,
       "errno": null,
       "error_message": null,
       "inode": 5,
@@ -145,9 +145,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 4,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433831
+      "timestamp_unix_ms": 1792292957885
     },
     {
       "actual_bytes": 38,
@@ -157,20 +157,20 @@
         "requested_bytes": 38,
         "timing_us": {
           "commit_us": 0,
-          "lock_wait_us": 0,
-          "service_us": 29,
-          "total_us": 33
+          "lock_wait_us": 1,
+          "service_us": 105,
+          "total_us": 115
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 33,
+      "duration_us": 115,
       "errno": null,
       "error_message": null,
       "inode": 5,
@@ -188,9 +188,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 5,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433831
+      "timestamp_unix_ms": 1792292957886
     },
     {
       "actual_bytes": null,
@@ -199,20 +199,20 @@
         "sync_point": false,
         "timing_us": {
           "commit_us": 0,
-          "lock_wait_us": 0,
-          "service_us": 0,
-          "total_us": 5
+          "lock_wait_us": 1,
+          "service_us": 1,
+          "total_us": 16
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 5,
+      "duration_us": 16,
       "errno": null,
       "error_message": null,
       "inode": 5,
@@ -230,9 +230,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 6,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433831
+      "timestamp_unix_ms": 1792292957886
     },
     {
       "actual_bytes": null,
@@ -240,9 +240,9 @@
         "fh": 1,
         "timing_us": {
           "commit_us": 0,
-          "lock_wait_us": 0,
-          "service_us": 4,
-          "total_us": 8
+          "lock_wait_us": 2,
+          "service_us": 14,
+          "total_us": 35
         }
       },
       "caller": {
@@ -253,7 +253,7 @@
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 8,
+      "duration_us": 35,
       "errno": null,
       "error_message": null,
       "inode": 5,
@@ -271,9 +271,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 7,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433831
+      "timestamp_unix_ms": 1792292957886
     },
     {
       "actual_bytes": null,
@@ -281,20 +281,20 @@
         "flags": 32768,
         "timing_us": {
           "commit_us": 0,
-          "lock_wait_us": 0,
-          "service_us": 1,
-          "total_us": 11
+          "lock_wait_us": 1,
+          "service_us": 2,
+          "total_us": 15
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 11,
+      "duration_us": 15,
       "errno": null,
       "error_message": null,
       "inode": 5,
@@ -312,9 +312,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 8,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433832
+      "timestamp_unix_ms": 1792292957887
     },
     {
       "actual_bytes": 38,
@@ -325,19 +325,19 @@
         "timing_us": {
           "commit_us": 0,
           "lock_wait_us": 0,
-          "service_us": 4,
-          "total_us": 7
+          "service_us": 9,
+          "total_us": 17
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 7,
+      "duration_us": 17,
       "errno": null,
       "error_message": null,
       "inode": 5,
@@ -355,9 +355,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 9,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433832
+      "timestamp_unix_ms": 1792292957887
     },
     {
       "actual_bytes": 0,
@@ -368,19 +368,19 @@
         "timing_us": {
           "commit_us": 0,
           "lock_wait_us": 0,
-          "service_us": 2,
-          "total_us": 5
+          "service_us": 4,
+          "total_us": 13
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 5,
+      "duration_us": 13,
       "errno": null,
       "error_message": null,
       "inode": 5,
@@ -398,9 +398,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 10,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433832
+      "timestamp_unix_ms": 1792292957888
     },
     {
       "actual_bytes": null,
@@ -410,19 +410,19 @@
         "timing_us": {
           "commit_us": 0,
           "lock_wait_us": 0,
-          "service_us": 0,
-          "total_us": 4
+          "service_us": 1,
+          "total_us": 10
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 4,
+      "duration_us": 10,
       "errno": null,
       "error_message": null,
       "inode": 5,
@@ -440,9 +440,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 11,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433832
+      "timestamp_unix_ms": 1792292957888
     },
     {
       "actual_bytes": null,
@@ -451,8 +451,8 @@
         "timing_us": {
           "commit_us": 0,
           "lock_wait_us": 0,
-          "service_us": 3,
-          "total_us": 6
+          "service_us": 5,
+          "total_us": 14
         }
       },
       "caller": {
@@ -463,7 +463,7 @@
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 6,
+      "duration_us": 14,
       "errno": null,
       "error_message": null,
       "inode": 5,
@@ -481,9 +481,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 12,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433832
+      "timestamp_unix_ms": 1792292957888
     },
     {
       "actual_bytes": null,
@@ -504,19 +504,19 @@
         "timing_us": {
           "commit_us": 0,
           "lock_wait_us": 0,
-          "service_us": 1,
-          "total_us": 7
+          "service_us": 2,
+          "total_us": 10
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 7,
+      "duration_us": 10,
       "errno": 2,
       "error_message": "No such file or directory (os error 2)",
       "inode": 1,
@@ -538,9 +538,9 @@
       "result": "error",
       "schema_version": 1,
       "seq": 13,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433832
+      "timestamp_unix_ms": 1792292957889
     },
     {
       "actual_bytes": null,
@@ -571,13 +571,13 @@
         "timing_us": {
           "commit_us": 0,
           "lock_wait_us": 0,
-          "service_us": 12,
-          "total_us": 19
+          "service_us": 28,
+          "total_us": 36
         }
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": [
@@ -595,7 +595,7 @@
       ],
       "destination_display": "renamed.txt",
       "dirty_after": true,
-      "duration_us": 19,
+      "duration_us": 36,
       "errno": null,
       "error_message": null,
       "inode": 1,
@@ -613,9 +613,9 @@
       "result": "ok",
       "schema_version": 1,
       "seq": 14,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433833
+      "timestamp_unix_ms": 1792292957889
     },
     {
       "actual_bytes": null,
@@ -625,21 +625,21 @@
         "size": 17825792,
         "timing_us": {
           "commit_us": 0,
-          "lock_wait_us": 0,
+          "lock_wait_us": 1,
           "service_us": 0,
-          "total_us": 10
+          "total_us": 14
         },
         "uid": null
       },
       "caller": {
-        "gid": 1001,
-        "pid": 894,
+        "gid": 1000,
+        "pid": 1616,
         "uid": 1000
       },
       "destination_bytes": null,
       "destination_display": null,
       "dirty_after": true,
-      "duration_us": 10,
+      "duration_us": 14,
       "errno": 27,
       "error_message": "File too large (os error 27)",
       "inode": 5,
@@ -661,9 +661,9 @@
       "result": "error",
       "schema_version": 1,
       "seq": 15,
-      "session_id": "1792077433-819332308-896",
+      "session_id": "1792292957-861622920-1618",
       "source": "fuse",
-      "timestamp_unix_ms": 1792077433833
+      "timestamp_unix_ms": 1792292957890
     }
   ]
 }

@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "measured_at": "2026-10-15T23:18:41+0800",
+  "measured_at": "2026-10-18T11:12:28+0800",
   "check_command": "bash scripts/check.sh",
   "exit_code": 0,
   "source": {
-    "commit": "a8879882c861b7f9a763963f042a241c2c69c139",
+    "commit": "f4501341762784c0322a85411b985a9ec24070ce",
     "branch": "main",
     "dirty": false
   },
   "environment": {
-    "kernel": "6.18.33.2-microsoft-standard-WSL2",
-    "os": "Ubuntu 24.04 LTS",
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "os": "Ubuntu 24.04.1 LTS",
     "wsl": true,
-    "rustc": "rustc 1.75.0 (82e1608df 2023-12-21) (built from a source tarball)",
-    "cargo": "cargo 1.75.0",
+    "rustc": "rustc 1.75.0 (82e1608df 2023-12-21)",
+    "cargo": "cargo 1.75.0 (1d8b05cdd 2023-11-20)",
     "libfuse": "2.9.9",
     "fusermount3": "fusermount3 version: 3.14.0",
     "python": "3.12.3",
@@ -24,7 +24,7 @@
     "ci_run": null
   },
   "totals": {
-    "pass": 154,
+    "pass": 177,
     "fail": 0,
     "ignored": 0,
     "unsupported": 8
@@ -34,10 +34,10 @@
       "suite": "unit",
       "command": "cargo test --locked",
       "exit_code": 0,
-      "seconds": 0.34,
+      "seconds": 0.59,
       "passed": true,
       "counts": {
-        "pass": 25,
+        "pass": 32,
         "fail": 0,
         "ignored": 0
       },
@@ -50,7 +50,7 @@
       "suite": "smoke",
       "command": "bash scripts/smoke.sh",
       "exit_code": 0,
-      "seconds": 3.6,
+      "seconds": 2.14,
       "passed": true,
       "counts": {
         "pass": 13
@@ -64,7 +64,7 @@
       "suite": "v2",
       "command": "bash scripts/test-v2.sh",
       "exit_code": 0,
-      "seconds": 2.49,
+      "seconds": 4.11,
       "passed": true,
       "counts": {
         "pass": 15
@@ -78,7 +78,7 @@
       "suite": "v3",
       "command": "bash scripts/test-v3.sh",
       "exit_code": 0,
-      "seconds": 8.8,
+      "seconds": 11.81,
       "passed": true,
       "counts": {
         "pass": 14
@@ -92,7 +92,7 @@
       "suite": "v4",
       "command": "bash scripts/test-v4.sh",
       "exit_code": 0,
-      "seconds": 2.38,
+      "seconds": 4.69,
       "passed": true,
       "counts": {
         "pass": 10
@@ -106,7 +106,7 @@
       "suite": "v5",
       "command": "bash scripts/test-v5.sh",
       "exit_code": 0,
-      "seconds": 4.21,
+      "seconds": 4.64,
       "passed": true,
       "counts": {
         "pass": 8
@@ -120,7 +120,7 @@
       "suite": "v6",
       "command": "bash scripts/test-v6.sh",
       "exit_code": 0,
-      "seconds": 69.41,
+      "seconds": 157.76,
       "passed": true,
       "counts": {
         "pass": 39,
@@ -140,7 +140,7 @@
       "suite": "blocks",
       "command": "bash scripts/test-blocks.sh",
       "exit_code": 0,
-      "seconds": 3.99,
+      "seconds": 8.76,
       "passed": true,
       "counts": {
         "pass": 9
@@ -154,7 +154,7 @@
       "suite": "experiments",
       "command": "bash scripts/test-experiments.sh",
       "exit_code": 0,
-      "seconds": 4.04,
+      "seconds": 5.81,
       "passed": true,
       "counts": {
         "pass": 12
@@ -168,7 +168,7 @@
       "suite": "attribution",
       "command": "bash scripts/test-attribution.sh",
       "exit_code": 0,
-      "seconds": 5.76,
+      "seconds": 11.42,
       "passed": true,
       "counts": {
         "pass": 9,
@@ -177,6 +177,35 @@
       "artifacts": [
         "attribution-acceptance.txt",
         "attribution-acceptance.json"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "member3",
+      "command": "bash scripts/test-member3.sh",
+      "exit_code": 0,
+      "seconds": 12.64,
+      "passed": true,
+      "counts": {
+        "pass": 10
+      },
+      "artifacts": [
+        "member3-acceptance.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "member4",
+      "command": "bash scripts/test-member4.sh",
+      "exit_code": 0,
+      "seconds": 1.79,
+      "passed": true,
+      "counts": {
+        "pass": 6
+      },
+      "artifacts": [
+        "member4-acceptance.txt",
+        "member4-acceptance.json"
       ],
       "stale_or_missing_artifacts": []
     }

@@ -1,0 +1,16 @@
+{
+  "description": "人工复算并交叉核对的 UCI Iris 三类特征均值，用于分析程序自检；不是分析输出。",
+  "feature_order": [
+    "sepal_length_cm",
+    "sepal_width_cm",
+    "petal_length_cm",
+    "petal_width_cm"
+  ],
+  "class_means": {
+    "Iris-setosa": [5.006, 3.418, 1.464, 0.244],
+    "Iris-versicolor": [5.936, 2.77, 4.26, 1.326],
+    "Iris-virginica": [6.588, 2.974, 5.552, 2.026]
+  },
+  "verification": "按 iris.data 逐行分组复算，并与 Fisher 1936 数据集广泛引用的统计值核对；结果保留 6 位小数。",
+  "scope": "仅覆盖本目录 iris.data 的 150 行记录。"
+}

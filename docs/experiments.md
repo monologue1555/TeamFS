@@ -10,11 +10,21 @@
 bash scripts/demo-experiment.sh
 ```
 
-脚本创建自己的临时挂载点和存储，复制 `examples/research`，执行真正的 Python 分析程序。第一次使用三个样本 10、20、30，配置倍率 2，校准系数 1.5，结果为 41.5；同名样本改为 50、60、70 后结果为 121.5；随后按第一次报告重放旧输入，核对结果逐字节一致及 SHA256。目录中有一个未使用文件，不应列为正文输入。
+脚本创建自己的临时挂载点和存储，复制 `examples/research`，执行真正的 Python 分析程序。第一次使用三个样本 10、20、30，配置倍率 2，校准系数 1.5，结果为 41.5；同名样本改为 50、60、70 后结果为 121.5；随后按第一次报告重放旧输入，核对结果逐字节一致及 SHA256。目录中有一个未使用文件，不应列为正文输入。该演示的样本、参数和校准文件是**合成教学数据**，只用于演示流程；成员 4 引入的真实公开数据案例见下文“实际公开数据案例”。
 
 报告、stdout/stderr、结果文件以及独立数据库备份保存在 `artifacts/experiment-demo/<独立演示目录>/`，最新位置写在 `artifacts/experiment-demo-latest.json`。演示结束清理自己的挂载与临时存储，不停止其他挂载。归档报告中的原临时目录路径用于记录现场；重新导入备份并给 verify/replay 指定新挂载点即可使用保留的输入版本。
 
 备份先在 WSL Linux 文件系统上完成原子发布和验证，再复制到 Windows 项目目录并重新验证 SHA256。直接向 `/mnt/d` 创建备份可能因共享文件系统不支持目录同步或 renameat2 而失败；正式报告/备份目标建议使用 WSL home 下的新目录。
+
+## 实际公开数据案例（UCI Iris）
+
+`examples/research/iris/` 是成员 4 的真实数据案例，**不是合成数据**：UCI Machine Learning Repository dataset 53，DOI `10.24432/C56C76`，许可 CC BY 4.0，150 条记录、4 个数值特征、3 个类别各 50 条。来源、归档 SHA256 和逐文件哈希见 `iris.json`；`bezdekIris.data` 是同一归档中的另一整理版本，故意保留但分析程序不读取，用于验证报告没有把目录内所有文件都当成输入。分析程序 `analyze_iris.py` 只使用 Python 标准库，流程为读取并校验配置与数据、分组计算均值、与独立基线核对、写出确定性 `result.json`。
+
+```bash
+bash scripts/member4-case.sh
+```
+
+脚本在独立真实挂载上依次执行：原始数据基线 → 修改同名 `iris.data` → 比较两次报告 → 按第一次报告重放旧输入 → 再次比较。报告、比较 JSON、独立输入备份和 `summary.json` 保存在 `artifacts/member4-case/<时间戳>/`，最新位置写入 `artifacts/member4-case-latest.json`。变更比较固定输出到 `artifacts/member4-compare-changed.json`，重放比较固定输出到 `artifacts/member4-compare-replay.json`。案例说明、实测数值和边界见 [成员 4 公开数据案例](member4-case.md)。
 
 ## 用自己的程序运行
 
@@ -61,8 +71,28 @@ MOUNT="$HOME/teamfs-mount"
 - `capture.external_link_accesses`：读取了可能离开固定输入树的软链接。报告保留链接目标，基于快照树解析相对路径和中间链接；绝对链接以及无法可靠解析的循环不会被认证为固定输入，verify/replay 明确拒绝。
 - `capture.other_group_snapshot_accesses` / `other_group_pids`：运行期间本进程组之外的进程打开或读取同一固定快照的次数及进程号，不计入输入。主动离开进程组的实验进程会以这种方式显现，run 结束时给出警告。
 - `capture_complete`：本次会话采集是否正常完成，不代表算法成功，也不代表程序的全部外部依赖已经被捕获；必须同时看 phase、exit_code、signal、cancelled 和 scope。
+- `outputs`：报告目录内 `outputs/` 与顶层 `stdout.txt`、`stderr.txt` 的路径、字节数和 SHA256；`captured`/`complete`/`errors` 说明摘要是否可用，`scope` 限定其范围。
+- `environment`：操作系统、内核、主机、Python、CPU/内存等轻量摘要，附 `disclaimer`；它是解释上下文，不是完整环境归档。
 
 snapshot 名称固定一个不可变树，文件 SHA256 标识正文内容，路径字节避免非 UTF-8 或控制字符名称混淆。replay 复制原输入树到一个新的实验快照，复用原命令；当前业务状态仍按原同步规则一并保存，内容块可共享。
+
+## 输出证据、环境摘要与报告比较
+
+报告收尾时遍历报告目录内 `outputs/` 的全部普通文件（递归、按相对路径字节稳定排序），并加入顶层 `stdout.txt`、`stderr.txt`，逐文件记录 `path_bytes`、可读路径、字节数和 SHA256。软链接与特殊文件不纳入；无法读取的文件使 `outputs.complete=false` 并记入 `outputs.errors`，verify 随后拒绝该报告。`outputs.scope` 明确说明这是报告目录内的摘要，不证明程序没有写其他挂载点外文件。
+
+报告新增 `environment` 轻量环境摘要：`os_release`、`kernel`、`sysname`、`machine`、`hostname`、`uid`/`gid`、`python3`、`cpu_count`、`mem_total_kib`、`wsl`、`teamfs_version`、`captured_unix` 和 `disclaimer`。缺失项为 null，不阻断实验。它是解释结果时的最小上下文，**不是完整环境归档**，不包含软件包清单、库版本、全部环境变量、硬件细节或外部文件。
+
+比较两份报告：
+
+```bash
+"$TEAMFS" experiment compare "$HOME/analysis-01-report" "$HOME/analysis-02-report"
+"$TEAMFS" experiment compare "$HOME/analysis-01-report" "$HOME/analysis-02-report" --json
+```
+
+- 输入按原始路径字节配对，列出新增、删除、内容变化（SHA256 不同）、访问分类变化和未变；访问分类变化单独列出，不计为内容变化。
+- 输出按 `path_bytes` 配对，列出新增、删除、内容变化（SHA256 或字节数不同）和未变。任一报告没有输出摘要（旧版报告或采集失败）时标记不可比较，不猜测新增或删除。
+- 实验名称、快照名、进程组/PID、开始和结束时间、checkpoint 序号、daemon 会话、读写计数、退出码与信号属于运行元数据，单列在 `run_context` 和 `volatile_fields_ignored` 中，**不误判为文件正文变化**。
+- 比较只读取两份报告，不读取输入正文，也不执行实验。两报告有效即退出 0；内容差异是结果，不是命令错误。
 
 ## 留存、中断与边界
 
@@ -86,18 +116,20 @@ phase 保留 prepared/running/finished/failed/interrupted 的兼容字段；新�
 
 本版只追踪此挂载上的固定快照、此进程组的 FUSE 请求。外部脚本和库、其他磁盘文件、网络输入、环境变量、随机性、GPU 行为与主动离组进程未完整追踪。因此称为“文件输入可追溯”，不称为任意科研程序完全可复现。快照文件使用 direct I/O：共享 mmap 返回 ENODEV；私有只读映射经内核页缓存读取，次数和字节按预读粒度记录，已被其他映射缓存的页可能不再产生读取；业务树的 cached-io 配置不改变该规则。read 字节是文件系统返回的字节，不证明算法实际使用了每个字节。
 
-verify 对报告中的文件 SHA256 与对应快照重新比较，不执行实验，也不验证科学结论或完整运行环境。报告及后端由本机用户管理，哈希不是对抗恶意修改的签名。若要长期转移，保留报告和独立 TeamFS backup；报告自身不包含原始正文。
+verify 对报告中的输入 SHA256 与对应快照重新比较，并重新计算报告目录内每个输出文件的 SHA256 和字节数；输出路径必须是报告目录内的安全相对路径，包含 `..` 的清单会被拒绝。它不执行实验，也不验证科学结论或完整运行环境。报告及后端由本机用户管理，哈希不是对抗恶意修改的签名。若要长期转移，保留报告和独立 TeamFS backup；报告自身不包含原始正文。
 
 ## 验收
 
 ```bash
 bash scripts/test-experiments.sh
 bash scripts/test-member3.sh
+bash scripts/test-member4.sh      # 公开数据、输出/环境证据、比较、重放与输出校验
+bash scripts/member4-case.sh      # 生成可移交的完整案例证据
 bash scripts/test-attribution.sh   # 回调与报告逐项对账、进程归属、分类与边界
 bash scripts/check.sh              # 全套回归，生成 artifacts/regression-summary.json/.md
 
 ```
 
-真实挂载覆盖：读过/未读过的区分、内容哈希、修改后重放、跨重启恢复、中文和非 UTF-8 名称、二进制局部读取、空文件、仅打开/仅属性查询、命令失败、普通子进程、其他进程访问隔离、超过日志窗口的 2500 次读取且并发修改当前文件、未固定输入与越界软链接提示、中断/恢复、daemon 崩溃及启动事务失败。结果保存在 experiment-acceptance.json/txt 与真实 experiments-trace.log。
+真实挂载覆盖：读过/未读过的区分、内容哈希、修改后重放、跨重启恢复、中文和非 UTF-8 名称、二进制局部读取、空文件、仅打开/仅属性查询、命令失败、普通子进程、其他进程访问隔离、超过日志窗口的 2500 次读取且并发修改当前文件、未固定输入与越界软链接提示、中断/恢复、daemon 崩溃及启动事务失败。成员 4 另覆盖公开 Iris 数据的真实输入集合、未使用文件排除、输出摘要与环境摘要、同名数据和配置变化、报告比较、旧输入逐字节重放、失败记录以及篡改输出/越界输出路径的拒绝。结果保存在 experiment-acceptance.json/txt、member4-acceptance.json/txt、member4-case 产物与真实 experiments-trace.log。
 
 研究参考：[ReproZip](https://github.com/VIDA-NYU/reprozip) 通过系统调用追踪收集计算依赖；[DVC](https://doc.dvc.org/example-scenarios/versioning-data-and-models) 关联数据、代码与模型版本。TeamFS 当前做的是挂载目录内透明记录和固定输入版本的简化案例，不宣称替代这些系统或提出全新算法。

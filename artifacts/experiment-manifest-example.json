@@ -2,33 +2,35 @@
   "cancelled": false,
   "capture": {
     "all_observed_content_inputs_pinned": true,
+    "daemon_session": "1792293119-614244810-3966",
     "errors": [],
     "external_link_accesses": 0,
-    "finished_unix": 1792077511,
+    "finished_unix": 1792293119,
+    "input_snapshot_sha256": "5a5d1d81b827a7f0630b0cbea35ce967e99568fc3aa9ae61a8ea903e3310f395",
     "input_version_persistent": true,
     "inputs": [
       {
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077511,
-            440207034
+            1792293119,
+            653594029
           ],
           "crtime": [
-            1792077511,
-            440207034
+            1792293119,
+            653594029
           ],
           "ctime": [
-            1792077511,
-            440458034
+            1792293119,
+            654434830
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 5,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077511,
-            440458034
+            1792293119,
+            654434830
           ],
           "nlink": 1,
           "size": 742,
@@ -54,7 +56,7 @@
         ],
         "path_display": "analyze.py",
         "pids": [
-          2310
+          3972
         ],
         "read_bytes": 2248,
         "read_calls": 6,
@@ -64,24 +66,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077511,
-            446555256
+            1792293119,
+            660986463
           ],
           "crtime": [
-            1792077511,
-            446555256
+            1792293119,
+            660986463
           ],
           "ctime": [
-            1792077511,
-            446805799
+            1792293119,
+            661868022
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 6,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077511,
-            446805799
+            1792293119,
+            661868022
           ],
           "nlink": 1,
           "size": 5,
@@ -112,7 +114,7 @@
         ],
         "path_display": "calibration.txt",
         "pids": [
-          2310
+          3972
         ],
         "read_bytes": 5,
         "read_calls": 2,
@@ -122,24 +124,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077511,
-            452791041
+            1792293119,
+            671281653
           ],
           "crtime": [
-            1792077511,
-            452791041
+            1792293119,
+            671281653
           ],
           "ctime": [
-            1792077511,
-            453032595
+            1792293119,
+            672211947
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 7,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077511,
-            453032595
+            1792293119,
+            672211947
           ],
           "nlink": 1,
           "size": 32,
@@ -171,7 +173,7 @@
         ],
         "path_display": "measurements.csv",
         "pids": [
-          2310
+          3972
         ],
         "read_bytes": 32,
         "read_calls": 2,
@@ -181,24 +183,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077511,
-            458779993
+            1792293119,
+            679224326
           ],
           "crtime": [
-            1792077511,
-            458779993
+            1792293119,
+            679224326
           ],
           "ctime": [
-            1792077511,
-            459149662
+            1792293119,
+            680120126
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 8,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077511,
-            459149662
+            1792293119,
+            680120126
           ],
           "nlink": 1,
           "size": 14,
@@ -229,7 +231,7 @@
         ],
         "path_display": "parameters.json",
         "pids": [
-          2310
+          3972
         ],
         "read_bytes": 14,
         "read_calls": 2,
@@ -241,24 +243,24 @@
         "access_class": "directory_listing",
         "attributes": {
           "atime": [
-            1792077511,
-            418036396
+            1792293119,
+            614078797
           ],
           "crtime": [
-            1792077511,
-            418036396
+            1792293119,
+            614078797
           ],
           "ctime": [
-            1792077511,
-            464865616
+            1792293119,
+            686617488
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 1,
           "kind": "Directory",
           "mode": 493,
           "mtime": [
-            1792077511,
-            464865616
+            1792293119,
+            686617488
           ],
           "nlink": 3,
           "size": 0,
@@ -273,18 +275,19 @@
         "path_bytes": [],
         "path_display": "",
         "pids": [
-          2310
+          3972
         ],
         "read_bytes": 0,
         "read_calls": 0
       }
     ],
+    "observed_unix": 1792293119,
     "other_group_pids": [],
     "other_group_snapshot_accesses": 0,
-    "process_group": 2310,
+    "process_group": 3972,
     "scope": "Only requests from this process group against this immutable snapshot are attributed; thread IDs are reported as their process IDs. Hashes cover full file versions, even when only a portion was read. Opened-only files are not claimed to have been consumed. Requests rejected by the kernel before FUSE (permission checks, non-directory path components) are not seen. Other process groups reading this snapshot are counted, never attributed. External dependencies and processes leaving the group are outside this capture.",
     "snapshot": "experiment.baseline",
-    "started_unix": 1792077511,
+    "started_unix": 1792293119,
     "summary": {
       "attribute_only": 0,
       "content_read": 4,
@@ -293,13 +296,17 @@
       "link_read": 0,
       "opened_only": 0,
       "processes": [
-        2310
+        3972
       ]
     },
     "unpinned_mount_accesses": 0,
     "unpinned_mount_files": []
   },
   "capture_complete": true,
+  "capture_source": "final",
+  "checkpoint_interval_seconds": 1,
+  "checkpoint_sequence": 1,
+  "checkpoint_unix": 1792293119,
   "command_bytes": [
     [
       112,
@@ -327,9 +334,26 @@
     "python3",
     "analyze.py"
   ],
+  "daemon_session": "1792293119-614244810-3966",
+  "environment": {
+    "captured_unix": 1792293119,
+    "cpu_count": 16,
+    "disclaimer": "轻量环境摘要，不是完整环境归档；不包含已安装软件包、库版本、全部环境变量、硬件细节或外部文件。",
+    "gid": 1000,
+    "hostname": "DESKTOP-BT7FGIT",
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "mem_total_kib": 16017484,
+    "os_release": "Ubuntu 24.04.1 LTS",
+    "python3": "Python 3.12.3",
+    "sysname": "Linux",
+    "teamfs_version": "0.8.0",
+    "uid": 1000,
+    "wsl": true
+  },
   "exit_code": 0,
   "experiment": "baseline",
-  "finished_unix": 1792077511,
+  "finished_unix": 1792293119,
   "input_directory_bytes": [
     47,
     104,
@@ -337,11 +361,7 @@
     109,
     101,
     47,
-    117,
-    98,
-    117,
-    110,
-    116,
+    121,
     117,
     47,
     116,
@@ -363,14 +383,14 @@
     116,
     115,
     45,
-    109,
-    105,
-    110,
-    57,
-    118,
-    120,
-    120,
-    49,
+    99,
+    48,
+    113,
+    98,
+    100,
+    121,
+    55,
+    97,
     47,
     109,
     110,
@@ -414,7 +434,9 @@
     110,
     101
   ],
+  "input_version_persistent": true,
   "mode": "persistent",
+  "outcome": "succeeded",
   "output_directory_bytes": [
     47,
     104,
@@ -422,11 +444,7 @@
     109,
     101,
     47,
-    117,
-    98,
-    117,
-    110,
-    116,
+    121,
     117,
     47,
     116,
@@ -448,14 +466,14 @@
     116,
     115,
     45,
-    109,
-    105,
-    110,
-    57,
-    118,
-    120,
-    120,
-    49,
+    99,
+    48,
+    113,
+    98,
+    100,
+    121,
+    55,
+    97,
     47,
     114,
     101,
@@ -473,13 +491,87 @@
     110,
     101
   ],
+  "outputs": {
+    "captured": true,
+    "captured_unix": 1792293119,
+    "complete": true,
+    "count": 3,
+    "errors": [],
+    "files": [
+      {
+        "bytes": 67,
+        "path": "outputs/result.json",
+        "path_bytes": [
+          111,
+          117,
+          116,
+          112,
+          117,
+          116,
+          115,
+          47,
+          114,
+          101,
+          115,
+          117,
+          108,
+          116,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "outputs/result.json",
+        "sha256": "b44e33142c6b082ca8059dcd6137ef3b29f2804ad6b77829c5182eb55769b19b"
+      },
+      {
+        "bytes": 0,
+        "path": "stderr.txt",
+        "path_bytes": [
+          115,
+          116,
+          100,
+          101,
+          114,
+          114,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 59,
+        "path": "stdout.txt",
+        "path_bytes": [
+          115,
+          116,
+          100,
+          111,
+          117,
+          116,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "stdout.txt",
+        "sha256": "5335dc8c5395c6911857a4d16ef148cb4f561cccedc6a42aa525607aa087f4e4"
+      }
+    ],
+    "scope": "报告目录内 outputs/ 下的全部普通文件，以及顶层 stdout.txt、stderr.txt。软链接和特殊文件不纳入；这是报告收尾时的摘要，不证明程序没有写其他挂载点外文件。",
+    "total_bytes": 126
+  },
   "phase": "finished",
-  "process_group": 2310,
+  "process_group": 3972,
   "replay_source_snapshot": null,
   "schema_version": 1,
   "scope": "Pinned TeamFS snapshot and this process group only. External files, network inputs, software environment and processes leaving the group are not tracked. FUSE read bytes do not prove algorithmic use; metadata-only and opened-only accesses are separate. Requests the kernel rejects or serves from its caches never reach FUSE. Snapshot files use direct I/O: shared mmap is unsupported, private read-only mappings are read through the page cache at readahead granularity.",
   "signal": null,
   "snapshot": "experiment.baseline",
-  "started_unix": 1792077511,
+  "started_unix": 1792293119,
   "teamfs": "0.8.0"
 }

@@ -1,0 +1,7 @@
+PASS: public Iris case records exact inputs, excluded unused files, output digests and a lightweight environment summary
+PASS: comparison ignores experiment name, PID, timestamps and read counters
+PASS: same-name data and config changes alter results and appear as content changes
+PASS: failed program keeps verifiable failure evidence and compares output add/remove
+PASS: old-input replay is byte-identical and compares without content change
+PASS: verify rejects tampered output content and unsafe report paths
+RESULT {'pass': 6}; report: /mnt/c/Users/WenJingHan/大学/大三上/操作系统/TeamFS/TeamFS/artifacts/member4-acceptance.json

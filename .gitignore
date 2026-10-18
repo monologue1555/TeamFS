@@ -5,6 +5,9 @@
 *.sqlite3
 *.sqlite3-wal
 *.sqlite3-shm
+# 成员4案例的独立输入备份需要后端状态库才能用 backup verify 校验，
+# 仅保留该证据目录下的一份，不影响其他运行产物仍被忽略。
+!/artifacts/member4-case/**/backup/state.sqlite3
 store.lock
 __pycache__/
 *.jsonl

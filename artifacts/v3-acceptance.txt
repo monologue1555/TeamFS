@@ -1,5 +1,5 @@
-TeamFS v0.3 actual mounted acceptance 2026-10-15T23:17:02+0800
-binary: /home/ubuntu/.cache/teamfs/target/debug/teamfs
+TeamFS v0.3 actual mounted acceptance 2026-10-18T11:09:01+0800
+binary: /home/yu/.cache/teamfs/target/debug/teamfs
 PASS 01: unlink keeps immutable bytes, raw attributes and separate inode; restore is non-overwriting
 PASS 02: Chinese/non-UTF8/control names, empty file and repeated deletions retain distinct IDs
 PASS 03: rename overwrite is protected; no-op/failed rename and direct truncate do not add records

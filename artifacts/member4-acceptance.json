@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-10-18T11:12:28+0800",
+  "suite": "member4-acceptance",
+  "completed": true,
+  "environment": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "uid": 1000
+  },
+  "context": {
+    "case": "/mnt/c/Users/WenJingHan/大学/大三上/操作系统/TeamFS/TeamFS/examples/research/iris",
+    "data": "UCI Iris dataset 53 (public, CC BY 4.0)",
+    "scope": "Real FUSE mount; one deterministic standard-library analysis; environment summary is not an environment archive."
+  },
+  "summary": {
+    "pass": 6
+  },
+  "cases": [
+    {
+      "name": "public Iris case records exact inputs, excluded unused files, output digests and a lightweight environment summary",
+      "status": "pass",
+      "seconds": 0.24218208599995705,
+      "detail": "4 exact inputs; unused Bezdek/names/Index excluded; 3 output digests; environment summary present; verify re-hashes outputs"
+    },
+    {
+      "name": "comparison ignores experiment name, PID, timestamps and read counters",
+      "status": "pass",
+      "seconds": 0.00859557900002983,
+      "detail": "renamed experiment, new PID/timestamps/read counters produce zero content changes and are listed as run metadata"
+    },
+    {
+      "name": "same-name data and config changes alter results and appear as content changes",
+      "status": "pass",
+      "seconds": 0.40795549500012385,
+      "detail": "same-name iris.data edit changes a reported mean; same-name config edit changes rounding and output; comparison names both changed inputs"
+    },
+    {
+      "name": "failed program keeps verifiable failure evidence and compares output add/remove",
+      "status": "pass",
+      "seconds": 0.24053831000014725,
+      "detail": "program exit 2 still records failure.json, exit status and environment; comparison reports added failure.json and removed result.json"
+    },
+    {
+      "name": "old-input replay is byte-identical and compares without content change",
+      "status": "pass",
+      "seconds": 0.2809850059998098,
+      "detail": "replay from the baseline snapshot reproduces result/stdout/stderr byte-for-byte and SHA256; comparison shows no content change"
+    },
+    {
+      "name": "verify rejects tampered output content and unsafe report paths",
+      "status": "pass",
+      "seconds": 0.08216210999989926,
+      "detail": "verify rejects a changed output digest and an output path escaping the report directory"
+    }
+  ]
+}

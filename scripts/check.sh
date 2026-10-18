@@ -9,19 +9,30 @@ trap 'rm -f -- "$runs"' EXIT
 git_query() { git -C "$TEAMFS_ROOT" "$@" 2>/dev/null || true; }
 commit="$(git_query rev-parse HEAD)"
 branch="$(git_query rev-parse --abbrev-ref HEAD)"
-dirty="$(git_query status --porcelain -- . ':(exclude)artifacts')"
+# artifacts are this run's outputs; .claude holds tool-local settings, not project source.
+dirty="$(git_query status --porcelain -- . ':(exclude)artifacts' ':(exclude).claude')"
 python3 -c 'import json,sys; print(json.dumps({"source":{"commit":sys.argv[1] or None,"branch":sys.argv[2] or None,"dirty":bool(sys.argv[3])}}))' \
     "$commit" "$branch" "$dirty" > "$runs"
+# Wall clock for artifact freshness; monotonic clock for elapsed time, because
+# WSL can step the wall clock while a long suite is running.
+monotonic_ns() {
+    local uptime idle whole fraction
+    read -r uptime idle < /proc/uptime
+    whole=${uptime%.*}
+    fraction=${uptime#*.}
+    printf '%d\n' "$((10#$whole * 1000000000 + 10#$fraction * 10000000))"
+}
 run_suite() {
-    local name=$1 display=$2 started code
+    local name=$1 display=$2 started mono_started code
     shift 2
     started=$(date +%s%N)
+    mono_started=$(monotonic_ns)
     set +e
     "$@"
     code=$?
     set -e
     printf '{"suite":"%s","command":"%s","exit_code":%d,"started_ns":%d,"elapsed_ns":%d}\n' \
-        "$name" "$display" "$code" "$started" "$(( $(date +%s%N) - started ))" >> "$runs"
+        "$name" "$display" "$code" "$started" "$(( $(monotonic_ns) - mono_started ))" >> "$runs"
 }
 unit_tests() { (cd -- "$TEAMFS_ROOT" && cargo test --locked) 2>&1 | tee "$TEAMFS_ROOT/artifacts/model-tests.txt"; }
 run_suite unit "cargo test --locked" unit_tests
@@ -35,4 +46,5 @@ run_suite blocks "bash scripts/test-blocks.sh" bash "$TEAMFS_ROOT/scripts/test-b
 run_suite experiments "bash scripts/test-experiments.sh" bash "$TEAMFS_ROOT/scripts/test-experiments.sh"
 run_suite attribution "bash scripts/test-attribution.sh" bash "$TEAMFS_ROOT/scripts/test-attribution.sh"
 run_suite member3 "bash scripts/test-member3.sh" bash "$TEAMFS_ROOT/scripts/test-member3.sh"
+run_suite member4 "bash scripts/test-member4.sh" bash "$TEAMFS_ROOT/scripts/test-member4.sh"
 python3 "$TEAMFS_ROOT/tests/regression_summary.py" "$runs"

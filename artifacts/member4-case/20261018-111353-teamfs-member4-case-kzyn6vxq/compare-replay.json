@@ -1,0 +1,275 @@
+{
+  "compared_unix": 1792293235,
+  "inputs": {
+    "access_class_changed": [],
+    "added": [],
+    "content_changed": [],
+    "removed": [],
+    "summary": {
+      "access_class_changed": 0,
+      "added": 0,
+      "content_changed": 0,
+      "removed": 0,
+      "unchanged": 4
+    },
+    "unchanged": [
+      {
+        "path_bytes": [
+          97,
+          110,
+          97,
+          108,
+          121,
+          115,
+          105,
+          115,
+          45,
+          99,
+          111,
+          110,
+          102,
+          105,
+          103,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "analysis-config.json"
+      },
+      {
+        "path_bytes": [
+          97,
+          110,
+          97,
+          108,
+          121,
+          122,
+          101,
+          95,
+          105,
+          114,
+          105,
+          115,
+          46,
+          112,
+          121
+        ],
+        "path_display": "analyze_iris.py"
+      },
+      {
+        "path_bytes": [
+          105,
+          114,
+          105,
+          115,
+          45,
+          98,
+          97,
+          115,
+          101,
+          108,
+          105,
+          110,
+          101,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "iris-baseline.json"
+      },
+      {
+        "path_bytes": [
+          105,
+          114,
+          105,
+          115,
+          46,
+          100,
+          97,
+          116,
+          97
+        ],
+        "path_display": "iris.data"
+      }
+    ]
+  },
+  "outputs": {
+    "added": [],
+    "available": true,
+    "changed": [],
+    "complete": true,
+    "note": "只比较两个报告都采集到的输出文件摘要。",
+    "removed": [],
+    "summary": {
+      "added": 0,
+      "changed": 0,
+      "removed": 0,
+      "unchanged": 3
+    },
+    "unchanged": [
+      {
+        "bytes": 1896,
+        "path_bytes": [
+          111,
+          117,
+          116,
+          112,
+          117,
+          116,
+          115,
+          47,
+          114,
+          101,
+          115,
+          117,
+          108,
+          116,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "outputs/result.json",
+        "sha256": "ef98b8d7ea211952c020d61aa2c419c19ae464c81ffd269e0f2921a0315bab62"
+      },
+      {
+        "bytes": 0,
+        "path_bytes": [
+          115,
+          116,
+          100,
+          101,
+          114,
+          114,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 123,
+        "path_bytes": [
+          115,
+          116,
+          100,
+          111,
+          117,
+          116,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "stdout.txt",
+        "sha256": "f97da131ef74dfcb4b35bcb4d2feb3d3d8d099c48b6f7193ba1e5569cc23362f"
+      }
+    ]
+  },
+  "report_a": {
+    "capture_complete": true,
+    "directory": "/mnt/c/Users/WenJingHan/大学/大三上/操作系统/TeamFS/TeamFS/artifacts/member4-case/20261018-111353-teamfs-member4-case-kzyn6vxq/baseline",
+    "exit_code": 0,
+    "experiment": "iris-baseline",
+    "outcome": "succeeded",
+    "signal": null,
+    "snapshot": "experiment.iris-baseline"
+  },
+  "report_b": {
+    "capture_complete": true,
+    "directory": "/mnt/c/Users/WenJingHan/大学/大三上/操作系统/TeamFS/TeamFS/artifacts/member4-case/20261018-111353-teamfs-member4-case-kzyn6vxq/replay",
+    "exit_code": 0,
+    "experiment": "iris-replay",
+    "outcome": "succeeded",
+    "signal": null,
+    "snapshot": "experiment.iris-replay"
+  },
+  "run_context": {
+    "command": {
+      "a": [
+        "python3",
+        "-I",
+        "analyze_iris.py",
+        "iris.data",
+        "analysis-config.json",
+        "iris-baseline.json"
+      ],
+      "b": [
+        "python3",
+        "-I",
+        "analyze_iris.py",
+        "iris.data",
+        "analysis-config.json",
+        "iris-baseline.json"
+      ],
+      "changed": false
+    },
+    "exit": {
+      "a": {
+        "exit_code": 0,
+        "outcome": "succeeded",
+        "signal": null
+      },
+      "b": {
+        "exit_code": 0,
+        "outcome": "succeeded",
+        "signal": null
+      },
+      "changed": false
+    },
+    "experiment": {
+      "a": "iris-baseline",
+      "b": "iris-replay",
+      "changed": true
+    },
+    "finished_unix": {
+      "a": 1792293234,
+      "b": 1792293234,
+      "changed": false
+    },
+    "note": "实验名称、进程组/PID、开始与结束时间、采集序号、读取计数和退出状态属于运行元数据，不参与文件内容比较。",
+    "process_group": {
+      "a": 711,
+      "b": 719,
+      "changed": true
+    },
+    "started_unix": {
+      "a": 1792293233,
+      "b": 1792293234,
+      "changed": true
+    }
+  },
+  "schema_version": 1,
+  "scope": "比较只读取两份外部报告中的输入清单、输出摘要和运行元数据，不读取输入正文，也不执行实验。",
+  "verdict": {
+    "both_capture_complete": true,
+    "inputs_access_identical": true,
+    "inputs_content_identical": true,
+    "note": "inputs_content_identical 只比较路径与 SHA256；访问分类变化单独列出。outputs_identical 仅在两个报告都采集了输出摘要时成立。",
+    "outputs_identical": true
+  },
+  "volatile_fields_ignored": [
+    "experiment",
+    "snapshot",
+    "process_group",
+    "capture.inputs[].pids",
+    "started_unix",
+    "finished_unix",
+    "checkpoint_sequence",
+    "daemon_session",
+    "input_directory_bytes",
+    "output_directory_bytes",
+    "capture.inputs[].read_calls",
+    "capture.inputs[].read_bytes",
+    "exit_code",
+    "signal",
+    "outcome"
+  ]
+}
