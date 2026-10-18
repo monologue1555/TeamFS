@@ -15,7 +15,7 @@
     "sample_count": 3
   },
   "version": "0.8.0",
-  "measured_at": "2026-10-15T23:18:35+0800",
+  "measured_at": "2026-10-18T11:12:05+0800",
   "checks": [
     "real analysis records its source and three consumed inputs, excludes unused data, stores SHA256 and command outcome",
     "same-named current data changes the result; replaying pinned code/data returns the original byte-exact result",

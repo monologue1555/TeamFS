@@ -1,0 +1,70 @@
+{
+  "analysis": "uci-iris-class-means",
+  "baseline_check": {
+    "matched": true,
+    "mismatch_count": 0,
+    "mismatches": [],
+    "note": "该核对只比较三类 4 个特征的均值；不一致不阻止输出，但会明确标记。",
+    "tolerance": 1e-09
+  },
+  "class_means": {
+    "Iris-setosa": {
+      "petal_length_cm": 1.464,
+      "petal_width_cm": 0.244,
+      "sepal_length_cm": 5.006,
+      "sepal_width_cm": 3.418
+    },
+    "Iris-versicolor": {
+      "petal_length_cm": 4.26,
+      "petal_width_cm": 1.326,
+      "sepal_length_cm": 5.936,
+      "sepal_width_cm": 2.77
+    },
+    "Iris-virginica": {
+      "petal_length_cm": 5.552,
+      "petal_width_cm": 2.026,
+      "sepal_length_cm": 6.588,
+      "sepal_width_cm": 2.974
+    }
+  },
+  "dataset": {
+    "class_counts": {
+      "Iris-setosa": 50,
+      "Iris-versicolor": 50,
+      "Iris-virginica": 50
+    },
+    "features": [
+      "sepal_length_cm",
+      "sepal_width_cm",
+      "petal_length_cm",
+      "petal_width_cm"
+    ],
+    "rows": 150
+  },
+  "inputs": {
+    "baseline": {
+      "bytes": 632,
+      "path": "iris-baseline.json",
+      "sha256": "cb5515e54c8b3ae2825423502e784283071c4ddea75d4c382aed1e863bf80d1a"
+    },
+    "config": {
+      "bytes": 382,
+      "path": "analysis-config.json",
+      "sha256": "d526351f2fd077314fd68698f9575228d89a82c924e97429ecce00c0e17326ce"
+    },
+    "data": {
+      "bytes": 4551,
+      "path": "iris.data",
+      "sha256": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0"
+    }
+  },
+  "overall_means": {
+    "petal_length_cm": 3.758667,
+    "petal_width_cm": 1.198667,
+    "sepal_length_cm": 5.843333,
+    "sepal_width_cm": 3.054
+  },
+  "rounding_decimals": 6,
+  "scope": "只对 iris.data 的 150 行记录计算分组均值；不读取文档、未使用数据文件或网络资源，也不据此提出新的植物学结论。",
+  "status": "succeeded"
+}

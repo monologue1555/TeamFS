@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "measured_at": "2026-10-15T23:18:40+0800",
+  "measured_at": "2026-10-18T11:12:13+0800",
   "suite": "attribution-acceptance",
   "completed": true,
   "environment": {
-    "kernel": "6.18.33.2-microsoft-standard-WSL2",
-    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
     "python": "3.12.3",
     "uid": 1000
   },
@@ -13,13 +13,13 @@
     "request_report_crosscheck": {
       "direct": {
         "program_accounting": {
-          "pid": 2396,
-          "pgid": 2396,
-          "thread_tid": 2397,
-          "child": 2398,
-          "grandchild": 2399,
-          "setsid": 2400,
-          "setsid_group": 2400,
+          "pid": 4126,
+          "pgid": 4126,
+          "thread_tid": 4127,
+          "child": 4128,
+          "grandchild": 4129,
+          "setsid": 4130,
+          "setsid_group": 4130,
           "reads": {
             "data/样本 1.csv": [
               3,
@@ -67,9 +67,9 @@
           "link_read": 1,
           "opened_only": 1,
           "processes": [
-            2396,
-            2398,
-            2399
+            4126,
+            4128,
+            4129
           ]
         },
         "nodes": [
@@ -84,15 +84,15 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2396,
-              2397,
-              2398,
-              2399
+              4126,
+              4127,
+              4128,
+              4129
             ],
             "report_pids": [
-              2396,
-              2398,
-              2399
+              4126,
+              4128,
+              4129
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -108,10 +108,10 @@
             },
             "callback_read_bytes": 32,
             "callback_thread_ids": [
-              2398
+              4128
             ],
             "report_pids": [
-              2398
+              4128
             ],
             "report_read_calls": 1,
             "report_read_bytes": 32
@@ -125,10 +125,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -144,10 +144,10 @@
             },
             "callback_read_bytes": 4,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 1,
             "report_read_bytes": 4
@@ -163,10 +163,10 @@
             },
             "callback_read_bytes": 700,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 3,
             "report_read_bytes": 700
@@ -182,10 +182,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 1,
             "report_read_bytes": 0
@@ -201,10 +201,10 @@
             },
             "callback_read_bytes": 16,
             "callback_thread_ids": [
-              2399
+              4129
             ],
             "report_pids": [
-              2399
+              4129
             ],
             "report_read_calls": 1,
             "report_read_bytes": 16
@@ -218,10 +218,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -237,10 +237,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -255,10 +255,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -274,10 +274,10 @@
             },
             "callback_read_bytes": 28,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 2,
             "report_read_bytes": 28
@@ -293,10 +293,10 @@
             },
             "callback_read_bytes": 8101,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 6,
             "report_read_bytes": 8101
@@ -310,10 +310,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2396
+              4126
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -329,10 +329,10 @@
             },
             "callback_read_bytes": 64,
             "callback_thread_ids": [
-              2397
+              4127
             ],
             "report_pids": [
-              2396
+              4126
             ],
             "report_read_calls": 1,
             "report_read_bytes": 64
@@ -347,20 +347,20 @@
           }
         ],
         "other_group_content_requests": {
-          "2388": 9,
-          "2400": 2
+          "4118": 9,
+          "4130": 2
         },
-        "callbacks_examined": 870
+        "callbacks_examined": 900
       },
       "cached": {
         "program_accounting": {
-          "pid": 2413,
-          "pgid": 2413,
-          "thread_tid": 2414,
-          "child": 2415,
-          "grandchild": 2416,
-          "setsid": 2417,
-          "setsid_group": 2417,
+          "pid": 4143,
+          "pgid": 4143,
+          "thread_tid": 4144,
+          "child": 4145,
+          "grandchild": 4147,
+          "setsid": 4158,
+          "setsid_group": 4158,
           "reads": {
             "data/样本 1.csv": [
               3,
@@ -408,9 +408,9 @@
           "link_read": 1,
           "opened_only": 1,
           "processes": [
-            2413,
-            2415,
-            2416
+            4143,
+            4145,
+            4147
           ]
         },
         "nodes": [
@@ -425,15 +425,15 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2413,
-              2414,
-              2415,
-              2416
+              4143,
+              4144,
+              4145,
+              4147
             ],
             "report_pids": [
-              2413,
-              2415,
-              2416
+              4143,
+              4145,
+              4147
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -449,10 +449,10 @@
             },
             "callback_read_bytes": 32,
             "callback_thread_ids": [
-              2415
+              4145
             ],
             "report_pids": [
-              2415
+              4145
             ],
             "report_read_calls": 1,
             "report_read_bytes": 32
@@ -466,10 +466,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -485,10 +485,10 @@
             },
             "callback_read_bytes": 4,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 1,
             "report_read_bytes": 4
@@ -504,10 +504,10 @@
             },
             "callback_read_bytes": 700,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 3,
             "report_read_bytes": 700
@@ -523,10 +523,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 1,
             "report_read_bytes": 0
@@ -542,10 +542,10 @@
             },
             "callback_read_bytes": 16,
             "callback_thread_ids": [
-              2416
+              4147
             ],
             "report_pids": [
-              2416
+              4147
             ],
             "report_read_calls": 1,
             "report_read_bytes": 16
@@ -559,10 +559,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -578,10 +578,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -596,10 +596,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -615,10 +615,10 @@
             },
             "callback_read_bytes": 28,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 2,
             "report_read_bytes": 28
@@ -634,10 +634,10 @@
             },
             "callback_read_bytes": 8101,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 6,
             "report_read_bytes": 8101
@@ -651,10 +651,10 @@
             },
             "callback_read_bytes": 0,
             "callback_thread_ids": [
-              2413
+              4143
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 0,
             "report_read_bytes": 0
@@ -670,10 +670,10 @@
             },
             "callback_read_bytes": 64,
             "callback_thread_ids": [
-              2414
+              4144
             ],
             "report_pids": [
-              2413
+              4143
             ],
             "report_read_calls": 1,
             "report_read_bytes": 64
@@ -688,10 +688,10 @@
           }
         ],
         "other_group_content_requests": {
-          "2388": 9,
-          "2417": 2
+          "4118": 9,
+          "4158": 2
         },
-        "callbacks_examined": 870
+        "callbacks_examined": 900
       }
     },
     "beyond_audit_window": {
@@ -702,8 +702,8 @@
       "report_read_calls": 2700,
       "report_read_bytes": 83340,
       "audit_window_retained": 2048,
-      "audit_evicted_during_mount": 679,
-      "callbacks_examined": 2925
+      "audit_evicted_during_mount": 680,
+      "callbacks_examined": 2955
     },
     "tools_in_experiments": {
       "ls -laR": "metadata only",
@@ -726,61 +726,61 @@
     {
       "name": "direct / request-report reconciliation, classes, threads, children, other groups",
       "status": "pass",
-      "seconds": 0.5620873390000014,
-      "detail": "870 callbacks reconciled; 14 nodes, other-group requests 11"
+      "seconds": 0.9744392490001701,
+      "detail": "900 callbacks reconciled; 14 nodes, other-group requests 11"
     },
     {
       "name": "cached / request-report reconciliation, classes, threads, children, other groups",
       "status": "pass",
-      "seconds": 0.6388405170000055,
-      "detail": "870 callbacks reconciled; 14 nodes, other-group requests 11"
+      "seconds": 0.9821892759998718,
+      "detail": "900 callbacks reconciled; 14 nodes, other-group requests 11"
     },
     {
       "name": "2700 reads beyond the audit window while the same-named file changes",
       "status": "pass",
-      "seconds": 0.5515017479999926,
-      "detail": "2700 variable-size reads, 83340 bytes, exact after the 2048-event audit window evicted 679"
+      "seconds": 1.190187256999934,
+      "detail": "2700 variable-size reads, 83340 bytes, exact after the 2048-event audit window evicted 680"
     },
     {
       "name": "Chinese, invalid UTF-8, control-character names and partial binary reads",
       "status": "pass",
-      "seconds": 0.21340768200001037,
+      "seconds": 0.36212328700003127,
       "detail": "nested Chinese directories, invalid UTF-8, newline/tab/backslash names, binary partial read, empty file"
     },
     {
       "name": "missing inputs keep errno; kernel-decided failures are not invented",
       "status": "pass",
-      "seconds": 0.22445720000000335,
+      "seconds": 0.3286788020000131,
       "detail": "application saw {'missing.csv': 2, 'sub/missing.csv': 2, 'data.txt/x': 20, 'write data.txt': 13}; report holds only the FUSE-visible errors [('missing.csv', 'lookup'), ('sub/missing.csv', 'lookup')]"
     },
     {
       "name": "unpinned business, snapshot and trash reads are listed and block verify",
       "status": "pass",
-      "seconds": 0.22307973099999856,
+      "seconds": 0.39126347300020825,
       "detail": "12 unpinned requests listed by location and path; verify refuses"
     },
     {
       "name": "symlink chains, escapes and dangling targets",
       "status": "pass",
-      "seconds": 0.2046811719999937,
+      "seconds": 0.3452780569998595,
       "detail": "in-tree chains certified; absolute, into-mount and ../ escapes flagged; dangling target errno kept"
     },
     {
       "name": "private mmap of a pinned input",
       "status": "pass",
-      "seconds": 0.26359020200000316,
+      "seconds": 0.32147440699986873,
       "detail": "private read-only mapping touched 100 bytes; page-cache readahead requested 100000 bytes in 1 read(s)"
     },
     {
       "name": "shared mmap of a pinned input",
       "status": "unsupported",
-      "seconds": 0.2127336100000008,
+      "seconds": 0.32704129899980217,
       "detail": "shared mmap of pinned inputs fails with ENODEV (direct I/O); the open is still recorded"
     },
     {
       "name": "ls, find, stat, head, wc, sha256sum, tar, rsync, git and vim as experiment commands",
       "status": "pass",
-      "seconds": 2.4038468359999996,
+      "seconds": 5.823313396000003,
       "detail": {
         "ls -laR": "metadata only",
         "find": "directory listing only",

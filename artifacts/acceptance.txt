@@ -1,11 +1,11 @@
 TeamFS 实际验收
-2026-10-15T23:16:59+08:00
-6.18.33.2-microsoft-standard-WSL2
-rustc 1.75.0 (82e1608df 2023-12-21) (built from a source tarball)
-cargo 1.75.0
+2026-10-18T11:08:54+08:00
+6.6.114.1-microsoft-standard-WSL2
+rustc 1.75.0 (82e1608df 2023-12-21)
+cargo 1.75.0 (1d8b05cdd 2023-11-20)
 libfuse: 2.9.9
-uid=1000(ubuntu) gid=1001(ubuntu) groups=1001(ubuntu),4(adm),24(cdrom),27(sudo),30(dip),1000(lxd)
-/home/ubuntu/teamfs-check-EpNo9B/mnt fuse.teamfs
+uid=1000(yu) gid=1000(yu) groups=1000(yu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),100(users),107(netdev),108(docker)
+/home/yu/teamfs-check-lBRBCc/mnt fuse.teamfs
 PASS 01: 真实挂载与预置中文文件
 PASS 02: mkdir / create / write / read：中文名称、内容与字节大小
 PASS 03: 追加与覆盖截断：更短的内容没有残留尾部

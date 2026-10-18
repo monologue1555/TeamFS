@@ -2,6 +2,7 @@
   "cancelled": false,
   "capture": {
     "all_observed_content_inputs_pinned": true,
+    "daemon_session": "1792293126-459560356-4137",
     "errors": [
       {
         "count": 1,
@@ -29,31 +30,32 @@
       }
     ],
     "external_link_accesses": 0,
-    "finished_unix": 1792077516,
+    "finished_unix": 1792293127,
+    "input_snapshot_sha256": "4f8cbb5bd894ecfdfb122e915c5f6de57d735293bdc259fe9da0613933a5a8e1",
     "input_version_persistent": true,
     "inputs": [
       {
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077516,
-            240606115
+            1792293126,
+            648193107
           ],
           "crtime": [
-            1792077516,
-            240606115
+            1792293126,
+            648193107
           ],
           "ctime": [
-            1792077516,
-            240929313
+            1792293126,
+            649025812
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 20,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            240929313
+            1792293126,
+            649025812
           ],
           "nlink": 1,
           "size": 32,
@@ -84,7 +86,7 @@
         ],
         "path_display": "child-input.txt",
         "pids": [
-          2415
+          4145
         ],
         "read_bytes": 32,
         "read_calls": 1,
@@ -94,24 +96,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077516,
-            157531483
+            1792293126,
+            510567129
           ],
           "crtime": [
-            1792077516,
-            157531483
+            1792293126,
+            510567129
           ],
           "ctime": [
-            1792077516,
-            157761438
+            1792293126,
+            511433428
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 8,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            157761438
+            1792293126,
+            511433428
           ],
           "nlink": 1,
           "size": 4096,
@@ -142,7 +144,7 @@
         ],
         "path_display": "data/raw-\\xff\\n.bin",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 4,
         "read_calls": 1,
@@ -152,24 +154,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077516,
-            149967627
+            1792293126,
+            500058872
           ],
           "crtime": [
-            1792077516,
-            149967627
+            1792293126,
+            500058872
           ],
           "ctime": [
-            1792077516,
-            150208477
+            1792293126,
+            500938250
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 7,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            150208477
+            1792293126,
+            500938250
           ],
           "nlink": 1,
           "size": 3000,
@@ -202,7 +204,7 @@
         ],
         "path_display": "data/样本 1.csv",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 700,
         "read_calls": 3,
@@ -212,24 +214,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077516,
-            174410461
+            1792293126,
+            527812233
           ],
           "crtime": [
-            1792077516,
-            174410461
+            1792293126,
+            527812233
           ],
           "ctime": [
-            1792077516,
-            174423977
+            1792293126,
+            527835559
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 10,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            174423977
+            1792293126,
+            527835559
           ],
           "nlink": 1,
           "size": 0,
@@ -254,7 +256,7 @@
         ],
         "path_display": "empty.txt",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 0,
         "read_calls": 1,
@@ -264,24 +266,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077516,
-            248506749
+            1792293126,
+            656456195
           ],
           "crtime": [
-            1792077516,
-            248506749
+            1792293126,
+            656456195
           ],
           "ctime": [
-            1792077516,
-            248755065
+            1792293126,
+            657450951
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 21,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            248755065
+            1792293126,
+            657450951
           ],
           "nlink": 1,
           "size": 16,
@@ -317,7 +319,7 @@
         ],
         "path_display": "grandchild-input.txt",
         "pids": [
-          2416
+          4147
         ],
         "read_bytes": 16,
         "read_calls": 1,
@@ -327,24 +329,24 @@
         "access_class": "opened_only",
         "attributes": {
           "atime": [
-            1792077516,
-            182401724
+            1792293126,
+            535158397
           ],
           "crtime": [
-            1792077516,
-            182401724
+            1792293126,
+            535158397
           ],
           "ctime": [
-            1792077516,
-            182650180
+            1792293126,
+            535961654
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 11,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            182650180
+            1792293126,
+            535961654
           ],
           "nlink": 1,
           "size": 22,
@@ -374,7 +376,7 @@
         ],
         "path_display": "opened-only.txt",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 0,
         "read_calls": 0,
@@ -384,24 +386,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077516,
-            166404757
+            1792293126,
+            519348987
           ],
           "crtime": [
-            1792077516,
-            166404757
+            1792293126,
+            519348987
           ],
           "ctime": [
-            1792077516,
-            167113993
+            1792293126,
+            520217695
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 9,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            167113993
+            1792293126,
+            520217695
           ],
           "nlink": 1,
           "size": 28,
@@ -428,7 +430,7 @@
         ],
         "path_display": "params.json",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 28,
         "read_calls": 2,
@@ -438,24 +440,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077516,
-            137219639
+            1792293126,
+            487710379
           ],
           "crtime": [
-            1792077516,
-            137219639
+            1792293126,
+            487710379
           ],
           "ctime": [
-            1792077516,
-            137689858
+            1792293126,
+            488580791
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 5,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            137689858
+            1792293126,
+            488580791
           ],
           "nlink": 1,
           "size": 2693,
@@ -487,7 +489,7 @@
         ],
         "path_display": "probe_program.py",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 8101,
         "read_calls": 6,
@@ -497,24 +499,24 @@
         "access_class": "content_read",
         "attributes": {
           "atime": [
-            1792077516,
-            230852515
+            1792293126,
+            614267684
           ],
           "crtime": [
-            1792077516,
-            230852515
+            1792293126,
+            614267684
           ],
           "ctime": [
-            1792077516,
-            231413941
+            1792293126,
+            615055822
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 19,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            231413941
+            1792293126,
+            615055822
           ],
           "nlink": 1,
           "size": 64,
@@ -546,7 +548,7 @@
         ],
         "path_display": "thread-input.txt",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 64,
         "read_calls": 1,
@@ -558,24 +560,24 @@
         "access_class": "directory_listing",
         "attributes": {
           "atime": [
-            1792077516,
-            84090139
+            1792293126,
+            459381003
           ],
           "crtime": [
-            1792077516,
-            84090139
+            1792293126,
+            459381003
           ],
           "ctime": [
-            1792077516,
-            274240380
+            1792293126,
+            695659848
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 1,
           "kind": "Directory",
           "mode": 493,
           "mtime": [
-            1792077516,
-            274240380
+            1792293126,
+            695659848
           ],
           "nlink": 6,
           "size": 0,
@@ -590,9 +592,9 @@
         "path_bytes": [],
         "path_display": "",
         "pids": [
-          2413,
-          2415,
-          2416
+          4143,
+          4145,
+          4147
         ],
         "read_bytes": 0,
         "read_calls": 0
@@ -601,24 +603,24 @@
         "access_class": "attribute_only",
         "attributes": {
           "atime": [
-            1792077516,
-            149537528
+            1792293126,
+            498547873
           ],
           "crtime": [
-            1792077516,
-            149537528
+            1792293126,
+            498547873
           ],
           "ctime": [
-            1792077516,
-            157541074
+            1792293126,
+            510586808
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 6,
           "kind": "Directory",
           "mode": 493,
           "mtime": [
-            1792077516,
-            157541074
+            1792293126,
+            510586808
           ],
           "nlink": 2,
           "size": 0,
@@ -636,7 +638,7 @@
         ],
         "path_display": "data",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 0,
         "read_calls": 0
@@ -645,24 +647,24 @@
         "access_class": "link_read",
         "attributes": {
           "atime": [
-            1792077516,
-            274229442
+            1792293126,
+            695637337
           ],
           "crtime": [
-            1792077516,
-            274229442
+            1792293126,
+            695637337
           ],
           "ctime": [
-            1792077516,
-            274229442
+            1792293126,
+            695637337
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 24,
           "kind": "Symlink",
           "mode": 511,
           "mtime": [
-            1792077516,
-            274229442
+            1792293126,
+            695637337
           ],
           "nlink": 1,
           "size": 11,
@@ -705,7 +707,7 @@
         ],
         "path_display": "link-to-params",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 0,
         "read_calls": 0
@@ -714,24 +716,24 @@
         "access_class": "directory_listing",
         "attributes": {
           "atime": [
-            1792077516,
-            204498729
+            1792293126,
+            564327424
           ],
           "crtime": [
-            1792077516,
-            204498729
+            1792293126,
+            564327424
           ],
           "ctime": [
-            1792077516,
-            222879162
+            1792293126,
+            586909186
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 15,
           "kind": "Directory",
           "mode": 493,
           "mtime": [
-            1792077516,
-            222879162
+            1792293126,
+            586909186
           ],
           "nlink": 2,
           "size": 0,
@@ -754,7 +756,7 @@
         ],
         "path_display": "listing",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 0,
         "read_calls": 0
@@ -763,24 +765,24 @@
         "access_class": "attribute_only",
         "attributes": {
           "atime": [
-            1792077516,
-            189072600
+            1792293126,
+            545311018
           ],
           "crtime": [
-            1792077516,
-            189072600
+            1792293126,
+            545311018
           ],
           "ctime": [
-            1792077516,
-            189330618
+            1792293126,
+            546272746
           ],
-          "gid": 1001,
+          "gid": 1000,
           "ino": 12,
           "kind": "File",
           "mode": 420,
           "mtime": [
-            1792077516,
-            189330618
+            1792293126,
+            546272746
           ],
           "nlink": 1,
           "size": 10,
@@ -807,21 +809,22 @@
         ],
         "path_display": "stat-only.txt",
         "pids": [
-          2413
+          4143
         ],
         "read_bytes": 0,
         "read_calls": 0
       }
     ],
+    "observed_unix": 1792293127,
     "other_group_pids": [
-      2388,
-      2417
+      4118,
+      4158
     ],
     "other_group_snapshot_accesses": 11,
-    "process_group": 2413,
+    "process_group": 4143,
     "scope": "Only requests from this process group against this immutable snapshot are attributed; thread IDs are reported as their process IDs. Hashes cover full file versions, even when only a portion was read. Opened-only files are not claimed to have been consumed. Requests rejected by the kernel before FUSE (permission checks, non-directory path components) are not seen. Other process groups reading this snapshot are counted, never attributed. External dependencies and processes leaving the group are outside this capture.",
     "snapshot": "experiment.classified",
-    "started_unix": 1792077516,
+    "started_unix": 1792293126,
     "summary": {
       "attribute_only": 2,
       "content_read": 8,
@@ -830,15 +833,19 @@
       "link_read": 1,
       "opened_only": 1,
       "processes": [
-        2413,
-        2415,
-        2416
+        4143,
+        4145,
+        4147
       ]
     },
     "unpinned_mount_accesses": 0,
     "unpinned_mount_files": []
   },
   "capture_complete": true,
+  "capture_source": "final",
+  "checkpoint_interval_seconds": 1,
+  "checkpoint_sequence": 1,
+  "checkpoint_unix": 1792293126,
   "command_bytes": [
     [
       112,
@@ -872,9 +879,26 @@
     "python3",
     "probe_program.py"
   ],
+  "daemon_session": "1792293126-459560356-4137",
+  "environment": {
+    "captured_unix": 1792293126,
+    "cpu_count": 16,
+    "disclaimer": "轻量环境摘要，不是完整环境归档；不包含已安装软件包、库版本、全部环境变量、硬件细节或外部文件。",
+    "gid": 1000,
+    "hostname": "DESKTOP-BT7FGIT",
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "mem_total_kib": 16017484,
+    "os_release": "Ubuntu 24.04.1 LTS",
+    "python3": "Python 3.12.3",
+    "sysname": "Linux",
+    "teamfs_version": "0.8.0",
+    "uid": 1000,
+    "wsl": true
+  },
   "exit_code": 0,
   "experiment": "classified",
-  "finished_unix": 1792077516,
+  "finished_unix": 1792293127,
   "input_directory_bytes": [
     47,
     104,
@@ -882,11 +906,7 @@
     109,
     101,
     47,
-    117,
-    98,
-    117,
-    110,
-    116,
+    121,
     117,
     47,
     116,
@@ -915,14 +935,14 @@
     101,
     100,
     45,
-    53,
-    101,
     122,
-    99,
-    121,
-    108,
-    104,
     48,
+    48,
+    100,
+    106,
+    52,
+    53,
+    112,
     47,
     109,
     110,
@@ -968,7 +988,9 @@
     101,
     100
   ],
+  "input_version_persistent": true,
   "mode": "persistent",
+  "outcome": "succeeded",
   "output_directory_bytes": [
     47,
     104,
@@ -976,11 +998,7 @@
     109,
     101,
     47,
-    117,
-    98,
-    117,
-    110,
-    116,
+    121,
     117,
     47,
     116,
@@ -1009,14 +1027,14 @@
     101,
     100,
     45,
-    53,
-    101,
     122,
-    99,
-    121,
-    108,
-    104,
     48,
+    48,
+    100,
+    106,
+    52,
+    53,
+    112,
     47,
     114,
     101,
@@ -1036,13 +1054,214 @@
     101,
     100
   ],
+  "outputs": {
+    "captured": true,
+    "captured_unix": 1792293127,
+    "complete": true,
+    "count": 8,
+    "errors": [],
+    "files": [
+      {
+        "bytes": 434,
+        "path": "outputs/accounting.json",
+        "path_bytes": [
+          111,
+          117,
+          116,
+          112,
+          117,
+          116,
+          115,
+          47,
+          97,
+          99,
+          99,
+          111,
+          117,
+          110,
+          116,
+          105,
+          110,
+          103,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "outputs/accounting.json",
+        "sha256": "b13ae9ae01d12736944516d36ac3c73599f05ea2c8b194852da9f7a0739c8046"
+      },
+      {
+        "bytes": 10,
+        "path": "outputs/child.json",
+        "path_bytes": [
+          111,
+          117,
+          116,
+          112,
+          117,
+          116,
+          115,
+          47,
+          99,
+          104,
+          105,
+          108,
+          100,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "outputs/child.json",
+        "sha256": "37dc242ef00829e938bb788e05ce597521715b75c1d754359ea0be75f716732e"
+      },
+      {
+        "bytes": 0,
+        "path": "outputs/go",
+        "path_bytes": [
+          111,
+          117,
+          116,
+          112,
+          117,
+          116,
+          115,
+          47,
+          103,
+          111
+        ],
+        "path_display": "outputs/go",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 10,
+        "path": "outputs/grandchild.json",
+        "path_bytes": [
+          111,
+          117,
+          116,
+          112,
+          117,
+          116,
+          115,
+          47,
+          103,
+          114,
+          97,
+          110,
+          100,
+          99,
+          104,
+          105,
+          108,
+          100,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "outputs/grandchild.json",
+        "sha256": "4a0e086f6c561d51f9bc0285c4b0e35de75703dd5a644dc98418211fa4ed74ca"
+      },
+      {
+        "bytes": 0,
+        "path": "outputs/ready",
+        "path_bytes": [
+          111,
+          117,
+          116,
+          112,
+          117,
+          116,
+          115,
+          47,
+          114,
+          101,
+          97,
+          100,
+          121
+        ],
+        "path_display": "outputs/ready",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 12,
+        "path": "outputs/setsid.json",
+        "path_bytes": [
+          111,
+          117,
+          116,
+          112,
+          117,
+          116,
+          115,
+          47,
+          115,
+          101,
+          116,
+          115,
+          105,
+          100,
+          46,
+          106,
+          115,
+          111,
+          110
+        ],
+        "path_display": "outputs/setsid.json",
+        "sha256": "3d2ff7e208d77f3bd4990c761ec1f510d0a06e409fe3da16bde1963001759b28"
+      },
+      {
+        "bytes": 0,
+        "path": "stderr.txt",
+        "path_bytes": [
+          115,
+          116,
+          100,
+          101,
+          114,
+          114,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "path": "stdout.txt",
+        "path_bytes": [
+          115,
+          116,
+          100,
+          111,
+          117,
+          116,
+          46,
+          116,
+          120,
+          116
+        ],
+        "path_display": "stdout.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "scope": "报告目录内 outputs/ 下的全部普通文件，以及顶层 stdout.txt、stderr.txt。软链接和特殊文件不纳入；这是报告收尾时的摘要，不证明程序没有写其他挂载点外文件。",
+    "total_bytes": 466
+  },
   "phase": "finished",
-  "process_group": 2413,
+  "process_group": 4143,
   "replay_source_snapshot": null,
   "schema_version": 1,
   "scope": "Pinned TeamFS snapshot and this process group only. External files, network inputs, software environment and processes leaving the group are not tracked. FUSE read bytes do not prove algorithmic use; metadata-only and opened-only accesses are separate. Requests the kernel rejects or serves from its caches never reach FUSE. Snapshot files use direct I/O: shared mmap is unsupported, private read-only mappings are read through the page cache at readahead granularity.",
   "signal": null,
   "snapshot": "experiment.classified",
-  "started_unix": 1792077516,
+  "started_unix": 1792293126,
   "teamfs": "0.8.0"
 }

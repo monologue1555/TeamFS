@@ -56,7 +56,7 @@
 bash scripts/member4-case.sh
 ```
 
-时间戳目录：`artifacts/member4-case/20261018-105024-teamfs-member4-case-26vbbh9u/`，最新位置见 `artifacts/member4-case-latest.json`。
+时间戳目录：`artifacts/member4-case/20261018-111353-teamfs-member4-case-kzyn6vxq/`，最新位置见 `artifacts/member4-case-latest.json`。该目录由最终源码提交 `f450134` 生成，仓库只保留这一份案例证据。
 
 ### 4.1 原始输入运行
 

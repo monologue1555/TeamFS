@@ -1,0 +1,34 @@
+1. 用当前公开数据执行分析程序。
+2. 修改同名 iris.data 后重新运行。
+3. 按第一次报告重放旧输入。
+4. 保留报告、独立输入备份和比较结果。
+{
+  "unused_file_bezdekExcluded": true,
+  "exact_inputs": [
+    "analysis-config.json",
+    "analyze_iris.py",
+    "iris-baseline.json",
+    "iris.data"
+  ],
+  "output_digest_files": [
+    "outputs/result.json",
+    "stderr.txt",
+    "stdout.txt"
+  ],
+  "baseline_result_sha256": "ef98b8d7ea211952c020d61aa2c419c19ae464c81ffd269e0f2921a0315bab62",
+  "changed_result_sha256": "10bd957f7203d814a7dfe27dbbf6c54c27e0e5ea761568030aa080bbfab00a33",
+  "replay_result_sha256": "ef98b8d7ea211952c020d61aa2c419c19ae464c81ffd269e0f2921a0315bab62",
+  "baseline_replay_byte_identical": true,
+  "changed_result_differs": true,
+  "changed_inputs": [
+    "iris.data"
+  ],
+  "changed_outputs": [
+    "outputs/result.json",
+    "stderr.txt",
+    "stdout.txt"
+  ],
+  "replay_comparison_has_no_content_change": true,
+  "verify_baseline_and_replay": true
+}
+报告、比较结果与独立输入备份已保留： /mnt/c/Users/WenJingHan/大学/大三上/操作系统/TeamFS/TeamFS/artifacts/member4-case/20261018-111353-teamfs-member4-case-kzyn6vxq
