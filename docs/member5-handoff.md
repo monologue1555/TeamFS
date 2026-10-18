@@ -2,6 +2,18 @@
 
 本轮交付当前 0.8 版本的性能基线、独立评估脚本、已保存结果的版本对比工具及对接约定。其他成员无需等待性能工作即可继续开发；成员 5 在功能合并后使用相同脚本复测。当前数据不是最终整合版本验收，也没有新增功能已完成或优化已生效的含义。
 
+## 2026 年 10 月 18 日对接进展
+
+主分支 `9e4ced3` 已包含成员 3 的中途保存与恢复，成员 5 工作分支已合入该更新。PR 继续作为阶段交付保留，暂不合并到主分支，等待最终整合验收。
+
+当前实际行为：释放执行门之前保存初始摘要；运行中约每秒保存；报告新增 `outcome`、`checkpoint_sequence`、`checkpoint_interval_seconds`、`capture_source`，以及 `capture.input_snapshot_sha256`。保存间隔是代码中的固定常量，尚无开启/关闭或间隔调整参数。整树指纹覆盖未被程序读取的输入；访问清单仍只记录实际访问，两者不能混为一谈。
+
+成员 5 已增加两个固定工作量的 paced 长负载，以及较大未使用文件对照；记录初始/周期保存次数，并为旧、新版本安排相同测量脚本的同日复测。`--checkpoints required/absent` 仅用于核对目标版本能力，不是控制保存开关。新版本长负载至少触发两次周期保存，否则样本失败。
+
+下一步需要成员 3 确认：是否提供独立的周期保存开关和间隔配置；可选的保存成功/失败次数及耗时字段怎样定义。若仅关闭周期保存而保留启动前摘要，应明确标记，不能写成“完全无摘要”。在这些接口落地前，旧、新版本差值只能解释为整组功能变化的成本。
+
+同日复测入口和边界见 [性能方法](member5-performance.md#两个提交的同日复测)。下面的阶段计时表仍是提案，尚未写入 Rust。
+
 ## 已交付内容
 
 | 内容 | 入口 | 当前状态 |
@@ -11,6 +23,9 @@
 | 可复查证据 | `artifacts/member5/20261016T034314Z-ipiu8x6_/` | 27 个样本全部通过；9 次实际 experiment verify |
 | 图表 | `scripts/plot-member5.py` | 从已保存样本生成 PNG/SVG，柱为中位数、点为全部样本 |
 | 两次评估对比 | `scripts/compare-member5.py` | 核对条件，输出中位数变化、百分比和缺失项 |
+| 两个提交同日复测 | `scripts/benchmark-member5-pair.py` | 独立检出/构建、保留二进制、相同工具、顺序测量与归档 |
+| 新旧版本研究报告 | `scripts/plot-member5-study.py` | 输出六类负载对照、周期保存覆盖、资源表和 PNG/SVG |
+| daemon 子阶段提取 | `scripts/analyze-member5-stages.py` | 从原始指标中提取启动、摘要和收尾处理，核对次数和哈希 |
 | 证据归档 | `scripts/package-member5.py` | 原字节 ZIP、逐文件哈希及归档回读验证 |
 | 方法及结果解释 | `docs/member5-performance.md`、`docs/member5-baseline-results.md` | 计时/内存/存储口径和现阶段结论 |
 
@@ -65,6 +80,8 @@ teamfs experiment verify <mount> <report-dir>
 
 成员 3 的周期保存建议另给出保存次数、成功/失败次数及累计耗时，注明它们是运行阶段的子集；不要把其累计时间与完整运行时间再相加。先以真实测量为准，不要求承诺固定百分比开销。
 
+目前已有 `management.experiment_start/checkpoint/finish` 指标，成员 5 已能直接提取服务内部的累计处理时间，并用 checkpoint 次数与报告序号对账。因此无需为了拿到这些服务内指标重复加一套计时。仍待约定的是 runner 端到端阶段、外部报告发布及独立哈希成本；旧、新耗时名称必须明确范围，避免把服务内部时间当成整个阶段。
+
 ## 复测与版本对比
 
 建议始终保留同一测量脚本，只更新目标 TeamFS 代码。若工作负载或计时脚本确实需要修改，应尽可能用更新后的同一脚本对旧、新两版分别重测；否则比较工具会标记测量条件不同。
@@ -99,7 +116,7 @@ python3 scripts/compare-member5.py \
 成员 5 的工具检查：
 
 ```bash
-python3 -m unittest discover -s tests -p 'test_member5_compare.py' -v
+python3 -m unittest discover -s tests -p 'test_member5_*.py' -v
 bash scripts/benchmark-member5.sh --samples 1 --workloads small
 ```
 
@@ -107,4 +124,8 @@ bash scripts/benchmark-member5.sh --samples 1 --workloads small
 
 最终整合时仍须在目标提交重新运行完整性能基线、实际科研案例以及项目全套 `scripts/check.sh`。发布材料应同时给出目标提交号、测量源码哈希、release/debug、缓存和日志条件、机器、原始样本及阶段边界。不得将本轮 25 项单元测试与 27 个基准样本通过写成全套回归通过。
 
-当前仍待完成：内部阶段接口接入、周期保存成本、真实科研案例、基于证据的优化前后对照，以及最终整合版本验收。
+当前已完成成员 3 两轮整版对照（216 个样本、72 次 verify）、长任务周期保存覆盖及已有 daemon 阶段提取，见 [最新进展](member5-member3-results.md)。两轮 Python 构建信息不同，按批次分别展示，每批内部条件匹配，不跨批合并中位数。
+
+当前仍待完成：缺失的 runner/纯哈希计时接口、严格保存开关与间隔对照、真实科研案例、基于证据的优化前后对照，以及最终整合版本验收。PR 保持开放，全部工作完成前暂不合并主分支。
+
+成员 3 已交付后，周期保存相关工作已进入实际评估；严格开关/间隔对照仍待接口，不能把整版变化的差值当作纯保存成本。

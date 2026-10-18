@@ -51,6 +51,16 @@ python3 scripts/plot-member5.py artifacts/member5/<本次目录>
 | many | 256 × 4 KiB | 3 | 观察多文件路径解析及访问记录成本 |
 | large | 1 × 16 MiB | 3 | 观察较大输入顺序读取与版本校验成本 |
 
+针对成员 3 合入后的扩展负载（需要显式指定 `--workloads`，默认仍是上面三类）：
+
+| 负载 | 输入及工作量 | 等待策略 | 用途 |
+|---|---|---|---|
+| paced_many | 256 × 4 KiB，读 8 轮 | 每轮读完等待 0.5 秒 | 多条目摘要的周期保存 |
+| paced_large | 1 × 16 MiB，读 8 轮 | 每轮读完等待 0.5 秒 | 较大输入重复访问时的周期保存 |
+| unused_large | 1 × 4 KiB，读 32 轮，另放 16 MiB 未读取文件 | 不等待 | 观察整个输入树指纹的成本 |
+
+两种 paced 负载固定读取量，计划等待合计 4 秒，不是按时间截断的吞吐测试。所有模式使用相同等待策略；分别记录请求等待、实际等待及减去实际等待的 active body。active body 仍包含 FUSE 阻塞，不能称为 CPU 时间。新版本长任务必须记录至少两次周期保存；初始保存单独占一个序号。短任务也有初始摘要，因此周期次数为 0 不表示关闭了全部摘要保存。
+
 数据是明确标注的合成数据，不作为科研案例。每组还包含程序源码和一个故意不读取的 `unused.bin`。TeamFS 默认附带的示例文件未删除，快照可能包含它们，但它们不应出现在正文输入清单中。
 
 每个样本新建独立挂载与存储，防止快照积累改变后续样本。三轮模式顺序依次为 native/teamfs/experiment、teamfs/experiment/native、experiment/native/teamfs。未清除系统页缓存；输入准备和同一程序多轮读取会产生热缓存，不宣称严格冷读。日志文件、trace 和自动同步关闭，内存日志及运行指标仍开启。
@@ -66,6 +76,8 @@ python3 scripts/plot-member5.py artifacts/member5/<本次目录>
 | workload_body_ms | 程序内部打开、读取、SHA256 和关闭循环 | 已包含在 command wall，不能重复相加 |
 | verify_cli_ms | 实验完成后另执行 experiment verify 的耗时 | 不包含在 command wall；原生和普通模式为不适用 |
 | snapshot_ms / capture_hash_ms / report_export_ms | 当前版本没有独立测量接口 | 填 null，不填 0、不用差值冒充实测 |
+
+扩展 paced 负载的 `workload_body_ms` 还包含等待；`sleep_requested_ms`、`sleep_observed_ms` 和 `active_body_ms` 解释其组成。`checkpoint_sequence` 记录全部成功摘要，`periodic_checkpoint_count` 减去一次初始摘要。它们是功能覆盖与保存频次证据，不是保存耗时或累计写入量。
 
 本轮不把 `command_wall_ms - workload_body_ms` 命名为“采集耗时”。差值同时含解释器启动、调度、运行器轮询、保存和其他管理开销。代码目前每 30 ms 检查一次子进程退出，短任务的命令耗时会受到影响；本轮保留现有行为，不为改善跑分而修改其他成员的模块。
 
@@ -117,4 +129,55 @@ python3 scripts/compare-member5.py artifacts/member5/<旧目录> artifacts/membe
 4. 最终合并版本重新跑同一脚本；选择有测量依据的优化，保留前后样本并通过成员 2 的完整回归。
 5. 将最终图表、原始样本和测量口径交给成员 6。当前基线不能写成新增功能全部完成后的性能验收。
 
-当前已具备三组对照、原始样本留存、独立正确性核对和资源记录框架；内部阶段拆分、实际案例、采集持久化成本及优化前后对照仍是后续工作。
+当前已具备三组对照、原始样本留存、独立正确性核对、资源记录及 daemon 阶段提取；完整端到端阶段拆分、实际案例、严格保存策略对照及优化前后对照仍是后续工作。
+
+## 两个提交的同日复测
+
+`scripts/benchmark-member5-pair.py` 在 Linux HOME 建立两个独立检出，复制相同的当前测量脚本，确认 Rust/Cargo 核心文件与所选提交一致，构建并执行单元测试后再开始测量。它保留两个二进制和源码位置，不切换当前工作分支。测量工具的未提交修改会如实记录。
+
+```bash
+python3 scripts/benchmark-member5-pair.py \
+  --before 276e68e --after 9e4ced3 \
+  --before-checkpoints absent --after-checkpoints required \
+  --name <新的批次名称>
+python3 scripts/plot-member5-study.py artifacts/member5-studies/<批次名称>
+```
+
+如首轮原生/普通模式出现较大波动，可使用新名称及 `--order after-first` 做反向复测。全部样本保留，用以下方式汇总而不是只选择更符合预期的一批：
+
+```bash
+python3 scripts/plot-member5-study.py artifacts/member5-studies/<正向批次> \
+  --replicate artifacts/member5-studies/<反向批次> \
+  --stratified \
+  --output artifacts/member5-studies/<新的汇总目录>
+```
+
+报告核对目标版本、工作量及各批内部测量条件，展示全部散点，并保留分批链接。`--stratified` 按批次分别展示且列出跨批条件差异；省略它时，条件不一致会拒绝合并。本轮两批 Python 构建信息不同，采用分别展示，不计算跨批中位数。反向复测不是严格随机化实验；环境也改变时不能孤立推导顺序效应。
+
+`--before-checkpoints` 和 `--after-checkpoints` 只是期望能力的断言，**不控制 daemon 的保存开关**。当前成员 3 实现固定约每秒保存，尚没有可配置开关或间隔。
+
+默认共 108 个样本。两版顺序执行，每个版本内轮换模式顺序；`--order after-first` 可反转版本顺序。没有按样本交错两版，也没有严格控制后台负载和缓存；同日测量降低了跨天差异，不能视作消除了所有干扰。daemon 阶段可按下节提取，完整端到端阶段尚未拆分；版本差值包含输入树指纹、摘要保存和加强的 verify，不等于纯周期保存成本。
+
+更新后的测量脚本与 10 月 16 日首轮脚本哈希不同，应使用本轮旧、新版本的新样本对比；旧基线保留为历史证据，不能绕过对比工具的测量脚本一致性检查。
+
+## 直接利用已有 daemon 分阶段指标
+
+原始 `metrics-after.json` 已包含 `management.experiment_start`、`management.experiment_checkpoint` 和 `management.experiment_finish`。可在测量后提取这些已有指标，不修改 Rust，也不增加计时期间的采样负担：
+
+```bash
+python3 scripts/analyze-member5-stages.py \
+  artifacts/member5/<旧版目录> artifacts/member5/<新版目录> \
+  --output artifacts/member5-studies/<批次>/daemon-stages
+```
+
+支持传入多个完整批次，按各运行目录分别展示中位数，不跨环境合并。工具先校验归档和指标文件哈希，再核对摘要操作次数与报告序号。
+
+| 指标 | 可说明的内容 | 不能说明的内容 |
+|---|---|---|
+| daemon_start_total_ms | daemon 收到启动命令后的处理，含快照事务 | 不含请求到达前的等待，不是完整 runner 输入准备时间 |
+| daemon_start_commit_ms | 上一指标内部的事务保存时间 | 不能与 start_total 再相加 |
+| daemon_checkpoint_total_ms | 初始及全部周期摘要的累计处理，含所需哈希和序列化 | 不含 runner 报告写入，不是纯周期或纯哈希时间 |
+| daemon_checkpoint_mean_ms | 单样本累计时间除以成功摘要次数 | 初始和后续成本不同，平均值不能代表每次都相同 |
+| daemon_finish_total_ms | daemon 最终采集汇总、哈希与序列化 | 不含最终外部报告发布 |
+
+计时点位于 `Service::fsync` 已持有服务锁之后，不包含进入锁前的等待、内核排队和回复传输。这些时间与命令、工作负载运行存在包含或重叠关系，不能把它们与 command wall/body 机械相加。报告落盘时间和纯哈希时间仍需后续独立接口。

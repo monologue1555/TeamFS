@@ -20,6 +20,8 @@ jobs:
           find artifacts -maxdepth 1 -type f \( -name '*.txt' -o -name '*.json' -o -name '*.jsonl' -o -name '*.log' -o -name '*.md' \) -delete
       - name: Unit tests
         run: cargo test --locked
+      - name: Member 5 evidence tool tests
+        run: python3 -m unittest discover -s tests -p 'test_member5_*.py' -v
       - name: Detect real FUSE capability
         id: fuse
         shell: bash

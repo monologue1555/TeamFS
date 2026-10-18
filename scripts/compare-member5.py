@@ -12,6 +12,8 @@ METRICS = (
     "verify_cli_ms", "snapshot_ms", "capture_hash_ms", "report_export_ms",
     "workload_self_maxrss_bytes", "daemon_rss_before_run_bytes", "daemon_rss_sampled_peak_bytes",
     "report_metadata_bytes", "workload_output_bytes",
+    "sleep_requested_ms", "sleep_observed_ms", "active_body_ms",
+    "checkpoint_sequence", "periodic_checkpoint_count", "checkpoint_interval_seconds",
 ) + tuple(stage + "/" + name for stage in ("storage_after_prepare", "storage_after_run", "storage_after_unmount")
           for name in ("state.sqlite3", "state.sqlite3-wal", "state.sqlite3-shm"))
 REQUIRED = ("input_copy_ms", "input_persist_ms", "command_wall_ms", "workload_body_ms",
@@ -52,6 +54,20 @@ def load_run(directory):
         fixture = fixtures[key[0]]
         if (row["file_count"], row["file_bytes"], row["rounds"]) != (fixture["count"], fixture["file_bytes"], fixture["rounds"]):
             raise ValueError("Sample dimensions do not match fixture metadata")
+        if row.get("pause_seconds_per_round", 0) != fixture.get("pause_seconds_per_round", 0):
+            raise ValueError("Sample pacing does not match fixture metadata")
+        if row["mode"] == "experiment":
+            capability = data.get("expected_checkpoint_capability", "auto")
+            sequence = row.get("checkpoint_sequence")
+            if capability == "required" and sequence is None:
+                raise ValueError("Required checkpoint evidence is missing")
+            if capability == "absent" and sequence is not None:
+                raise ValueError("Unexpected checkpoint support in baseline")
+            if sequence is not None:
+                if type(sequence) is not int or sequence < 1 or row.get("periodic_checkpoint_count") != sequence - 1:
+                    raise ValueError("Invalid checkpoint counters")
+                if fixture.get("pause_seconds_per_round", 0) and sequence < 3:
+                    raise ValueError("Paced workload did not exercise periodic checkpointing")
         required = REQUIRED + (("verify_cli_ms",) if row["mode"] == "experiment" else ())
         for metric in METRICS:
             value = metric_value(row, metric)

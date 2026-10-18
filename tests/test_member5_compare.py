@@ -126,6 +126,43 @@ class ComparisonTests(unittest.TestCase):
         self.assertEqual(live["change_percent"], 100)
         self.assertEqual(closed["delta"], 0)
 
+    def test_required_checkpoint_evidence_is_not_silently_omitted(self):
+        def configure(record):
+            record["modes"] = ["experiment"]
+            record["expected_checkpoint_capability"] = "required"
+            for row in record["samples"]:
+                row.update(mode="experiment", verify_cli_ms=2)
+        self.changed(configure)
+        with self.assertRaisesRegex(ValueError, "checkpoint evidence"):
+            module.load_run(self.after)
+
+    def test_checkpoint_count_excludes_initial_save(self):
+        def configure(record):
+            record["modes"] = ["experiment"]
+            record["expected_checkpoint_capability"] = "required"
+            for row in record["samples"]:
+                row.update(mode="experiment", verify_cli_ms=2, checkpoint_sequence=4, periodic_checkpoint_count=3)
+        self.changed(configure)
+        module.load_run(self.after)
+        self.changed(lambda r: (configure(r), r["samples"][0].update(periodic_checkpoint_count=4)))
+        with self.assertRaisesRegex(ValueError, "checkpoint counters"):
+            module.load_run(self.after)
+
+    def test_paced_workload_must_cover_periodic_saves(self):
+        record = copy.deepcopy(self.record)
+        record["modes"] = ["experiment"]
+        record["expected_checkpoint_capability"] = "required"
+        for row in record["samples"]:
+            row.update(mode="experiment", verify_cli_ms=2, checkpoint_sequence=1,
+                       periodic_checkpoint_count=0, pause_seconds_per_round=.5)
+        self.save(self.after, record)
+        fixture_path = self.after / "fixture-small.json"
+        fixture = json.loads(fixture_path.read_text())
+        fixture["pause_seconds_per_round"] = .5
+        fixture_path.write_text(json.dumps(fixture))
+        with self.assertRaisesRegex(ValueError, "periodic checkpointing"):
+            module.load_run(self.after)
+
 
 if __name__ == "__main__":
     unittest.main()

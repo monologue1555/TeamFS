@@ -23,6 +23,8 @@ bash scripts/test-experiments.sh     # 真实挂载验收
 
 入口：[测量方法](docs/member5-performance.md)、[首轮结果](docs/member5-baseline-results.md)、[成员对接与复测](docs/member5-handoff.md)、[原始证据](artifacts/member5/README.md)。`scripts/compare-member5.py` 对比两个已有正式评估目录，核对输入、输出、样本数量和测量条件；内部阶段拆分及真实科研案例仍待对接。
 
+成员 3 合入后的新进展见 [同日两轮评估](docs/member5-member3-results.md)：扩展长任务和未使用大文件场景，使用同一工具复测两版，提取已有 daemon 管理操作耗时；保存开关/间隔对照、报告落盘独立计时和真实案例仍待完成。
+
 ## 0.7 基础：局部修改的版本保存成本
 
 研究问题：在保留可恢复文件版本的前提下，减少局部覆盖修改产生的重复内容保存。0.6 的增量保存以文件为单位；0.7 将内容保存粒度改为固定 **64 KiB 块**。块大小目前固定，不宣称是最佳参数。

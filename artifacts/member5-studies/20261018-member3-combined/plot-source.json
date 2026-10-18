@@ -1,0 +1,23 @@
+{
+  "aggregation": "stratified_no_pooling",
+  "sample_count": 216,
+  "studies": [
+    {
+      "study": "20261018-member3-v1",
+      "condition_mismatches_from_first": []
+    },
+    {
+      "study": "20261018-member3-reverse",
+      "condition_mismatches_from_first": [
+        "environment.python"
+      ]
+    }
+  ],
+  "summary_sha256": {
+    "artifacts/member5/20261018-member3-v1-before": "844a7f93c331eb3f85c3fc35ae41f8740ea607556fb663697544f84f81660648",
+    "artifacts/member5/20261018-member3-v1-after": "05e6317d552203bb40d5e2f1ea97cf5608ff8fdc550dfc851d1eda40c5073092",
+    "artifacts/member5/20261018-member3-reverse-before": "74c37b72b28694399cc3d180dac57124c59cf9e85929f29ce77d2b8247f7d943",
+    "artifacts/member5/20261018-member3-reverse-after": "5b29b2459070c5081c29410b25f1cd663ccff3597fc4e54dd426d612175e5836"
+  },
+  "plot_script_sha256": "bfafd637d777e64ea1d535f335d91e0d29323e8a937dee829ed4a149f86792fe"
+}

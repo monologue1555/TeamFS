@@ -23,7 +23,7 @@ def main():
     labels = {"native": "Native Linux", "teamfs": "TeamFS", "experiment": "Experiment"}
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.6), layout="constrained")
     for ax, field, title in zip(axes, ("command_wall_ms", "workload_body_ms"),
-                               ("Whole command", "Read + SHA256 loop (inside command)")):
+                               ("Whole command", "Workload body (includes configured sleeps)")):
         width = 0.75 / len(modes)
         for mode_index, mode in enumerate(modes):
             for workload_index, workload in enumerate(workloads):

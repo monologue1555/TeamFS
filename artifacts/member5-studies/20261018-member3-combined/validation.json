@@ -1,0 +1,42 @@
+{
+  "status": "pass",
+  "samples": 216,
+  "experiment_verify_outputs": 72,
+  "archive_files_hashed": 2128,
+  "new_long_task_periodic_count_range": [
+    4,
+    5
+  ],
+  "same_measuring_scripts_across_runs": true,
+  "same_binary_per_target_across_runs": true,
+  "same_output_per_workload_across_runs": true,
+  "core_diff_from_origin_main": false,
+  "aggregation": "stratified_no_pooling_python_build_differs",
+  "runs": [
+    {
+      "directory": "artifacts/member5/20261018-member3-reverse-after",
+      "samples": 54,
+      "archive_sha256": "5923d5d7753c44fe0dbb528237b2a7cf9db2fcfd7b68a1a724120bc1f1bea02d",
+      "archive_files": 532
+    },
+    {
+      "directory": "artifacts/member5/20261018-member3-reverse-before",
+      "samples": 54,
+      "archive_sha256": "bcbdf4859ce27617c6f520efa98ec4eb0b5be50cbf34e222caa3a9054fe2b457",
+      "archive_files": 532
+    },
+    {
+      "directory": "artifacts/member5/20261018-member3-v1-after",
+      "samples": 54,
+      "archive_sha256": "588993a3c6e60dfe82a4249d7bcc55a1e4164f66d77896fcc130ecf04da14578",
+      "archive_files": 532
+    },
+    {
+      "directory": "artifacts/member5/20261018-member3-v1-before",
+      "samples": 54,
+      "archive_sha256": "199159e724c045fc49f127bd9ac05c724a2500a09a2091bf856f9ec5048c65f9",
+      "archive_files": 532
+    }
+  ],
+  "scope": "Archive integrity and recorded correctness evidence; not a rerun of full scripts/check.sh."
+}

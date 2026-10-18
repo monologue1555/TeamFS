@@ -1,0 +1,2 @@
+   Compiling teamfs v0.8.0 (/home/lenovo/teamfs-member5-pair-fo7cp5jz/before)
+    Finished release [optimized] target(s) in 10.01s
