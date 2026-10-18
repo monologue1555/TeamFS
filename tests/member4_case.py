@@ -55,7 +55,6 @@ h = Mount("member4-case")
 stamp = time.strftime("%Y%m%d-%H%M%S") + "-" + h.base.name
 destination = ARTIFACTS / "member4-case" / stamp
 destination.mkdir(parents=True)
-ARTIFACTS.mkdir(exist_ok=True)
 
 summary = {
     "measured_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),

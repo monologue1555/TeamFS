@@ -127,7 +127,8 @@ teamfs experiment replay "$MOUNT" <baseline-report> iris-replay --output <replay
 | `.../backup/` | 修改数据前导出的独立输入备份（已重新校验） |
 | `.../compare-changed.json`、`.../compare-replay.json` | 两次报告比较的完整 JSON |
 | `artifacts/member4-compare-changed.json`、`artifacts/member4-compare-replay.json` | 固定位置的比较结果 |
-| `artifacts/member4-case.txt`、`artifacts/member4-case-trace.log` | 运行输出与真实 FUSE 回调日志 |
+| `artifacts/member4-case.txt` | 案例运行的文本输出 |
+| `artifacts/member4-case-trace.log` | 真实 FUSE 回调日志（本地产物；仓库 `.gitignore` 忽略 `artifacts/*.log`，不随提交分发） |
 | `examples/research/iris/` | 数据、来源元数据、分析程序与人工核对说明 |
 
 ## 6. 可复现步骤
