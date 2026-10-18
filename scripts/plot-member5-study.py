@@ -20,7 +20,7 @@ spec.loader.exec_module(comparison)
 def stratified_report(studies, destination):
     """Keep batches separate, including any recorded cross-batch differences."""
     inputs, baseline, refs, workloads = [], None, None, None
-    lines = ["# 成员 3 两轮对照汇总（按批次分别展示）", "",
+    lines = ["# 目标版本对照汇总（按批次分别展示）", "",
              "不同批次不合并计算中位数，不作为统一基线。样本数与环境信息逐批列出。", ""]
     count, hashes, seen = 0, {}, set()
     for index, path in enumerate(studies, 1):
@@ -50,7 +50,7 @@ def stratified_report(studies, destination):
         lines += ["", f"[本批全部模式、资源与原始证据]({relative}/report.md)", "", f"![批次 {index} 全部样本]({relative}/version-comparison.png)", ""]
         inputs.append({"study": path.name, "condition_mismatches_from_first": mismatches})
     lines += [f"共 {count} 个样本。若环境信息与执行顺序同时变化，不能从批次差异中单独推导顺序效应。每批内部条件匹配，仍须考虑背景活动及缓存波动。",
-              "", "长任务包含计划等待 4 秒。版本差值包含成员 3 整组功能变化，不是保存开关的因果对照。",
+              "", "长任务包含计划等待 4 秒。版本差值包含目标提交间整组功能变化，不是单项功能开关的因果对照。",
               "", "[按运行批次提取的 daemon 子阶段](daemon-stages/daemon-stages.md)"]
     destination.mkdir(parents=True, exist_ok=False)
     (destination / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -125,15 +125,15 @@ def main():
         ax.legend(fontsize=8)
     for index in range(len(workloads), axes.size):
         axes.flat[index].set_visible(False)
-    fig.suptitle(f"Member 3 integration cost | release | {per_group} samples/group | bars: medians; dots: all samples\n"
+    fig.suptitle(f"Target version comparison | release | {per_group} samples/group | bars: medians; dots: all samples\n"
                  "Whole-version comparison; no cache drop; sequential version order; not checkpoint on/off isolation", fontsize=12)
     for extension in ("png", "svg"):
         fig.savefig(destination / f"version-comparison.{extension}", dpi=170)
     plt.close(fig)
-    lines = ["# 成员 3 合入前后性能对照", "", f"旧版 `{state['refs']['before']}`；新版 `{state['refs']['after']}`。",
+    lines = ["# 目标提交前后性能对照", "", f"旧版 `{state['refs']['before']}`；新版 `{state['refs']['after']}`。",
              "", f"批次顺序：{'；'.join(' → '.join(item['state']['order']) for item in study_inputs)}；汇总每组 {per_group} 次，release 构建。",
              "", "全部基准输出均通过预期结果检查，两版输入 fixture 和确定性输出一致。新版长任务要求至少两次周期保存，初始保存另算一次。",
-             "", "这是整个版本的比较，包含初始摘要、周期摘要、整树指纹和更强的 verify。不能把版本差值全部归为周期保存，也不能宣称已完成开关对照或优化。",
+             "", "这是整个版本的比较；差异范围以两个目标提交为准。不能把版本差值全部归为周期保存或输出摘要，也不能宣称已完成单项功能开关对照或优化。",
              "", "## 命令总耗时中位数", "", "单位 ms。正变化表示新版更慢，负变化表示本次样本中新版更快；不等同于显著性或因果结论。",
              "", "| 负载 | 模式 | 旧版 | 新版 | 变化 % |", "|---|---|---:|---:|---:|"]
     for workload in workloads:
@@ -160,9 +160,9 @@ def main():
               "- 每个批次内版本按顺序执行而非逐样本交错；若汇总了正反两种批次顺序，也未严格控制后台活动、电源和缓存。原生/普通模式的漂移应一并查看，不能只挑实验模式的差值。",
               "- paced 负载每轮等待 0.5 秒，共 8 轮，计划等待 4 秒；固定读取量和等待策略相同。它不是持续吞吐测试。active body 只减去实际等待，不减去 FUSE 阻塞。",
               "- summary 中尚无独立的纯哈希/外部报告保存耗时，仍为 null。已有 daemon 管理操作可用 analyze-member5-stages.py 另行提取；此次没有保存开关、间隔对照或核心优化。",
-              "- 旧、新报告的 verify 语义不同：新版还检查整树指纹，因此 verify 耗时变化要结合功能变化解释。",
+              "- verify 的语义可能随版本增加整树指纹或输出校验；耗时变化要结合目标提交间的功能变化解释。",
               "- 每个正式目录保存 summary、fixture、CSV 和带逐文件哈希的 raw-evidence.zip；全部原始报告和源码快照位于 ZIP。",
-              "- 这轮只针对合成负载。真实科研案例、尚缺的 runner/纯哈希计时接口及最终整合回归仍待完成。", ""]
+              "- 此报告仅覆盖合成负载；真实案例使用独立报告。尚缺的 runner/纯哈希计时接口及最终整合验收不由此报告证明。", ""]
     for number, item in enumerate(study_inputs, 1):
         for label, directory in item["directories"].items():
             relative = Path(os.path.relpath(directory, destination)).as_posix()

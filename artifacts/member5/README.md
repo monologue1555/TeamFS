@@ -1,5 +1,7 @@
 # 成员 5 性能证据
 
+最新成员 4 对接：`20261018-member4-v1-before/after` 各 54 个合成样本；`20261018-member4-iris` 为 15 个公开 Iris 样本及 5 次重放。[合成版本对照](../member5-studies/20261018-member4-v1/report.md)与[Iris 三组报告](../member5-studies/20261018-member4-iris/report.md)分别展示；[中文结果解读](../../docs/member5-member4-results.md)说明范围和后续接口。
+
 10 月 18 日成员 3 合入后的两轮证据以 `20261018-member3-v1-*` 和 `20261018-member3-reverse-*` 命名。四个目录各有 54 个样本，完整原始数据收录在各自 ZIP 中；[汇总报告](../member5-studies/20261018-member3-combined/report.md)保留两轮全部数据，不能只选择其中一轮。历史基线如下。
 
 正式基线目录：[`20261016T034314Z-ipiu8x6_`](20261016T034314Z-ipiu8x6_/report.md)。

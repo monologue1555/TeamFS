@@ -4,7 +4,7 @@
 
 ## 2026 年 10 月 18 日对接进展
 
-主分支 `9e4ced3` 已包含成员 3 的中途保存与恢复，成员 5 工作分支已合入该更新。PR 继续作为阶段交付保留，暂不合并到主分支，等待最终整合验收。
+主分支 `c856f3f` 已包含成员 3 的中途保存与恢复，以及成员 4 的公开 Iris 案例、输出摘要、环境信息和报告比较，成员 5 工作分支已合入该更新。PR 继续作为阶段交付保留，暂不合并到主分支，等待最终整合验收。新增实际案例评估见 [成员 4 对接结果](member5-member4-results.md)。
 
 当前实际行为：释放执行门之前保存初始摘要；运行中约每秒保存；报告新增 `outcome`、`checkpoint_sequence`、`checkpoint_interval_seconds`、`capture_source`，以及 `capture.input_snapshot_sha256`。保存间隔是代码中的固定常量，尚无开启/关闭或间隔调整参数。整树指纹覆盖未被程序读取的输入；访问清单仍只记录实际访问，两者不能混为一谈。
 
@@ -26,10 +26,12 @@
 | 两个提交同日复测 | `scripts/benchmark-member5-pair.py` | 独立检出/构建、保留二进制、相同工具、顺序测量与归档 |
 | 新旧版本研究报告 | `scripts/plot-member5-study.py` | 输出六类负载对照、周期保存覆盖、资源表和 PNG/SVG |
 | daemon 子阶段提取 | `scripts/analyze-member5-stages.py` | 从原始指标中提取启动、摘要和收尾处理，核对次数和哈希 |
+| 公开 Iris 三组评估 | `tests/member5_iris.py` | 原样分析程序、独立 Decimal 复算、输出摘要核验及同名数据改变后的重放 |
+| 公开案例报告 | `scripts/report-member5-iris.py` | 校验归档后生成三组散点图、命令耗时及独立 verify/replay/compare 表 |
 | 证据归档 | `scripts/package-member5.py` | 原字节 ZIP、逐文件哈希及归档回读验证 |
 | 方法及结果解释 | `docs/member5-performance.md`、`docs/member5-baseline-results.md` | 计时/内存/存储口径和现阶段结论 |
 
-本轮没有修改 `src/`、原有共享测试工具、命令协议及实验报告格式。没有加入周期保存、输出摘要、真实案例或报告页面。工作负载是合成顺序读取加 SHA256，不能称作纯磁盘吞吐测试。
+成员 5 未修改 `src/`、原有共享测试工具、命令协议及实验报告格式；通过接入成员 3/4 的实现增加测量。合成顺序读取加 SHA256 与公开 Iris 案例分别评估，均不能称作纯磁盘吞吐测试。案例目录使用原字节 Git 规则，避免 Windows 换行转换改变数据身份。
 
 Git 中的历史样本子目录和 source 快照收录在 `raw-evidence.zip`；顶层汇总、fixture 和图表可以直接浏览，完整证据解压到新目录后核对。`evidence-archive.json` 给出归档及逐文件 SHA256。
 
@@ -39,7 +41,7 @@ Git 中的历史样本子目录和 source 快照收录在 `raw-evidence.zip`；�
 |---|---|---|---|
 | 2 访问与联调 | experiment CLI、访问分类和字段变更；整合提交号及回归结果 | 更新适配，确保性能样本没有漏采或错采 | 原有正确性套件通过，基准内的输入/字节数检查通过 |
 | 3 持久保存 | 中途保存开关、默认间隔、保存次数及保存耗时的口径 | 比较同一提交下关闭/开启保存及不同间隔 | 分别记录成功保存与不完整状态，性能样本不掩盖功能失败 |
-| 4 案例与报告 | 公开数据来源、下载/准备方式、启动命令、输入规模、输出路径和预期结果；输出摘要接口 | 增加真实案例负载，测量输出摘要及报告比较成本 | 三组业务输出一致；重放满足确定性要求；外部依赖单独说明 |
+| 4 案例与报告 | 已交付公开 Iris 来源、输入/输出摘要、compare 与重放；后续若提供纯输出哈希计时需注明边界 | 已接入真实案例三组评估，另测 verify/replay/compare 命令；整版差值不当作纯摘要成本 | 独立统计复算、三组业务输出逐字节一致、改动当前数据后旧输入重放一致 |
 | 6 页面与发布 | 最终发布提交号、报告消费格式、展示需要的图表字段 | 提供最终数据和对应图表，供页面/PPT 使用 | 页面与图表标明版本、构建、单位、样本数和测量范围 |
 
 请在改动命令参数、manifest 字段、快照路径或访问分类前同步成员 5。新增字段优先采用向后兼容方式；现有字段若要删除或改语义，应先约定迁移方式。表中需求是待双方确认的对接事项，不表示组员已承诺实现。
@@ -60,7 +62,8 @@ teamfs experiment verify <mount> <report-dir>
 - 顶层 `phase`、`capture_complete`、`exit_code`、`cancelled`。
 - `capture.inputs[]` 的 `path_bytes`、`sha256`、`access_class`、`read_bytes`。
 - `capture.unpinned_mount_accesses`、`capture.external_link_accesses`。
-- `.teamfs/status.json`、`.teamfs/metrics.json` 仅归档，当前不靠其内部指标推算命令分阶段时间。
+- `.teamfs/status.json`、`.teamfs/metrics.json` 保留归档；另行提取 metrics 的 daemon 管理操作耗时，不当作 runner 端到端阶段。
+- 成员 4 的 `outputs.captured/complete/files` 与 `environment` 用于核对输出证据；`experiment compare --json` 的 verdict 用于确认重放输入/输出内容一致。
 
 新增阶段计时字段之前，脚本输出的 `snapshot_ms`、`capture_hash_ms`、`report_export_ms` 均为 null；这表示未测量，不能解读为零开销。`verify_cli_ms` 是命令结束之后另行校验的时间，不是运行结束时的输入哈希耗时。
 
@@ -126,6 +129,6 @@ bash scripts/benchmark-member5.sh --samples 1 --workloads small
 
 当前已完成成员 3 两轮整版对照（216 个样本、72 次 verify）、长任务周期保存覆盖及已有 daemon 阶段提取，见 [最新进展](member5-member3-results.md)。两轮 Python 构建信息不同，按批次分别展示，每批内部条件匹配，不跨批合并中位数。
 
-当前仍待完成：缺失的 runner/纯哈希计时接口、严格保存开关与间隔对照、真实科研案例、基于证据的优化前后对照，以及最终整合版本验收。PR 保持开放，全部工作完成前暂不合并主分支。
+真实案例及成员 4 输出证据已接入。当前仍待完成：缺失的 runner/纯哈希计时接口、严格保存开关与间隔对照、基于证据的优化前后对照，以及最终整合版本验收。PR 保持开放，全部工作完成前暂不合并主分支。
 
 成员 3 已交付后，周期保存相关工作已进入实际评估；严格开关/间隔对照仍待接口，不能把整版变化的差值当作纯保存成本。

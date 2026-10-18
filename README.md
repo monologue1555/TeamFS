@@ -25,9 +25,9 @@ bash scripts/test-member4.sh         # 成员 4 验收：输出/环境证据、�
 
 `bash scripts/benchmark-member5.sh --samples 3` 使用独立挂载，对照原生 Linux 目录、普通 TeamFS 和实验模式，保留原始样本、输入输出校验、内存与存储记录。已有 27 个样本的 0.8 release 基线；新增功能整合后仍须复测。
 
-入口：[测量方法](docs/member5-performance.md)、[首轮结果](docs/member5-baseline-results.md)、[成员对接与复测](docs/member5-handoff.md)、[原始证据](artifacts/member5/README.md)。`scripts/compare-member5.py` 对比两个已有正式评估目录，核对输入、输出、样本数量和测量条件；内部阶段拆分及真实科研案例仍待对接。
+入口：[测量方法](docs/member5-performance.md)、[首轮结果](docs/member5-baseline-results.md)、[成员对接与复测](docs/member5-handoff.md)、[原始证据](artifacts/member5/README.md)。`scripts/compare-member5.py` 对比两个已有正式评估目录，核对输入、输出、样本数量和测量条件；已有 daemon 阶段指标可单独提取。
 
-成员 3 合入后的新进展见 [同日两轮评估](docs/member5-member3-results.md)：扩展长任务和未使用大文件场景，使用同一工具复测两版，提取已有 daemon 管理操作耗时；保存开关/间隔对照、报告落盘独立计时和真实案例仍待完成。
+成员 3 的历史对照见 [同日两轮评估](docs/member5-member3-results.md)。最新 [成员 4 对接评估](docs/member5-member4-results.md) 增加公开 Iris 三组对照、输出摘要核验、旧输入重放与报告比较，并复测成员 4 合入前后的合成负载。保存开关/间隔对照、纯哈希和报告落盘计时、优化验证仍待完成；PR 暂不合并。
 
 ## 0.7 基础：局部修改的版本保存成本
 

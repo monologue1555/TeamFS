@@ -11,3 +11,5 @@ artifacts/member5/**/*.svg -text -diff
 artifacts/member5-studies/**/*.json -text whitespace=cr-at-eol
 artifacts/member5-studies/**/*.svg -text -diff
 artifacts/member5-studies/**/*.txt -text whitespace=-blank-at-eof,cr-at-eol
+# Public case hashes and deterministic results depend on exact input bytes.
+examples/research/iris/* -text
