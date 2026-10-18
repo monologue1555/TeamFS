@@ -1,0 +1,19 @@
+{
+  "analysis": "uci-iris-class-means",
+  "features": [
+    "sepal_length_cm",
+    "sepal_width_cm",
+    "petal_length_cm",
+    "petal_width_cm"
+  ],
+  "label_name": "class",
+  "data_columns": 5,
+  "expected_rows": 150,
+  "expected_classes": {
+    "Iris-setosa": 50,
+    "Iris-versicolor": 50,
+    "Iris-virginica": 50
+  },
+  "rounding_decimals": 6,
+  "baseline_tolerance": 1e-09
+}

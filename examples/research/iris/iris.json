@@ -1,0 +1,50 @@
+{
+  "title": "Iris Plants Database (UCI Machine Learning Repository, dataset 53)",
+  "creator": "R.A. Fisher",
+  "donor": "Michael Marshall",
+  "original_publication": "Fisher, R.A. (1936). The use of multiple measurements in taxonomic problems. Annals of Eugenics, 7(2), 179-188.",
+  "source": {
+    "repository": "UCI Machine Learning Repository",
+    "dataset_page": "https://archive.ics.uci.edu/dataset/53/iris",
+    "archive_url": "https://archive.ics.uci.edu/static/public/53/iris.zip",
+    "doi": "10.24432/C56C76",
+    "license": "CC BY 4.0",
+    "retrieved_at": "2026-10-18",
+    "archive_sha256": "d11fe30213d36434a0879aab7cb00ce3c812eb7ba2495874438abff7b7b762e9"
+  },
+  "scale": {
+    "records": 150,
+    "features": 4,
+    "classes": 3,
+    "instances_per_class": 50,
+    "data_bytes": 4551
+  },
+  "files": [
+    {
+      "name": "iris.data",
+      "role": "analysis_input",
+      "sha256": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0",
+      "note": "分析程序唯一读取的样本数据；逗号分隔，4 个数值特征加 1 个类别标签。"
+    },
+    {
+      "name": "bezdekIris.data",
+      "role": "unused_control",
+      "sha256": "0fed2a99db77ec533a62dc66894d3ec6df3b58b6a8f3cf4a6b47e4086b7f97dc",
+      "note": "同一归档中的另一份数据整理版本；本案例分析程序不读取，用作未使用文件对照。"
+    },
+    {
+      "name": "iris.names",
+      "role": "documentation",
+      "sha256": "71a09fb3ee237614cdb9c09d06e8ae1f610ce2a274c0d77272fea8a233e5eea3",
+      "note": "UCI 数据集说明；本案例分析程序不读取。"
+    },
+    {
+      "name": "Index",
+      "role": "documentation",
+      "sha256": "fc3a4464fd2138ca649be5e0311270f5cf1f045c8e3ff1cd458f663dfe4f6790",
+      "note": "UCI 归档文件清单；本案例分析程序不读取。"
+    }
+  ],
+  "synthetic_data": false,
+  "scope": "数据来源、规模与哈希已记录；本案例只演示确定性统计流程，不据此提出新的植物学结论。"
+}

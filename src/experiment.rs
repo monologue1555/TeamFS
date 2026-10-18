@@ -18,6 +18,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 
 const CHECKPOINT_INTERVAL: Duration = Duration::from_secs(1);
+const OUTPUT_SCOPE: &str = "报告目录内 outputs/ 下的全部普通文件，以及顶层 stdout.txt、stderr.txt。软链接和特殊文件不纳入；这是报告收尾时的摘要，不证明程序没有写其他挂载点外文件。";
+const ENVIRONMENT_DISCLAIMER: &str = "轻量环境摘要，不是完整环境归档；不包含已安装软件包、库版本、全部环境变量、硬件细节或外部文件。";
 
 pub const PREFIX: &str = "experiment.";
 pub fn link_may_escape(tree: &Tree, index: usize) -> FsResult<bool> {
@@ -178,6 +180,561 @@ pub fn input_tree_digest(tree: &Tree) -> FsResult<String> {
     Ok(format!("{:x}", hash.finalize()))
 }
 
+fn trimmed_file(path: &str) -> Option<String> {
+    std::fs::read_to_string(path)
+        .ok()
+        .map(|text| text.trim().to_owned())
+        .filter(|text| !text.is_empty())
+}
+fn os_release() -> Option<String> {
+    std::fs::read_to_string("/etc/os-release")
+        .ok()
+        .and_then(|text| {
+            text.lines().find_map(|line| {
+                line.strip_prefix("PRETTY_NAME=")
+                    .map(|value| value.trim_matches('"').to_owned())
+            })
+        })
+        .filter(|value| !value.is_empty())
+}
+fn uname_values() -> (Option<String>, Option<String>, Option<String>) {
+    let mut uts: libc::utsname = unsafe { std::mem::zeroed() };
+    if unsafe { libc::uname(&mut uts) } != 0 {
+        return (None, None, None);
+    }
+    let field = |bytes: &[libc::c_char]| {
+        let raw: Vec<u8> = bytes
+            .iter()
+            .take_while(|byte| **byte != 0)
+            .map(|byte| *byte as u8)
+            .collect();
+        let value = String::from_utf8_lossy(&raw).into_owned();
+        (!value.is_empty()).then_some(value)
+    };
+    (
+        field(&uts.sysname),
+        field(&uts.release),
+        field(&uts.machine),
+    )
+}
+fn python_version() -> Option<String> {
+    let output = Process::new("python3").arg("--version").output().ok()?;
+    let text = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let text = String::from_utf8_lossy(text).trim().to_owned();
+    (!text.is_empty()).then_some(text)
+}
+fn mem_total_kib() -> Option<u64> {
+    std::fs::read_to_string("/proc/meminfo")
+        .ok()
+        .and_then(|text| {
+            text.lines().find_map(|line| {
+                line.strip_prefix("MemTotal:")?
+                    .split_whitespace()
+                    .next()?
+                    .parse()
+                    .ok()
+            })
+        })
+}
+/// A deliberately small summary for interpreting a result, never an environment archive.
+fn environment_summary() -> Value {
+    let (sysname, uname_release, machine) = uname_values();
+    let kernel = trimmed_file("/proc/sys/kernel/osrelease").or(uname_release);
+    let hostname = trimmed_file("/proc/sys/kernel/hostname");
+    let cpus = unsafe { libc::sysconf(libc::_SC_NPROCESSORS_ONLN) };
+    json!({
+        "os_release": os_release(),
+        "kernel": kernel,
+        "sysname": sysname,
+        "machine": machine,
+        "hostname": hostname,
+        "uid": unsafe { libc::geteuid() },
+        "gid": unsafe { libc::getegid() },
+        "python3": python_version(),
+        "cpu_count": (cpus > 0).then_some(cpus as u64),
+        "mem_total_kib": mem_total_kib(),
+        "wsl": kernel.as_deref().map_or(false, |value| value.to_ascii_lowercase().contains("microsoft")),
+        "teamfs_version": env!("CARGO_PKG_VERSION"),
+        "captured_unix": time::get_time().sec,
+        "disclaimer": ENVIRONMENT_DISCLAIMER,
+    })
+}
+fn walk_outputs(root: &Path, relative: &Path, files: &mut Vec<PathBuf>) -> Result<(), String> {
+    let dir = root.join(relative);
+    let mut entries: Vec<_> = std::fs::read_dir(&dir)
+        .map_err(|error| format!("读取输出目录 {} 失败：{error}", dir.display()))?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|error| error.to_string())?;
+    entries.sort_by_key(|entry| entry.file_name());
+    for entry in entries {
+        let name = entry.file_name();
+        let child = relative.join(&name);
+        let kind = entry.file_type().map_err(|error| error.to_string())?;
+        if kind.is_dir() {
+            walk_outputs(root, &child, files)?;
+        } else if kind.is_file() {
+            files.push(child);
+        }
+    }
+    Ok(())
+}
+fn hash_regular_file(path: &Path) -> Result<(String, u64), String> {
+    let mut file = OpenOptions::new()
+        .read(true)
+        .custom_flags(libc::O_NOFOLLOW)
+        .open(path)
+        .map_err(|error| format!("{}: {error}", path.display()))?;
+    let mut hash = Sha256::new();
+    let mut size = 0u64;
+    let mut buffer = vec![0; crate::content::PAGE];
+    loop {
+        let read = file
+            .read(&mut buffer)
+            .map_err(|error| format!("{}: {error}", path.display()))?;
+        if read == 0 {
+            break;
+        }
+        hash.update(&buffer[..read]);
+        size += read as u64;
+    }
+    Ok((format!("{:x}", hash.finalize()), size))
+}
+fn output_digests(dir: &Path) -> Result<Value, String> {
+    let outputs = dir.join("outputs");
+    let mut relative = Vec::new();
+    if outputs.is_dir() {
+        walk_outputs(&outputs, Path::new(""), &mut relative)?;
+    }
+    let mut rows = Vec::new();
+    let mut errors = Vec::new();
+    for rel in relative {
+        let mut display = b"outputs/".to_vec();
+        display.extend_from_slice(rel.as_os_str().as_bytes());
+        let path = outputs.join(&rel);
+        match hash_regular_file(&path) {
+            Ok((sha256, bytes)) => rows.push(json!({
+                "path": crate::history::display_path(&display),
+                "path_display": crate::history::display_path(&display),
+                "path_bytes": display,
+                "bytes": bytes,
+                "sha256": sha256,
+            })),
+            Err(error) => {
+                errors.push(format!("{}: {error}", crate::history::display_path(&display)));
+                rows.push(json!({
+                    "path": crate::history::display_path(&display),
+                    "path_display": crate::history::display_path(&display),
+                    "path_bytes": display,
+                    "bytes": Value::Null,
+                    "sha256": Value::Null,
+                    "error": error,
+                }));
+            }
+        }
+    }
+    for name in ["stdout.txt", "stderr.txt"] {
+        let path = dir.join(name);
+        if path.is_file() {
+            match hash_regular_file(&path) {
+                Ok((sha256, bytes)) => rows.push(json!({
+                    "path": name, "path_display": name, "path_bytes": name.as_bytes(),
+                    "bytes": bytes, "sha256": sha256,
+                })),
+                Err(error) => {
+                    errors.push(format!("{name}: {error}"));
+                    rows.push(json!({
+                        "path": name, "path_display": name, "path_bytes": name.as_bytes(),
+                        "bytes": Value::Null, "sha256": Value::Null, "error": error,
+                    }));
+                }
+            }
+        }
+    }
+    rows.sort_by(|left, right| {
+        let left: Vec<u8> = serde_json::from_value(left["path_bytes"].clone()).unwrap_or_default();
+        let right: Vec<u8> =
+            serde_json::from_value(right["path_bytes"].clone()).unwrap_or_default();
+        left.cmp(&right)
+    });
+    let total: u64 = rows
+        .iter()
+        .filter_map(|row| row["bytes"].as_u64())
+        .sum();
+    Ok(json!({
+        "captured": true,
+        "complete": errors.is_empty(),
+        "files": rows,
+        "count": rows.len(),
+        "total_bytes": total,
+        "errors": errors,
+        "captured_unix": time::get_time().sec,
+        "scope": OUTPUT_SCOPE,
+    }))
+}
+fn output_capture_error(error: &str) -> Value {
+    json!({
+        "captured": false,
+        "complete": false,
+        "files": [],
+        "count": 0,
+        "total_bytes": 0,
+        "errors": [error],
+        "captured_unix": time::get_time().sec,
+        "scope": OUTPUT_SCOPE,
+    })
+}
+fn capture_outputs(report: &mut Value, output: &Path) {
+    report["outputs"] = match output_digests(output) {
+        Ok(value) => value,
+        Err(error) => output_capture_error(&error),
+    };
+}
+fn safe_relative_path(bytes: &[u8]) -> Result<PathBuf, String> {
+    if bytes.is_empty() || bytes.starts_with(b"/") {
+        return Err("输出路径必须是报告目录内的相对路径".into());
+    }
+    let mut path = PathBuf::new();
+    for part in bytes.split(|byte| *byte == b'/') {
+        if part.is_empty() || part == b"." || part == b".." {
+            return Err("输出路径包含空段、. 或 ..".into());
+        }
+        path.push(OsStr::from_bytes(part));
+    }
+    Ok(path)
+}
+fn report_path(row: &Value) -> Result<Vec<u8>, String> {
+    serde_json::from_value(row["path_bytes"].clone()).map_err(|_| "报告包含无效的 path_bytes".into())
+}
+fn row_map(rows: &[Value], label: &str) -> Result<BTreeMap<Vec<u8>, Value>, String> {
+    let mut map = BTreeMap::new();
+    for row in rows {
+        let path = report_path(row)?;
+        if map.insert(path.clone(), row.clone()).is_some() {
+            return Err(format!(
+                "{label}中存在重复路径：{}",
+                crate::history::display_path(&path)
+            ));
+        }
+    }
+    Ok(map)
+}
+fn row_display(row: &Value) -> Option<&str> {
+    row["path_display"]
+        .as_str()
+        .or_else(|| row["path"].as_str())
+}
+fn display_for(path: &[u8], left: Option<&Value>, right: Option<&Value>) -> String {
+    right
+        .and_then(row_display)
+        .or_else(|| left.and_then(row_display))
+        .map(str::to_owned)
+        .unwrap_or_else(|| crate::history::display_path(path))
+}
+fn union_paths(
+    left: &BTreeMap<Vec<u8>, Value>,
+    right: &BTreeMap<Vec<u8>, Value>,
+) -> Vec<Vec<u8>> {
+    let mut paths: Vec<Vec<u8>> = left.keys().chain(right.keys()).cloned().collect();
+    paths.sort();
+    paths.dedup();
+    paths
+}
+/// Compare file content only. Operational metadata (names, PIDs, timestamps,
+/// counters) is reported separately and never counted as a content change.
+fn compare_reports(left: &Value, right: &Value) -> Result<Value, String> {
+    let empty = Vec::new();
+    let left_inputs = row_map(
+        left["capture"]["inputs"].as_array().unwrap_or(&empty),
+        "报告 A 输入",
+    )?;
+    let right_inputs = row_map(
+        right["capture"]["inputs"].as_array().unwrap_or(&empty),
+        "报告 B 输入",
+    )?;
+    let mut inputs_added = Vec::new();
+    let mut inputs_removed = Vec::new();
+    let mut inputs_changed = Vec::new();
+    let mut inputs_access = Vec::new();
+    let mut inputs_unchanged = Vec::new();
+    for path in union_paths(&left_inputs, &right_inputs) {
+        match (left_inputs.get(&path), right_inputs.get(&path)) {
+            (Some(before), None) => inputs_removed.push(json!({
+                "path_bytes": path,
+                "path_display": display_for(&path, Some(before), None),
+                "sha256": before["sha256"],
+                "access_class": before["access_class"],
+            })),
+            (None, Some(after)) => inputs_added.push(json!({
+                "path_bytes": path,
+                "path_display": display_for(&path, None, Some(after)),
+                "sha256": after["sha256"],
+                "access_class": after["access_class"],
+            })),
+            (Some(before), Some(after)) => {
+                if before["sha256"] != after["sha256"] {
+                    inputs_changed.push(json!({
+                        "path_bytes": path,
+                        "path_display": display_for(&path, Some(before), Some(after)),
+                        "a_sha256": before["sha256"],
+                        "b_sha256": after["sha256"],
+                    }));
+                } else if before["access_class"] != after["access_class"] {
+                    inputs_access.push(json!({
+                        "path_bytes": path,
+                        "path_display": display_for(&path, Some(before), Some(after)),
+                        "a_access_class": before["access_class"],
+                        "b_access_class": after["access_class"],
+                    }));
+                } else {
+                    inputs_unchanged.push(json!({
+                        "path_bytes": path,
+                        "path_display": display_for(&path, Some(before), Some(after)),
+                    }));
+                }
+            }
+            (None, None) => unreachable!(),
+        }
+    }
+
+    let left_outputs = left["outputs"].as_object();
+    let right_outputs = right["outputs"].as_object();
+    let left_captured = left_outputs
+        .and_then(|outputs| outputs.get("captured"))
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
+    let right_captured = right_outputs
+        .and_then(|outputs| outputs.get("captured"))
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
+    let outputs_available = left_captured && right_captured;
+    let mut outputs_added = Vec::new();
+    let mut outputs_removed = Vec::new();
+    let mut outputs_changed = Vec::new();
+    let mut outputs_unchanged = Vec::new();
+    if outputs_available {
+        let read_rows = |report: &Value| -> Vec<Value> {
+            report["outputs"]["files"]
+                .as_array()
+                .cloned()
+                .unwrap_or_default()
+        };
+        let before_outputs = row_map(&read_rows(left), "报告 A 输出")?;
+        let after_outputs = row_map(&read_rows(right), "报告 B 输出")?;
+        for path in union_paths(&before_outputs, &after_outputs) {
+            match (before_outputs.get(&path), after_outputs.get(&path)) {
+                (Some(before), None) => outputs_removed.push(json!({
+                    "path_bytes": path,
+                    "path_display": display_for(&path, Some(before), None),
+                    "sha256": before["sha256"],
+                    "bytes": before["bytes"],
+                })),
+                (None, Some(after)) => outputs_added.push(json!({
+                    "path_bytes": path,
+                    "path_display": display_for(&path, None, Some(after)),
+                    "sha256": after["sha256"],
+                    "bytes": after["bytes"],
+                })),
+                (Some(before), Some(after)) => {
+                    if before["sha256"] != after["sha256"] || before["bytes"] != after["bytes"] {
+                        outputs_changed.push(json!({
+                            "path_bytes": path,
+                            "path_display": display_for(&path, Some(before), Some(after)),
+                            "a_sha256": before["sha256"],
+                            "b_sha256": after["sha256"],
+                            "a_bytes": before["bytes"],
+                            "b_bytes": after["bytes"],
+                        }));
+                    } else {
+                        outputs_unchanged.push(json!({
+                            "path_bytes": path,
+                            "path_display": display_for(&path, Some(before), Some(after)),
+                            "sha256": after["sha256"],
+                            "bytes": after["bytes"],
+                        }));
+                    }
+                }
+                (None, None) => unreachable!(),
+            }
+        }
+    }
+
+    let exit_changed = left["exit_code"] != right["exit_code"]
+        || left["signal"] != right["signal"]
+        || left["outcome"] != right["outcome"];
+    let run_context = json!({
+        "experiment": {"a": left["experiment"], "b": right["experiment"], "changed": left["experiment"] != right["experiment"]},
+        "started_unix": {"a": left["started_unix"], "b": right["started_unix"], "changed": left["started_unix"] != right["started_unix"]},
+        "finished_unix": {"a": left["finished_unix"], "b": right["finished_unix"], "changed": left["finished_unix"] != right["finished_unix"]},
+        "process_group": {"a": left["process_group"], "b": right["process_group"], "changed": left["process_group"] != right["process_group"]},
+        "exit": {
+            "a": {"exit_code": left["exit_code"], "signal": left["signal"], "outcome": left["outcome"]},
+            "b": {"exit_code": right["exit_code"], "signal": right["signal"], "outcome": right["outcome"]},
+            "changed": exit_changed,
+        },
+        "command": {"a": left["command_display"], "b": right["command_display"], "changed": left["command_display"] != right["command_display"]},
+        "note": "实验名称、进程组/PID、开始与结束时间、采集序号、读取计数和退出状态属于运行元数据，不参与文件内容比较。",
+    });
+    let complete = left["capture_complete"] == true && right["capture_complete"] == true;
+    let inputs_content_identical = inputs_added.is_empty()
+        && inputs_removed.is_empty()
+        && inputs_changed.is_empty();
+    let outputs_identical = outputs_available
+        && outputs_added.is_empty()
+        && outputs_removed.is_empty()
+        && outputs_changed.is_empty();
+    let value = json!({
+        "schema_version": 1,
+        "compared_unix": time::get_time().sec,
+        "report_a": {
+            "experiment": left["experiment"], "snapshot": left["snapshot"],
+            "capture_complete": left["capture_complete"], "outcome": left["outcome"],
+            "exit_code": left["exit_code"], "signal": left["signal"],
+        },
+        "report_b": {
+            "experiment": right["experiment"], "snapshot": right["snapshot"],
+            "capture_complete": right["capture_complete"], "outcome": right["outcome"],
+            "exit_code": right["exit_code"], "signal": right["signal"],
+        },
+        "inputs": {
+            "summary": {
+                "added": inputs_added.len(), "removed": inputs_removed.len(),
+                "content_changed": inputs_changed.len(),
+                "access_class_changed": inputs_access.len(),
+                "unchanged": inputs_unchanged.len(),
+            },
+            "added": inputs_added, "removed": inputs_removed,
+            "content_changed": inputs_changed,
+            "access_class_changed": inputs_access,
+            "unchanged": inputs_unchanged,
+        },
+        "outputs": {
+            "available": outputs_available,
+            "complete": left["outputs"]["complete"].as_bool().unwrap_or(false)
+                && right["outputs"]["complete"].as_bool().unwrap_or(false),
+            "summary": {
+                "added": outputs_added.len(), "removed": outputs_removed.len(),
+                "changed": outputs_changed.len(), "unchanged": outputs_unchanged.len(),
+            },
+            "added": outputs_added, "removed": outputs_removed,
+            "changed": outputs_changed, "unchanged": outputs_unchanged,
+            "note": if outputs_available {
+                "只比较两个报告都采集到的输出文件摘要。"
+            } else {
+                "至少一个报告没有采集输出摘要（旧版报告或采集失败），不能据此判断输出新增或删除。"
+            },
+        },
+        "run_context": run_context,
+        "volatile_fields_ignored": [
+            "experiment", "snapshot", "process_group", "capture.inputs[].pids",
+            "started_unix", "finished_unix", "checkpoint_sequence", "daemon_session",
+            "input_directory_bytes", "output_directory_bytes",
+            "capture.inputs[].read_calls", "capture.inputs[].read_bytes",
+            "exit_code", "signal", "outcome"
+        ],
+        "verdict": {
+            "both_capture_complete": complete,
+            "inputs_content_identical": inputs_content_identical,
+            "inputs_access_identical": inputs_access.is_empty(),
+            "outputs_identical": outputs_identical,
+            "note": "inputs_content_identical 只比较路径与 SHA256；访问分类变化单独列出。outputs_identical 仅在两个报告都采集了输出摘要时成立。",
+        },
+        "scope": "比较只读取两份外部报告中的输入清单、输出摘要和运行元数据，不读取输入正文，也不执行实验。",
+    });
+    Ok(value)
+}
+fn print_compare(value: &Value) {
+    println!(
+        "报告 A：{}（实验 {}）",
+        value["report_a"]["directory"].as_str().unwrap_or("?"),
+        value["report_a"]["experiment"].as_str().unwrap_or("?")
+    );
+    println!(
+        "报告 B：{}（实验 {}）",
+        value["report_b"]["directory"].as_str().unwrap_or("?"),
+        value["report_b"]["experiment"].as_str().unwrap_or("?")
+    );
+    for (_title, section) in [("输入", "inputs"), ("输出", "outputs")] {
+        if section == "outputs" && value["outputs"]["available"] != true {
+            println!("输出：{}", value["outputs"]["note"].as_str().unwrap_or("不可比较"));
+            continue;
+        }
+        let summary = &value[section]["summary"];
+        if section == "inputs" {
+            println!(
+                "输入：新增 {}，删除 {}，内容变化 {}，访问分类变化 {}，未变 {}",
+                summary["added"], summary["removed"], summary["content_changed"],
+                summary["access_class_changed"], summary["unchanged"]
+            );
+        } else {
+            println!(
+                "输出：新增 {}，删除 {}，内容变化 {}，未变 {}",
+                summary["added"], summary["removed"], summary["changed"], summary["unchanged"]
+            );
+        }
+        for (label, key) in [
+            ("新增", "added"),
+            ("已删除", "removed"),
+            ("内容变化", if section == "inputs" { "content_changed" } else { "changed" }),
+            ("访问分类变化", "access_class_changed"),
+        ] {
+            if let Some(rows) = value[section][key].as_array() {
+                for row in rows {
+                    let path = row["path_display"].as_str().unwrap_or("?");
+                    match key {
+                        "content_changed" | "changed" => println!(
+                            "{label}\t{path}\t{} -> {}",
+                            row["a_sha256"].as_str().unwrap_or("?"),
+                            row["b_sha256"].as_str().unwrap_or("?")
+                        ),
+                        "access_class_changed" => println!(
+                            "{label}\t{path}\t{} -> {}",
+                            row["a_access_class"].as_str().unwrap_or("?"),
+                            row["b_access_class"].as_str().unwrap_or("?")
+                        ),
+                        _ => println!("{label}\t{path}"),
+                    }
+                }
+            }
+        }
+    }
+    let context = &value["run_context"];
+    println!(
+        "运行信息（不参与文件内容比较）：实验 {} -> {}；开始时间 {} -> {}；退出 {:?} -> {:?}",
+        context["experiment"]["a"], context["experiment"]["b"],
+        context["started_unix"]["a"], context["started_unix"]["b"],
+        context["exit"]["a"], context["exit"]["b"]
+    );
+    let verdict = &value["verdict"];
+    println!(
+        "结论：输入内容一致={}；访问分类一致={}；输出一致={}",
+        if verdict["inputs_content_identical"] == true { "是" } else { "否" },
+        if verdict["inputs_access_identical"] == true { "是" } else { "否" },
+        if verdict["outputs_identical"] == true { "是" } else { "否" }
+    );
+    if verdict["both_capture_complete"] != true {
+        println!("注意：至少一份报告采集不完整，比较结果仅作参考。");
+    }
+}
+fn compare_cli(args: &[OsString]) -> Result<(), String> {
+    if args.len() < 2 || args.len() > 3 || (args.len() == 3 && args[2] != "--json") {
+        return Err("用法：experiment compare <报告A目录> <报告B目录> [--json]".into());
+    }
+    let left = load_report(Path::new(&args[0]))?;
+    let right = load_report(Path::new(&args[1]))?;
+    let mut value = compare_reports(&left, &right)?;
+    value["report_a"]["directory"] = json!(crate::history::display_path(args[0].as_bytes()));
+    value["report_b"]["directory"] = json!(crate::history::display_path(args[1].as_bytes()));
+    if args.len() == 3 {
+        println!("{}", serde_json::to_string_pretty(&value).unwrap());
+    } else {
+        print_compare(&value);
+    }
+    Ok(())
+}
 fn request(mount: &OsStr, command: crate::service::Command) -> Result<Value, String> {
     crate::status(mount)?;
     let mut control = OpenOptions::new()
@@ -459,38 +1016,146 @@ pub fn child_exec(args: &[OsString]) -> Result<(), String> {
     Err(Process::new(&args[1]).args(&args[2..]).exec().to_string())
 }
 
+struct RunArgs {
+    mount: OsString,
+    name: OsString,
+    output: PathBuf,
+    command: Vec<OsString>,
+}
+fn parse_run(args: &[OsString]) -> Result<RunArgs, String> {
+    const USAGE: &str =
+        "用法：experiment run <挂载点> <名称> --output <新报告目录> -- <命令> [参数...]";
+    if args.len() < 5 {
+        return Err(USAGE.into());
+    }
+    let mount = args[0].clone();
+    let name = args[1].clone();
+    let mut output = None;
+    let mut index = 2;
+    while index < args.len() {
+        match args[index].to_str() {
+            Some("--output") if index + 1 < args.len() => {
+                if output.replace(PathBuf::from(&args[index + 1])).is_some() {
+                    return Err("重复的 --output".into());
+                }
+                index += 2;
+            }
+            Some("--") => {
+                let output = output.ok_or("缺少 --output")?;
+                if index + 1 >= args.len() {
+                    return Err("缺少实验命令".into());
+                }
+                return Ok(RunArgs {
+                    mount,
+                    name,
+                    output,
+                    command: args[index + 1..].to_vec(),
+                });
+            }
+            _ => return Err(format!("未知或不完整的 experiment run 参数；{USAGE}")),
+        }
+    }
+    Err("缺少 -- 和实验命令".into())
+}
+struct ReplayArgs {
+    mount: OsString,
+    original: PathBuf,
+    name: OsString,
+    output: PathBuf,
+}
+fn parse_replay(args: &[OsString]) -> Result<ReplayArgs, String> {
+    const USAGE: &str = "用法：experiment replay <挂载点> <原报告目录> <新名称> --output <新报告目录>";
+    if args.len() < 5 {
+        return Err(USAGE.into());
+    }
+    let mount = args[0].clone();
+    let original = PathBuf::from(&args[1]);
+    let name = args[2].clone();
+    let mut output = None;
+    let mut index = 3;
+    while index < args.len() {
+        match args[index].to_str() {
+            Some("--output") if index + 1 < args.len() => {
+                if output.replace(PathBuf::from(&args[index + 1])).is_some() {
+                    return Err("重复的 --output".into());
+                }
+                index += 2;
+            }
+            _ => return Err(format!("未知或不完整的 experiment replay 参数；{USAGE}")),
+        }
+    }
+    Ok(ReplayArgs {
+        mount,
+        original,
+        name,
+        output: output.ok_or("缺少 --output")?,
+    })
+}
 pub fn cli(args: &[OsString]) -> Result<(), String> {
     use crate::service::Command;
-    match args.first().and_then(|s|s.to_str()) {
-        Some("run") if args.len() >= 7 && args[3]=="--output" && args[5]=="--" => run(&args[1], &args[2], Path::new(&args[4]), &args[6..],None),
-        Some("replay") if args.len()==6 && args[4]=="--output" => {
-            let report=load_report(Path::new(&args[2]))?;
-            if report["cancelled"]==true || report["signal"].is_number() {return Err("中断命令没有正常结束，不能自动作为完成实验重放".into());}
-            verify(&args[1],Path::new(&args[2]))?;
-            let argv:Vec<Vec<u8>>=serde_json::from_value(report["command_bytes"].clone()).map_err(|_|"缺少原命令参数")?;
-            let command:Vec<OsString>=argv.into_iter().map(OsString::from_vec).collect();
-            if command.is_empty(){return Err("原命令为空".into());}
-            run(&args[1],&args[3],Path::new(&args[5]),&command,Some(report["snapshot"].as_str().unwrap().into()))
-        },
-        Some("show") if args.len()==2 => {
+    match args.first().and_then(|s| s.to_str()) {
+        Some("run") => {
+            let parsed = parse_run(&args[1..])?;
+            run(&parsed.mount, &parsed.name, &parsed.output, &parsed.command, None)
+        }
+        Some("replay") => {
+            let parsed = parse_replay(&args[1..])?;
+            let report = load_report(&parsed.original)?;
+            if report["cancelled"] == true || report["signal"].is_number() {
+                return Err("中断命令没有正常结束，不能自动作为完成实验重放".into());
+            }
+            verify(&parsed.mount, &parsed.original)?;
+            let argv: Vec<Vec<u8>> = serde_json::from_value(report["command_bytes"].clone())
+                .map_err(|_| "缺少原命令参数")?;
+            let command: Vec<OsString> = argv.into_iter().map(OsString::from_vec).collect();
+            if command.is_empty() {
+                return Err("原命令为空".into());
+            }
+            run(
+                &parsed.mount,
+                &parsed.name,
+                &parsed.output,
+                &command,
+                Some(report["snapshot"].as_str().unwrap().into()),
+            )
+        }
+        Some("compare") => compare_cli(&args[1..]),
+        Some("show") if args.len() == 2 => {
             let report = load_report(Path::new(&args[1]))?;
-            println!("{}",serde_json::to_string_pretty(&report).unwrap()); Ok(())
-        },
-        Some("verify") if args.len()==3 => verify(&args[1], Path::new(&args[2])),
-        Some("recover") if args.len()==4 => {
-            let name=args[2].to_str().ok_or("实验名称必须是 UTF-8")?;
+            println!("{}", serde_json::to_string_pretty(&report).unwrap());
+            Ok(())
+        }
+        Some("verify") if args.len() == 3 => verify(&args[1], Path::new(&args[2])),
+        Some("recover") if args.len() == 4 => {
+            let name = args[2].to_str().ok_or("实验名称必须是 UTF-8")?;
             recover(&args[1], name, Path::new(&args[3]))
-        },
-        Some("restore") if args.len()==4 => {
-            let snapshot = snapshot_name(args[2].to_str().ok_or("实验名称必须是 UTF-8")?).map_err(|e|format!("无效名称：{e}"))?;
-            request(&args[1], Command::RestoreTree { snapshot, source:b".".to_vec(), destination:args[3].as_bytes().to_vec(), dry_run:false })?;
-            println!("实验输入版本已恢复到新目录；等待后续同步。"); Ok(())
-        },
-        Some("delete") if args.len()==3 => {
-            request(&args[1],Command::ExperimentDelete {name:args[2].to_str().ok_or("实验名称必须是 UTF-8")?.into()})?;
-            println!("已删除实验输入快照；外部报告仍保留，但不能再从此存储取回该版本。"); Ok(())
-        },
-        _ => Err("用法：experiment run <挂载点> <名称> --output <新报告目录> -- <命令> [参数...]；或 show/verify/restore/delete".into())
+        }
+        Some("restore") if args.len() == 4 => {
+            let snapshot = snapshot_name(args[2].to_str().ok_or("实验名称必须是 UTF-8")?)
+                .map_err(|e| format!("无效名称：{e}"))?;
+            request(
+                &args[1],
+                Command::RestoreTree {
+                    snapshot,
+                    source: b".".to_vec(),
+                    destination: args[3].as_bytes().to_vec(),
+                    dry_run: false,
+                },
+            )?;
+            println!("实验输入版本已恢复到新目录；等待后续同步。");
+            Ok(())
+        }
+        Some("delete") if args.len() == 3 => {
+            request(
+                &args[1],
+                Command::ExperimentDelete {
+                    name: args[2].to_str().ok_or("实验名称必须是 UTF-8")?.into(),
+                },
+            )?;
+            println!("已删除实验输入快照；外部报告仍保留，但不能再从此存储取回该版本。");
+            Ok(())
+        }
+        _ => Err("用法：experiment run <挂载点> <名称> --output <新报告目录> -- <命令> [参数...]；或 show/verify/replay/compare/restore/delete/recover".into()),
     }
 }
 fn run(
@@ -527,6 +1192,8 @@ fn run(
         "command_bytes":command.iter().map(|s|s.as_bytes()).collect::<Vec<_>>(),
         "command_display":command.iter().map(|s|crate::history::display_path(s.as_bytes())).collect::<Vec<_>>(),
         "input_directory_bytes":input.as_os_str().as_bytes(),"output_directory_bytes":output.as_os_str().as_bytes(),
+        "environment":environment_summary(),
+        "outputs":{"captured":false,"complete":false,"files":[],"count":0,"total_bytes":0,"scope":OUTPUT_SCOPE},
         "scope":"Pinned TeamFS snapshot and this process group only. External files, network inputs, software environment and processes leaving the group are not tracked. FUSE read bytes do not prove algorithmic use; metadata-only and opened-only accesses are separate. Requests the kernel rejects or serves from its caches never reach FUSE. Snapshot files use direct I/O: shared mmap is unsupported, private read-only mappings are read through the page cache at readahead granularity."});
     save_report(&output, &report)?;
     if state["mode"] == "memory" {
@@ -652,6 +1319,7 @@ fn run(
         } else {
             "program_failed"
         });
+        capture_outputs(&mut report, &output);
         save_report(&output, &report)?;
         Ok(status)
     })();
@@ -681,6 +1349,7 @@ fn run(
         };
         mark_incomplete(&mut report, failure, error);
         report["phase"] = json!("failed");
+        capture_outputs(&mut report, &output);
         if let Err(save_error) = save_report(&output, &report) {
             eprintln!("未能保存失败状态（最后成功提交的摘要仍可用于恢复）：{save_error}");
         }
@@ -782,7 +1451,46 @@ fn verify(mount: &OsStr, dir: &Path) -> Result<(), String> {
             return Err(format!("输入校验不一致：{}", entry["path_display"]));
         }
     }
-    println!("验证通过：{} 个文件与实验输入版本一致。", inputs.len());
+    println!("输入验证通过：{} 个文件与实验输入版本一致。", inputs.len());
+    if let Some(outputs) = report.get("outputs") {
+        if outputs["captured"] != true {
+            return Err("报告没有采集输出文件摘要，不能作为完整输出证据验证".into());
+        }
+        if outputs["complete"] != true {
+            let reasons = outputs["errors"]
+                .as_array()
+                .map(|rows| {
+                    rows.iter()
+                        .filter_map(Value::as_str)
+                        .collect::<Vec<_>>()
+                        .join("；")
+                })
+                .unwrap_or_default();
+            return Err(format!(
+                "输出文件摘要不完整{}{}",
+                if reasons.is_empty() { "" } else { "：" },
+                reasons
+            ));
+        }
+        let files = outputs["files"].as_array().ok_or("缺少输出文件清单")?;
+        for entry in files {
+            let relative: Vec<u8> = serde_json::from_value(entry["path_bytes"].clone())
+                .map_err(|_| "无效输出路径")?;
+            let path = dir.join(safe_relative_path(&relative)?);
+            let (sha256, bytes) =
+                hash_regular_file(&path).map_err(|error| format!("输出校验失败：{error}"))?;
+            if entry["sha256"] != sha256 || entry["bytes"].as_u64() != Some(bytes) {
+                return Err(format!(
+                    "输出校验不一致：{}",
+                    entry["path_display"].as_str().unwrap_or("?")
+                ));
+            }
+        }
+        println!(
+            "输出验证通过：{} 个报告目录内文件与摘要一致。",
+            files.len()
+        );
+    }
     for (_, notice) in capture_warnings(&report["capture"]) {
         println!("注意：{notice}");
     }
@@ -928,5 +1636,117 @@ mod tests {
         assert!(warnings[0].0 && warnings[0].1.contains("business:数据.csv"));
         assert!(!warnings[1].0 && warnings[1].1.contains("[42]"));
         assert!(capture_warnings(&json!({})).is_empty());
+    }
+    #[test]
+    fn output_digests_cover_regular_files_in_stable_order() {
+        let dir = std::env::temp_dir().join(format!(
+            "teamfs-outputs-{}-{}",
+            std::process::id(),
+            time::get_time().nsec
+        ));
+        std::fs::create_dir_all(dir.join("outputs/sub")).unwrap();
+        std::fs::write(dir.join("outputs/z.txt"), b"z").unwrap();
+        std::fs::write(dir.join("outputs/sub/a.bin"), b"\x00\xff").unwrap();
+        std::fs::write(dir.join("stdout.txt"), b"out").unwrap();
+        std::os::unix::fs::symlink("z.txt", dir.join("outputs/link")).unwrap();
+        let value = output_digests(&dir).unwrap();
+        assert_eq!(value["captured"], true);
+        assert_eq!(value["complete"], true);
+        assert_eq!(value["count"], 3);
+        let paths: Vec<&str> = value["files"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|row| row["path_display"].as_str().unwrap())
+            .collect();
+        assert_eq!(
+            paths,
+            ["outputs/sub/a.bin", "outputs/z.txt", "stdout.txt"]
+        );
+        assert_eq!(value["files"][0]["bytes"], 2);
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+    #[test]
+    fn compare_ignores_run_metadata_and_reports_file_content_changes() {
+        let base = json!({
+            "schema_version":1, "experiment":"baseline", "snapshot":"experiment.baseline",
+            "capture_complete":true, "started_unix":100, "finished_unix":110,
+            "process_group":42, "exit_code":0, "signal":Value::Null, "outcome":"succeeded",
+            "command_display":["python3","analyze.py"],
+            "capture":{"inputs":[
+                {"path_bytes":b"data.csv".to_vec(),"path_display":"data.csv","sha256":"aaa",
+                 "access_class":"content_read","read_calls":1,"read_bytes":10,"pids":[42]},
+                {"path_bytes":b"code.py".to_vec(),"path_display":"code.py","sha256":"bbb",
+                 "access_class":"content_read","read_calls":1,"read_bytes":5,"pids":[42]}
+            ]},
+            "outputs":{"captured":true,"complete":true,"files":[
+                {"path_bytes":b"outputs/result.json".to_vec(),
+                 "path_display":"outputs/result.json","sha256":"111","bytes":7}
+            ]}
+        });
+        let mut metadata_only = base.clone();
+        metadata_only["experiment"] = json!("renamed");
+        metadata_only["snapshot"] = json!("experiment.renamed");
+        metadata_only["started_unix"] = json!(200);
+        metadata_only["finished_unix"] = json!(250);
+        metadata_only["process_group"] = json!(99);
+        metadata_only["capture"]["inputs"][0]["read_calls"] = json!(999);
+        metadata_only["capture"]["inputs"][0]["pids"] = json!([99]);
+        let comparison = compare_reports(&base, &metadata_only).unwrap();
+        assert_eq!(comparison["inputs"]["summary"]["content_changed"], 0);
+        assert_eq!(comparison["inputs"]["summary"]["added"], 0);
+        assert_eq!(comparison["inputs"]["summary"]["removed"], 0);
+        assert_eq!(comparison["outputs"]["summary"]["changed"], 0);
+        assert_eq!(comparison["verdict"]["inputs_content_identical"], true);
+        assert_eq!(comparison["verdict"]["outputs_identical"], true);
+        assert_eq!(comparison["run_context"]["experiment"]["changed"], true);
+        assert_eq!(comparison["run_context"]["started_unix"]["changed"], true);
+        assert_eq!(comparison["run_context"]["process_group"]["changed"], true);
+
+        let mut changed = base.clone();
+        changed["capture"]["inputs"][0]["sha256"] = json!("ccc");
+        changed["outputs"]["files"][0]["sha256"] = json!("222");
+        let comparison = compare_reports(&base, &changed).unwrap();
+        assert_eq!(comparison["inputs"]["summary"]["content_changed"], 1);
+        assert_eq!(
+            comparison["inputs"]["content_changed"][0]["path_display"],
+            "data.csv"
+        );
+        assert_eq!(comparison["outputs"]["summary"]["changed"], 1);
+        assert_eq!(comparison["verdict"]["inputs_content_identical"], false);
+        assert_eq!(comparison["verdict"]["outputs_identical"], false);
+
+        let mut membership = base.clone();
+        membership["capture"]["inputs"] = json!([
+            {"path_bytes":b"code.py".to_vec(),"path_display":"code.py","sha256":"bbb",
+             "access_class":"content_read"},
+            {"path_bytes":b"new.csv".to_vec(),"path_display":"new.csv","sha256":"ddd",
+             "access_class":"content_read"}
+        ]);
+        membership["outputs"]["files"] = json!([
+            {"path_bytes":b"outputs/new.txt".to_vec(),
+             "path_display":"outputs/new.txt","sha256":"333","bytes":3}
+        ]);
+        let comparison = compare_reports(&base, &membership).unwrap();
+        assert_eq!(comparison["inputs"]["summary"]["added"], 1);
+        assert_eq!(comparison["inputs"]["summary"]["removed"], 1);
+        assert_eq!(
+            comparison["inputs"]["added"][0]["path_display"],
+            "new.csv"
+        );
+        assert_eq!(
+            comparison["inputs"]["removed"][0]["path_display"],
+            "data.csv"
+        );
+        assert_eq!(comparison["outputs"]["summary"]["added"], 1);
+        assert_eq!(comparison["outputs"]["summary"]["removed"], 1);
+        assert_eq!(
+            comparison["outputs"]["added"][0]["path_display"],
+            "outputs/new.txt"
+        );
+        assert_eq!(
+            comparison["outputs"]["removed"][0]["path_display"],
+            "outputs/result.json"
+        );
     }
 }

@@ -52,6 +52,7 @@ teamfs experiment run <挂载点> <名称> --output <新报告目录> -- <命令
 teamfs experiment show <报告目录>
 teamfs experiment replay <挂载点> <原报告目录> <新名称> --output <新报告目录>
 teamfs experiment verify <挂载点> <报告目录>
+teamfs experiment compare <报告A目录> <报告B目录> [--json]
 teamfs experiment restore <挂载点> <名称> <新目标相对目录>
 teamfs experiment delete <挂载点> <名称>
 teamfs experiment recover <挂载点> <名称> <未完成报告目录>
@@ -68,7 +69,9 @@ teamfs experiment recover <挂载点> <名称> <未完成报告目录>
 日志为尽力记录，写入失败或队列繁忙不会拒绝业务操作；--no-audit-file 只关闭文件日志。
 --memory 是教学内存模式，退出后包括快照、回收站在内的所有数据丢失。
 实验命令在只读输入快照中运行；TEAMFS_INPUT 指向输入目录，TEAMFS_OUTPUT 指向外部输出目录。
+报告包含输入与报告目录内输出文件的 SHA256、命令、退出状态及轻量环境摘要；环境摘要不是完整环境归档。
 报告只追踪该进程组访问固定输入的 FUSE 请求，区分正文读取、仅打开和元数据查询，不覆盖外部输入及完整软件环境。
+compare 只比较报告中的文件路径与 SHA256；实验名称、PID、时间戳和读取计数不误判为文件正文变化。
 输入快照以 experiment. 开头保留，需通过 experiment delete 显式删除；复用原有快照容量规则。
 "#
     );

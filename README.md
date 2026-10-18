@@ -4,16 +4,20 @@ TeamFS 使用原版 `fuse = 0.3.1`，在 Linux 用户空间处理普通文件操
 
 ## 0.8：科研实验的文件输入追溯
 
-主线：一次科研程序运行，实际读取了哪些输入，使用的是哪一版，当前同名文件改变后能否取回旧输入并重放。新增 `experiment run/show/verify/replay/restore/delete/recover`，以固定只读快照运行命令，按独立进程组记录真实 FUSE 访问，导出命令、文件版本 SHA256、正文/仅打开/元数据访问、退出结果与中断状态。报告不依赖普通日志窗口。
+主线：一次科研程序运行，实际读取了哪些输入，使用的是哪一版，当前同名文件改变后能否取回旧输入并重放。新增 `experiment run/show/verify/replay/compare/restore/delete/recover`，以固定只读快照运行命令，按独立进程组记录真实 FUSE 访问，导出命令、文件版本 SHA256、正文/仅打开/元数据访问、退出结果与中断状态。报告不依赖普通日志窗口。
 
 成员 3 补充：运行器在放行命令前及运行中约每秒原子保存采集摘要；daemon 重启后可通过 recover 保留最后摘要，未知尾部仍标记不完整，不补造退出码或读取记录。输入版本与报告需分别备份留存；memory 模式输入不跨重启保留。实现、保存时序、故障状态与迁移步骤见 [输入留存与中断恢复](docs/member3-recovery.md)，真实挂载验收入口为 `bash scripts/test-member3.sh`。
 
+成员 4 补充：报告同时记录报告目录内 `outputs/`、`stdout.txt`、`stderr.txt` 的路径、大小与 SHA256，以及轻量环境摘要；新增 `experiment compare` 按路径字节与 SHA256 列出输入/输出的新增、删除和内容变化，实验名、PID、时间戳和读取计数不误判为正文变化。`examples/research/iris/` 使用 UCI 公开 Iris 真实数据（非合成），并保留未使用文件对照；`bash scripts/member4-case.sh` 完成同名数据修改、报告比较、旧输入重放和逐字节核对，`bash scripts/test-member4.sh` 为真实验收。证据在 `artifacts/member4-*`，说明见 [成员 4 公开数据案例](docs/member4-case.md)。
+
 ```bash
 bash scripts/demo-experiment.sh      # 隔离真实演示：原结果→改数据→旧输入重放→SHA256 一致
+bash scripts/member4-case.sh         # 公开 Iris 数据：同名修改→比较→旧输入重放→逐字节一致
 bash scripts/test-experiments.sh     # 真实挂载验收
+bash scripts/test-member4.sh         # 成员 4 验收：输出/环境证据、比较、重放与校验
 ```
 
-程序工作目录为固定输入快照，`TEAMFS_INPUT` 提供输入路径，`TEAMFS_OUTPUT` 提供挂载点外的输出路径。输入版本采用原有快照容量规则并持久保留，需显式 experiment delete 清理；memory 模式输入随进程结束丢失。运行计数是运行时状态，异常退出不补造完整报告。只追踪选定挂载和进程组，不覆盖网络、外部依赖、随机性或完整软件环境。见 [使用方法、原理、报告语义和边界](docs/experiments.md)。
+程序工作目录为固定输入快照，`TEAMFS_INPUT` 提供输入路径，`TEAMFS_OUTPUT` 提供挂载点外的输出路径。输入版本采用原有快照容量规则并持久保留，需显式 experiment delete 清理；memory 模式输入随进程结束丢失。运行计数是运行时状态，异常退出不补造完整报告。只追踪选定挂载和进程组，不覆盖网络、外部依赖、随机性或完整软件环境；环境摘要不是完整环境归档。见 [使用方法、原理、报告语义和边界](docs/experiments.md)。
 
 访问记录与进程归属：报告把访问分为正文读取、仅打开、属性查询、目录查询和读取软链接；FUSE 给出的线程号换算为进程号；未固定的挂载内读取按路径列出，其他进程组对同一输入快照的读取单独计数、从不计入输入。`bash scripts/test-attribution.sh` 把 `--trace` 记录的真实回调与报告逐项对账。规则见 [访问记录流程](docs/access-recording.md)，应用、VFS、FUSE、Rust 与 SQLite 的调用关系见 [架构调用图](docs/architecture.md)。`bash scripts/check.sh` 运行全部套件，即使中途失败也继续，最后生成 `artifacts/regression-summary.json/.md`，列出提交号、环境、各套件结果以及单列的未支持与跳过项。
 
@@ -436,8 +440,13 @@ bash scripts/test-v5.sh
 bash scripts/test-v6.sh
 bash scripts/showcase.sh
 bash scripts/test-attribution.sh
+bash scripts/test-member3.sh
+bash scripts/test-member4.sh
+bash scripts/member4-case.sh
 # 或用 bash scripts/check.sh 一次运行全部后端验收，汇总见 artifacts/regression-summary.md
 ```
+
+成员 4 的验收使用公开 UCI Iris 数据和真实 FUSE 挂载，检查输入集合、未使用文件排除、输出/环境摘要、同名数据与配置变化、报告比较、旧输入逐字节重放、失败记录以及输出篡改拒绝；端到端产物在 `artifacts/member4-case/` 与 `artifacts/member4-*.json`，说明见 [成员 4 公开数据案例](docs/member4-case.md)。
 
 `smoke.sh` 使用内存模式复验原有 12 个挂载场景和 1 个重挂载场景。`test-v2.sh` 使用独立存储与挂载点，验证 15 组新增场景，包括 SIGKILL、只读快照、历史句柄、恢复、状态分段读取、控制请求幂等、SQLite 事务失败注入、重试、容量限制和损坏数据库拒绝。
 
