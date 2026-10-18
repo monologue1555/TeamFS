@@ -1,0 +1,32 @@
+{
+  "status": "pass",
+  "formal_original_samples": 123,
+  "extra_iris_replays": 5,
+  "verify_success_outputs": 46,
+  "output_manifests_checked": 28,
+  "output_files_hashed": 102,
+  "archive_files_hashed": 1262,
+  "runs": [
+    {
+      "run": "20261018-member4-v1-before",
+      "samples": 54,
+      "summary_sha256": "00fc464bfb368078ba2beffc839bd12cb409ca2066e83ca7f5f92e476958cb42",
+      "archive_sha256": "28253a88e9fd7dc4c3e04896107e20ccd8ebf5e36dfe5b7457d2fdd9505d8a16"
+    },
+    {
+      "run": "20261018-member4-v1-after",
+      "samples": 54,
+      "summary_sha256": "b60017d31670850c288679f6570a3250af22a0674e219b0bb83b43f684422b34",
+      "archive_sha256": "a6c72c49b947546c31d151e0dc27db97ad2a4a67011b72c6749c5be880c5f37b"
+    },
+    {
+      "run": "20261018-member4-iris",
+      "samples": 15,
+      "summary_sha256": "496ce8e37b4e3539edf28b8d1583a46d3edd8968ccf75c641e7e2eabe52a9e66",
+      "archive_sha256": "a01fae440aa595e8966b97f81629586436d92b000e8b5e5be8367d40cf4be776"
+    }
+  ],
+  "scope": "All raw archive bytes, source/sample/result consistency and new output/environment evidence; performance changes are whole-version observations.",
+  "iris_source_bytes_match_member4_git_objects": true,
+  "iris_binary_matches_paired_after_binary": true
+}

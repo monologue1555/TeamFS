@@ -18,3 +18,7 @@ __pycache__/
 !/artifacts/random-*.jsonl
 /artifacts/monitor-demo-session-*.json
 /artifacts/word-division/
+
+# Member 5: publish byte-preserving ZIPs instead of hundreds of raw sample files.
+/artifacts/member5/*/*/
+/artifacts/member5-comparisons/

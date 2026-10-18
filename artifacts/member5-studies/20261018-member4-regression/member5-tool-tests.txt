@@ -1,0 +1,27 @@
+test_changed_inputs_cannot_be_overridden (test_member5_compare.ComparisonTests.test_changed_inputs_cannot_be_overridden) ... ok
+test_checkpoint_count_excludes_initial_save (test_member5_compare.ComparisonTests.test_checkpoint_count_excludes_initial_save) ... ok
+test_different_outputs_cannot_be_overridden (test_member5_compare.ComparisonTests.test_different_outputs_cannot_be_overridden) ... ok
+test_duplicate_repetition_is_rejected (test_member5_compare.ComparisonTests.test_duplicate_repetition_is_rejected) ... ok
+test_environment_difference_requires_explicit_exploratory_mode (test_member5_compare.ComparisonTests.test_environment_difference_requires_explicit_exploratory_mode) ... ok
+test_failed_run_is_rejected_even_with_override (test_member5_compare.ComparisonTests.test_failed_run_is_rejected_even_with_override) ... ok
+test_medians_and_missing_stages (test_member5_compare.ComparisonTests.test_medians_and_missing_stages) ... ok
+test_missing_nonfinite_and_partial_metrics (test_member5_compare.ComparisonTests.test_missing_nonfinite_and_partial_metrics) ... ok
+test_paced_workload_must_cover_periodic_saves (test_member5_compare.ComparisonTests.test_paced_workload_must_cover_periodic_saves) ... ok
+test_profile_and_measurement_source_difference (test_member5_compare.ComparisonTests.test_profile_and_measurement_source_difference) ... ok
+test_required_checkpoint_evidence_is_not_silently_omitted (test_member5_compare.ComparisonTests.test_required_checkpoint_evidence_is_not_silently_omitted) ... ok
+test_smoke_run_is_rejected (test_member5_compare.ComparisonTests.test_smoke_run_is_rejected) ... ok
+test_storage_keeps_each_measurement_point_separate (test_member5_compare.ComparisonTests.test_storage_keeps_each_measurement_point_separate) ... ok
+test_zero_baseline_has_no_percentage (test_member5_compare.ComparisonTests.test_zero_baseline_has_no_percentage) ... ok
+test_baseline_failure_rejected (test_member5_iris.IrisChecks.test_baseline_failure_rejected) ... ok
+test_decimal_oracle_matches_known_public_statistics (test_member5_iris.IrisChecks.test_decimal_oracle_matches_known_public_statistics) ... ok
+test_tampered_output_and_unused_input_rejected (test_member5_iris.IrisChecks.test_tampered_output_and_unused_input_rejected) ... ok
+test_wrong_statistics_rejected_even_if_program_reports_success (test_member5_iris.IrisChecks.test_wrong_statistics_rejected_even_if_program_reports_success) ... ok
+test_checkpoint_counts_reconcile_with_report (test_member5_stages.StageTests.test_checkpoint_counts_reconcile_with_report) ... ok
+test_invalid_nested_duration_rejected (test_member5_stages.StageTests.test_invalid_nested_duration_rejected) ... ok
+test_missing_required_checkpoint_metric_rejected (test_member5_stages.StageTests.test_missing_required_checkpoint_metric_rejected) ... ok
+test_nested_commit_kept_separate (test_member5_stages.StageTests.test_nested_commit_kept_separate) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.754s
+
+OK

@@ -1,0 +1,14 @@
+{
+  "file_sha256": {
+    "data/0000.bin": "87848029a2c13cfb68c9d7a1e98ba5ccad5dc785bc5453281ada4d6aae6a07a0",
+    "unused.bin": "cdb909b84aa69aa8be69c5bc05b96a8fe748a8281c2860c534f961c6c1868e16",
+    "workload.py": "1c1b46527d48ac94c08ca2b03ea1736068d90dd670fa15f7626a230a57f7cb8b"
+  },
+  "oracle": {
+    "read_bytes": 50331648,
+    "sha256": "c1fe44eed53bee1f5d7da8f57c9129378bf46b1b6d7ec8b49b4308b937450419"
+  },
+  "count": 1,
+  "file_bytes": 16777216,
+  "rounds": 3
+}

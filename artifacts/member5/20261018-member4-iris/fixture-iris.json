@@ -1,0 +1,72 @@
+{
+  "file_sha256": {
+    "analysis-config.json": "d526351f2fd077314fd68698f9575228d89a82c924e97429ecce00c0e17326ce",
+    "analyze_iris.py": "31f95886032397b8f45df24956d74596fcad3d767f203ae58c21a0c391cf5dca",
+    "bezdekIris.data": "0fed2a99db77ec533a62dc66894d3ec6df3b58b6a8f3cf4a6b47e4086b7f97dc",
+    "Index": "fc3a4464fd2138ca649be5e0311270f5cf1f045c8e3ff1cd458f663dfe4f6790",
+    "iris-baseline.json": "cb5515e54c8b3ae2825423502e784283071c4ddea75d4c382aed1e863bf80d1a",
+    "iris.data": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0",
+    "iris.json": "26a8f2c43f1d1dc94907b85b27dbbc9483d40db2b808ff0bffe40648a2b681fe",
+    "iris.names": "71a09fb3ee237614cdb9c09d06e8ae1f610ce2a274c0d77272fea8a233e5eea3",
+    "README.md": "f6230a662442cccfc6601e06d419763639349e97728ba6c566fd8d8f826ca658"
+  },
+  "oracle": {
+    "dataset": {
+      "rows": 150,
+      "features": [
+        "sepal_length_cm",
+        "sepal_width_cm",
+        "petal_length_cm",
+        "petal_width_cm"
+      ],
+      "class_counts": {
+        "Iris-setosa": 50,
+        "Iris-versicolor": 50,
+        "Iris-virginica": 50
+      }
+    },
+    "class_means": {
+      "Iris-setosa": {
+        "sepal_length_cm": 5.006,
+        "sepal_width_cm": 3.418,
+        "petal_length_cm": 1.464,
+        "petal_width_cm": 0.244
+      },
+      "Iris-versicolor": {
+        "sepal_length_cm": 5.936,
+        "sepal_width_cm": 2.77,
+        "petal_length_cm": 4.26,
+        "petal_width_cm": 1.326
+      },
+      "Iris-virginica": {
+        "sepal_length_cm": 6.588,
+        "sepal_width_cm": 2.974,
+        "petal_length_cm": 5.552,
+        "petal_width_cm": 2.026
+      }
+    },
+    "overall_means": {
+      "sepal_length_cm": 5.843333,
+      "sepal_width_cm": 3.054,
+      "petal_length_cm": 3.758667,
+      "petal_width_cm": 1.198667
+    },
+    "inputs": {
+      "data": {
+        "path": "iris.data",
+        "sha256": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0",
+        "bytes": 4551
+      },
+      "config": {
+        "path": "analysis-config.json",
+        "sha256": "d526351f2fd077314fd68698f9575228d89a82c924e97429ecce00c0e17326ce",
+        "bytes": 382
+      },
+      "baseline": {
+        "path": "iris-baseline.json",
+        "sha256": "cb5515e54c8b3ae2825423502e784283071c4ddea75d4c382aed1e863bf80d1a",
+        "bytes": 632
+      }
+    }
+  }
+}

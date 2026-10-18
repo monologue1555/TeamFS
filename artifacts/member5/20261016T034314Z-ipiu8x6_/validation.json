@@ -1,0 +1,10 @@
+﻿{
+    "status":  "pass",
+    "formal_samples":  27,
+    "groups":  9,
+    "samples_per_group":  3,
+    "output_hashes_identical_within_each_workload":  true,
+    "source_archive_and_live_hashes_match":  true,
+    "rust_unit_tests_passed":  25,
+    "full_check_sh_run":  false
+}

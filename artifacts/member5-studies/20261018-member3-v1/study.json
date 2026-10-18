@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "refs": {
+    "before": "276e68e37381a2c56c853ca7243859c340431213",
+    "after": "9e4ced3c390467690c1ca5a0b577f2bda923995f"
+  },
+  "order": [
+    "before",
+    "after"
+  ],
+  "source_checkout_root": "/home/lenovo/teamfs-member5-pair-fo7cp5jz",
+  "samples_per_group": 3,
+  "workloads": [
+    "small",
+    "many",
+    "large",
+    "paced_many",
+    "paced_large",
+    "unused_large"
+  ],
+  "runs": {
+    "before": {
+      "directory": "artifacts/member5/20261018-member3-v1-before",
+      "binary_sha256": "d3364438dbc2ecae353168a62538ccdca5eb4ddc72f96a3abfb3ed71ee047d0f"
+    },
+    "after": {
+      "directory": "artifacts/member5/20261018-member3-v1-after",
+      "binary_sha256": "d6ff8431f78545f3ec1351a6cf2207db2d3c023654238a464c60bfe10a3804d4"
+    }
+  },
+  "expected_checkpoint_capability": {
+    "before": "absent",
+    "after": "required"
+  },
+  "method": "Both builds and unit suites finish before measurement; same current tools copied to each checkout; target versions run sequentially, not interleaved; modes rotate per repetition.",
+  "scope": "Whole-version effect, not checkpoint on/off isolation; no core Rust modifications."
+}

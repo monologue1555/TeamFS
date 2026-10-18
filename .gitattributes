@@ -4,3 +4,12 @@
 *.py text eol=lf
 *.html text eol=lf
 *.md text eol=lf
+# Preserve measured evidence bytes across Windows and Linux checkouts.
+artifacts/member5/**/*.json -text whitespace=cr-at-eol
+artifacts/member5/**/*.csv -text whitespace=cr-at-eol
+artifacts/member5/**/*.svg -text -diff
+artifacts/member5-studies/**/*.json -text whitespace=cr-at-eol
+artifacts/member5-studies/**/*.svg -text -diff
+artifacts/member5-studies/**/*.txt -text whitespace=-blank-at-eof,cr-at-eol
+# Public case hashes and deterministic results depend on exact input bytes.
+examples/research/iris/* -text

@@ -1,0 +1,9 @@
+{
+  "summary_sha256": {
+    "artifacts/member5/20261018-member4-v1-before": "00fc464bfb368078ba2beffc839bd12cb409ca2066e83ca7f5f92e476958cb42",
+    "artifacts/member5/20261018-member4-v1-after": "b60017d31670850c288679f6570a3250af22a0674e219b0bb83b43f684422b34"
+  },
+  "sample_count": 108,
+  "samples_per_group": 3,
+  "plot_script_sha256": "d5a76b7478104e488f7b43d0c0c0da3d2a7ec6f0d3654dde68d011f72fcab76d"
+}

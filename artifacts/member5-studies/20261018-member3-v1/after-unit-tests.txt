@@ -1,0 +1,38 @@
+   Compiling teamfs v0.8.0 (/home/lenovo/teamfs-member5-pair-fo7cp5jz/after)
+    Finished release [optimized] target(s) in 8.48s
+     Running unittests src/main.rs (/home/lenovo/.cache/teamfs-member5/target/release/deps/teamfs-56eeb969375dc35e)
+
+running 30 tests
+test experiment::tests::incomplete_recovery_never_invents_unknown_termination_or_counts ... ok
+test diagnostics::tests::mountinfo_paths_decode_without_utf8_loss ... ok
+test experiment::tests::checkpoint_recovery_rejects_foreign_or_partial_evidence ... ok
+test content::tests::edits_copy_only_when_a_history_version_is_retained ... ok
+test experiment::tests::link_resolution_checks_real_parent_paths_and_intermediate_links ... ok
+test experiment::tests::warnings_separate_blocking_reasons_from_notices ... ok
+test experiment::tests::thread_ids_resolve_to_their_process ... ok
+test experiment::tests::input_version_digest_covers_unread_content_and_metadata_in_stable_order ... ok
+test history::tests::comparison_ignores_access_time_and_directory_mtime ... ok
+test model::tests::access_handles_and_limits ... ok
+test history::tests::raw_paths_are_readable_and_unambiguous ... ok
+test history::tests::comparison_detects_owner_and_directory_modes_without_contents ... ok
+test model::tests::directories_errors_and_snapshot ... ok
+test model::tests::persisted_tree_preserves_raw_names_and_excludes_orphans ... ok
+test model::tests::persisted_tree_rejects_invalid_relationships ... ok
+test model::tests::seed_and_fresh_mount ... ok
+test model::tests::rename_replace_and_cycle ... ok
+test metrics::tests::recent_percentiles_and_lifetime_totals_are_distinct ... ok
+test model::tests::offsets_eof_and_sparse_writes ... ok
+test model::tests::truncate_and_append ... ok
+test model::tests::unlink_open_file_and_kernel_reference ... ok
+test content::tests::cross_block_edits_and_truncate_growth_preserve_versions ... ok
+test service::tests::diff_handle_and_lookup_retain_retired_view_until_both_release ... ok
+test service::tests::experiment_checkpoints_keep_capturing_and_reject_stale_daemons ... ok
+test service::tests::experiment_capture_classifies_requests_and_separates_other_groups ... ok
+test service::tests::invalid_and_oversized_control_requests_do_not_execute ... ok
+test service::tests::retired_snapshot_survives_handle_and_lookup_then_collects ... ok
+test experiment::tests::atomic_report_failure_keeps_previous_saved_summary ... ok
+test service::tests::retired_trash_waits_for_handle_and_lookup_then_releases_bytes ... ok
+test audit::tests::recent_window_reports_loss_without_refusing_records ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
