@@ -46,6 +46,15 @@ pub enum Command {
     },
     ExperimentFinish {
         name: String,
+        #[serde(default)]
+        daemon_session: Option<String>,
+    },
+    ExperimentCheckpoint {
+        name: String,
+        daemon_session: String,
+    },
+    ExperimentInputVersion {
+        name: String,
     },
     ExperimentDelete {
         name: String,
@@ -80,6 +89,7 @@ pub enum Command {
 
 struct View {
     saved: Snapshot,
+    input_digest: std::sync::OnceLock<String>,
     ids: HashMap<u64, u64>,
     diff_ino: u64,
 }
@@ -286,7 +296,27 @@ impl Service {
         Ok(history::json_bytes(&preview))
     }
     fn command_output(&mut self, command: Command) -> FsResult<Vec<u8>> {
-        if let Command::ExperimentFinish { name } = command {
+        if let Command::ExperimentInputVersion { name } = command {
+            return self
+                .experiment_input_version(&name)
+                .map(|v| history::json_bytes(&v));
+        }
+        if let Command::ExperimentCheckpoint {
+            name,
+            daemon_session,
+        } = command
+        {
+            self.check_experiment_daemon(Some(&daemon_session))?;
+            return self
+                .capture_experiment(&name)
+                .map(|v| history::json_bytes(&v));
+        }
+        if let Command::ExperimentFinish {
+            name,
+            daemon_session,
+        } = command
+        {
+            self.check_experiment_daemon(daemon_session.as_deref())?;
             return self
                 .finish_experiment(&name)
                 .map(|v| history::json_bytes(&v));
@@ -405,6 +435,7 @@ impl Service {
             root,
             View {
                 saved,
+                input_digest: std::sync::OnceLock::new(),
                 ids,
                 diff_ino,
             },
@@ -725,7 +756,14 @@ impl Service {
         if pid == 0
             || !matches!(
                 op,
-                "read" | "open" | "lookup" | "getattr" | "readlink" | "readdir" | "opendir" | "access"
+                "read"
+                    | "open"
+                    | "lookup"
+                    | "getattr"
+                    | "readlink"
+                    | "readdir"
+                    | "opendir"
+                    | "access"
             )
             || !self.experiments.values().any(|s| s.finished.is_none())
         {
@@ -833,7 +871,26 @@ impl Service {
             }
         }
     }
-    fn finish_experiment(&mut self, name: &str) -> FsResult<serde_json::Value> {
+    fn check_experiment_daemon(&self, expected: Option<&str>) -> FsResult<()> {
+        if expected.map_or(false, |id| id != self.audit.session_id) {
+            return Err(libc::ESTALE);
+        }
+        Ok(())
+    }
+    fn input_digest(view: &View) -> FsResult<&str> {
+        if view.input_digest.get().is_none() {
+            let digest = crate::experiment::input_tree_digest(&view.saved.tree)?;
+            let _ = view.input_digest.set(digest);
+        }
+        Ok(view.input_digest.get().unwrap().as_str())
+    }
+    fn experiment_input_version(&self, name: &str) -> FsResult<serde_json::Value> {
+        let snapshot = crate::experiment::snapshot_name(name)?;
+        let view = &self.views[self.active.get(&snapshot).ok_or(libc::ENOENT)?];
+        Ok(json!({"snapshot":snapshot,"sha256":Self::input_digest(view)?}))
+    }
+    // A checkpoint observes a session without sealing it or committing the mutable tree.
+    fn capture_experiment(&self, name: &str) -> FsResult<serde_json::Value> {
         let session = self.experiments.get(name).ok_or(libc::ENOENT)?;
         if let Some(value) = &session.finished {
             return Ok(value.clone());
@@ -861,23 +918,23 @@ impl Service {
             let mut row = json!({"path_bytes":path,"path_display":history::display_path(&path),"attributes":node.attr,
                 "operations":access.operations,"pids":access.pids,"read_calls":access.read_calls,"read_bytes":access.read_bytes});
             // Content classes are inputs; everything else stays metadata evidence.
-            let class = if node.attr.kind == Kind::File && (access.read_calls > 0 || count("open") > 0)
-            {
-                row["sha256"] = json!(crate::experiment::digest(node)?);
-                if access.read_calls > 0 {
-                    "content_read"
-                } else {
-                    "opened_only"
-                }
-            } else {
-                match node.attr.kind {
-                    Kind::Directory if count("opendir") + count("readdir") > 0 => {
-                        "directory_listing"
+            let class =
+                if node.attr.kind == Kind::File && (access.read_calls > 0 || count("open") > 0) {
+                    row["sha256"] = json!(crate::experiment::digest(node)?);
+                    if access.read_calls > 0 {
+                        "content_read"
+                    } else {
+                        "opened_only"
                     }
-                    Kind::Symlink if count("readlink") > 0 => "link_read",
-                    _ => "attribute_only",
-                }
-            };
+                } else {
+                    match node.attr.kind {
+                        Kind::Directory if count("opendir") + count("readdir") > 0 => {
+                            "directory_listing"
+                        }
+                        Kind::Symlink if count("readlink") > 0 => "link_read",
+                        _ => "attribute_only",
+                    }
+                };
             row["access_class"] = json!(class);
             *classes.get_mut(class).unwrap() += 1;
             if node.attr.kind == Kind::Symlink {
@@ -909,7 +966,8 @@ impl Service {
         let mut summary = json!(classes);
         summary["error_requests"] = json!(session.errors.values().sum::<u64>());
         summary["processes"] = json!(processes);
-        let value = json!({"snapshot":session.snapshot,"started_unix":session.started,"finished_unix":time::get_time().sec,
+        let value = json!({"snapshot":session.snapshot,"started_unix":session.started,"observed_unix":time::get_time().sec,
+            "daemon_session":self.audit.session_id,"input_snapshot_sha256":Self::input_digest(view)?,
             "process_group":session.pgid,"summary":summary,"inputs":inputs,"metadata_accesses":metadata,"errors":errors,
             "unpinned_mount_accesses":session.unpinned_accesses,"unpinned_mount_files":unpinned,
             "input_version_persistent":self.store.is_some(),
@@ -917,7 +975,15 @@ impl Service {
             "external_link_accesses":external_link_accesses,
             "other_group_snapshot_accesses":session.other_group_accesses,"other_group_pids":session.other_group_pids,
             "scope":"Only requests from this process group against this immutable snapshot are attributed; thread IDs are reported as their process IDs. Hashes cover full file versions, even when only a portion was read. Opened-only files are not claimed to have been consumed. Requests rejected by the kernel before FUSE (permission checks, non-directory path components) are not seen. Other process groups reading this snapshot are counted, never attributed. External dependencies and processes leaving the group are outside this capture."});
-        self.experiments.get_mut(name).unwrap().finished = Some(value.clone());
+        Ok(value)
+    }
+    fn finish_experiment(&mut self, name: &str) -> FsResult<serde_json::Value> {
+        let mut value = self.capture_experiment(name)?;
+        if self.experiments[name].finished.is_none() {
+            value["finished_unix"] = json!(time::get_time().sec);
+            self.experiments.get_mut(name).unwrap().finished = Some(value.clone());
+        }
+
         Ok(value)
     }
     pub fn command(&mut self, command: Command) -> FsResult<()> {
@@ -946,7 +1012,23 @@ impl Service {
                     .insert(name, crate::experiment::Session::new(snapshot, pgid));
                 Ok(())
             }
-            Command::ExperimentFinish { name } => self.finish_experiment(&name).map(|_| ()),
+            Command::ExperimentFinish {
+                name,
+                daemon_session,
+            } => {
+                self.check_experiment_daemon(daemon_session.as_deref())?;
+                self.finish_experiment(&name).map(|_| ())
+            }
+            Command::ExperimentCheckpoint {
+                name,
+                daemon_session,
+            } => {
+                self.check_experiment_daemon(Some(&daemon_session))?;
+                self.capture_experiment(&name).map(|_| ())
+            }
+            Command::ExperimentInputVersion { name } => {
+                self.experiment_input_version(&name).map(|_| ())
+            }
             Command::ExperimentDelete { name } => {
                 let snapshot = crate::experiment::snapshot_name(&name)?;
                 if self
@@ -1682,6 +1764,55 @@ fn components(path: &[u8]) -> FsResult<Vec<&[u8]>> {
 mod tests {
     use super::*;
     #[test]
+    fn experiment_checkpoints_keep_capturing_and_reject_stale_daemons() {
+        let mut service = Service::new(1000, 1000, None).unwrap();
+        let snapshot = "experiment.checkpoint".to_owned();
+        service.create_snapshot(snapshot.clone(), None).unwrap();
+        service.experiments.insert(
+            "checkpoint".into(),
+            crate::experiment::Session::new(snapshot.clone(), unsafe { libc::getpgrp() } as u32),
+        );
+        let root = service.lookup(SNAPSHOTS, OsStr::new(&snapshot)).unwrap();
+        let ino = service.lookup(root, OsStr::new("welcome.txt")).unwrap();
+        let daemon = service.audit.session_id.clone();
+        let capture = |s: &mut Service, id: String| {
+            s.command_output(Command::ExperimentCheckpoint {
+                name: "checkpoint".into(),
+                daemon_session: id,
+            })
+        };
+        service.observe_experiment(std::process::id(), "read", ino, &json!({}), None, Some(3));
+        let first: serde_json::Value =
+            serde_json::from_slice(&capture(&mut service, daemon.clone()).unwrap()).unwrap();
+        assert_eq!(first["inputs"][0]["read_bytes"], 3);
+        assert!(first.get("finished_unix").is_none());
+        assert!(service.experiments["checkpoint"].finished.is_none());
+        service.observe_experiment(std::process::id(), "read", ino, &json!({}), None, Some(5));
+        let second: serde_json::Value =
+            serde_json::from_slice(&capture(&mut service, daemon.clone()).unwrap()).unwrap();
+        assert_eq!(second["inputs"][0]["read_bytes"], 8);
+        assert_eq!(first["inputs"][0]["sha256"], second["inputs"][0]["sha256"]);
+        assert_eq!(
+            capture(&mut service, "old-daemon".into()),
+            Err(libc::ESTALE)
+        );
+        assert_eq!(
+            service.command(Command::ExperimentFinish {
+                name: "checkpoint".into(),
+                daemon_session: Some("old-daemon".into()),
+            }),
+            Err(libc::ESTALE)
+        );
+        assert!(service.experiments["checkpoint"].finished.is_none());
+        service
+            .command(Command::ExperimentFinish {
+                name: "checkpoint".into(),
+                daemon_session: Some(daemon),
+            })
+            .unwrap();
+        assert!(service.experiments["checkpoint"].finished.is_some());
+    }
+    #[test]
     fn retired_trash_waits_for_handle_and_lookup_then_releases_bytes() {
         let mut s = Service::new(1000, 1000, None).unwrap();
         s.remove(ROOT, OsStr::new("welcome.txt"), false).unwrap();
@@ -1789,7 +1920,15 @@ mod tests {
         s.observe_in_group(me, pgid, "lookup", link, &none, None, None);
         s.observe_in_group(me, pgid, "readlink", link, &none, None, Some(11));
         s.observe_in_group(me, pgid, "lookup", root, &missing, Some(libc::ENOENT), None);
-        s.observe_in_group(me, pgid, "lookup", notes, &missing, Some(libc::ENOENT), None);
+        s.observe_in_group(
+            me,
+            pgid,
+            "lookup",
+            notes,
+            &missing,
+            Some(libc::ENOENT),
+            None,
+        );
         s.observe_in_group(me, pgid, "open", business, &readable, None, None);
         s.observe_in_group(me, pgid, "read", business, &none, None, Some(3));
         let write_only = json!({ "flags": libc::O_WRONLY });
@@ -1818,11 +1957,27 @@ mod tests {
         assert_eq!(capture["inputs"].as_array().unwrap().len(), 2);
         let read = row("inputs", b"welcome.txt");
         assert_eq!(read["access_class"], "content_read");
-        assert_eq!((read["read_calls"].clone(), read["read_bytes"].clone()), (json!(2), json!(5)));
-        assert_eq!(read["pids"], json!([me]), "thread IDs are reported as their process");
-        assert_eq!(row("inputs", b"notes/example.txt")["access_class"], "opened_only");
-        assert_eq!(row("metadata_accesses", b"")["access_class"], "directory_listing");
-        assert_eq!(row("metadata_accesses", b"notes")["access_class"], "attribute_only");
+        assert_eq!(
+            (read["read_calls"].clone(), read["read_bytes"].clone()),
+            (json!(2), json!(5))
+        );
+        assert_eq!(
+            read["pids"],
+            json!([me]),
+            "thread IDs are reported as their process"
+        );
+        assert_eq!(
+            row("inputs", b"notes/example.txt")["access_class"],
+            "opened_only"
+        );
+        assert_eq!(
+            row("metadata_accesses", b"")["access_class"],
+            "directory_listing"
+        );
+        assert_eq!(
+            row("metadata_accesses", b"notes")["access_class"],
+            "attribute_only"
+        );
         let link = row("metadata_accesses", b"link");
         assert_eq!(link["access_class"], "link_read");
         assert_eq!(link["link_may_escape_input"], false);
@@ -1834,7 +1989,10 @@ mod tests {
             .collect();
         assert_eq!(
             errors,
-            [(json!("missing"), json!(libc::ENOENT)), (json!("notes/missing"), json!(libc::ENOENT))]
+            [
+                (json!("missing"), json!(libc::ENOENT)),
+                (json!("notes/missing"), json!(libc::ENOENT))
+            ]
         );
         let summary = &capture["summary"];
         for (class, expected) in [

@@ -1,0 +1,295 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-10-16T15:52:20+0000",
+  "check_command": "bash scripts/check.sh",
+  "exit_code": 0,
+  "source": {
+    "commit": "849b57e60c3baeaad58b9dc0ff550737f35c2e8e",
+    "branch": "codex/member3-recovery",
+    "dirty": true
+  },
+  "environment": {
+    "kernel": "6.18.54.1-microsoft-standard-WSL2",
+    "os": "Ubuntu 26.04.1 LTS",
+    "wsl": true,
+    "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11) (built from a source tarball)",
+    "cargo": "cargo 1.93.1 (083ac5135 2025-12-15) (built from a source tarball)",
+    "libfuse": "2.9.9",
+    "fusermount3": "fusermount3 version: 3.18.2",
+    "python": "3.14.4",
+    "uid": 1000,
+    "build": "debug",
+    "require_tools": false,
+    "ci": false,
+    "ci_run": null
+  },
+  "totals": {
+    "pass": 169,
+    "fail": 0,
+    "ignored": 0,
+    "unsupported": 8
+  },
+  "suites": [
+    {
+      "suite": "unit",
+      "command": "cargo test --locked",
+      "exit_code": 0,
+      "seconds": 0.17,
+      "passed": true,
+      "counts": {
+        "pass": 30,
+        "fail": 0,
+        "ignored": 0
+      },
+      "artifacts": [
+        "model-tests.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "smoke",
+      "command": "bash scripts/smoke.sh",
+      "exit_code": 0,
+      "seconds": 6.97,
+      "passed": true,
+      "counts": {
+        "pass": 13
+      },
+      "artifacts": [
+        "acceptance.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "v2",
+      "command": "bash scripts/test-v2.sh",
+      "exit_code": 0,
+      "seconds": 2.77,
+      "passed": true,
+      "counts": {
+        "pass": 15
+      },
+      "artifacts": [
+        "v2-acceptance.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "v3",
+      "command": "bash scripts/test-v3.sh",
+      "exit_code": 0,
+      "seconds": 9.74,
+      "passed": true,
+      "counts": {
+        "pass": 14
+      },
+      "artifacts": [
+        "v3-acceptance.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "v4",
+      "command": "bash scripts/test-v4.sh",
+      "exit_code": 0,
+      "seconds": 3.15,
+      "passed": true,
+      "counts": {
+        "pass": 10
+      },
+      "artifacts": [
+        "v4-acceptance.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "v5",
+      "command": "bash scripts/test-v5.sh",
+      "exit_code": 0,
+      "seconds": 4.33,
+      "passed": true,
+      "counts": {
+        "pass": 8
+      },
+      "artifacts": [
+        "v5-acceptance.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "v6",
+      "command": "bash scripts/test-v6.sh",
+      "exit_code": 0,
+      "seconds": 89.38,
+      "passed": true,
+      "counts": {
+        "pass": 39,
+        "unsupported": 7
+      },
+      "artifacts": [
+        "v6-acceptance.txt",
+        "v6-acceptance.json",
+        "compatibility-v6.txt",
+        "compatibility-v6.json",
+        "randomized-v6.txt",
+        "randomized-v6.json"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "blocks",
+      "command": "bash scripts/test-blocks.sh",
+      "exit_code": 0,
+      "seconds": 5.19,
+      "passed": true,
+      "counts": {
+        "pass": 9
+      },
+      "artifacts": [
+        "block-foundation.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "experiments",
+      "command": "bash scripts/test-experiments.sh",
+      "exit_code": 0,
+      "seconds": 4.36,
+      "passed": true,
+      "counts": {
+        "pass": 12
+      },
+      "artifacts": [
+        "experiment-acceptance.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "attribution",
+      "command": "bash scripts/test-attribution.sh",
+      "exit_code": 0,
+      "seconds": 6.95,
+      "passed": true,
+      "counts": {
+        "pass": 9,
+        "unsupported": 1
+      },
+      "artifacts": [
+        "attribution-acceptance.txt",
+        "attribution-acceptance.json"
+      ],
+      "stale_or_missing_artifacts": []
+    },
+    {
+      "suite": "member3",
+      "command": "bash scripts/test-member3.sh",
+      "exit_code": 0,
+      "seconds": 11.18,
+      "passed": true,
+      "counts": {
+        "pass": 10
+      },
+      "artifacts": [
+        "member3-acceptance.txt"
+      ],
+      "stale_or_missing_artifacts": []
+    }
+  ],
+  "failed_suites": [],
+  "non_passing_cases": [
+    {
+      "suite": "v6",
+      "report": "compatibility-v6.json",
+      "status": "unsupported",
+      "name": "direct / SQLite DELETE without explicit sync",
+      "detail": "Reproduced DELETE-mode durability boundary: committed 30 rows, recovered 0. Use explicit TeamFS sync or validated PERSIST mode."
+    },
+    {
+      "suite": "v6",
+      "report": "compatibility-v6.json",
+      "status": "unsupported",
+      "name": "direct / mmap then snapshot",
+      "detail": "default direct_io intentionally does not offer shared mmap"
+    },
+    {
+      "suite": "v6",
+      "report": "compatibility-v6.json",
+      "status": "unsupported",
+      "name": "direct / hardlink capability",
+      "detail": "hardlink is explicitly unsupported, errno=1"
+    },
+    {
+      "suite": "v6",
+      "report": "compatibility-v6.json",
+      "status": "unsupported",
+      "name": "direct / xattr capability",
+      "detail": "xattr is explicitly unsupported, errno=95"
+    },
+    {
+      "suite": "v6",
+      "report": "compatibility-v6.json",
+      "status": "unsupported",
+      "name": "cached / SQLite DELETE without explicit sync",
+      "detail": "Reproduced DELETE-mode durability boundary: committed 30 rows, recovered 0. Use explicit TeamFS sync or validated PERSIST mode."
+    },
+    {
+      "suite": "v6",
+      "report": "compatibility-v6.json",
+      "status": "unsupported",
+      "name": "cached / hardlink capability",
+      "detail": "hardlink is explicitly unsupported, errno=1"
+    },
+    {
+      "suite": "v6",
+      "report": "compatibility-v6.json",
+      "status": "unsupported",
+      "name": "cached / xattr capability",
+      "detail": "xattr is explicitly unsupported, errno=95"
+    },
+    {
+      "suite": "attribution",
+      "report": "attribution-acceptance.json",
+      "status": "unsupported",
+      "name": "shared mmap of a pinned input",
+      "detail": "shared mmap of pinned inputs fails with ENODEV (direct I/O); the open is still recorded"
+    }
+  ],
+  "application_highlights": [
+    {
+      "suite": "v6",
+      "name": "direct / Git workflow",
+      "status": "pass"
+    },
+    {
+      "suite": "v6",
+      "name": "direct / rsync round trip",
+      "status": "pass"
+    },
+    {
+      "suite": "v6",
+      "name": "direct / repeated Vim saves",
+      "status": "pass"
+    },
+    {
+      "suite": "v6",
+      "name": "cached / Git workflow",
+      "status": "pass"
+    },
+    {
+      "suite": "v6",
+      "name": "cached / rsync round trip",
+      "status": "pass"
+    },
+    {
+      "suite": "v6",
+      "name": "cached / repeated Vim saves",
+      "status": "pass"
+    },
+    {
+      "suite": "attribution",
+      "name": "ls, find, stat, head, wc, sha256sum, tar, rsync, git and vim as experiment commands",
+      "status": "pass"
+    }
+  ],
+  "scope": "Bounded mounted scenarios on this machine and build. Unsupported and environment-skip cases are listed separately and never counted as passes; this is not a POSIX, production or arbitrary-application guarantee."
+}
