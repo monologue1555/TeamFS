@@ -9,7 +9,8 @@ trap 'rm -f -- "$runs"' EXIT
 git_query() { git -C "$TEAMFS_ROOT" "$@" 2>/dev/null || true; }
 commit="$(git_query rev-parse HEAD)"
 branch="$(git_query rev-parse --abbrev-ref HEAD)"
-dirty="$(git_query status --porcelain -- . ':(exclude)artifacts')"
+# artifacts are this run's outputs; .claude holds tool-local settings, not project source.
+dirty="$(git_query status --porcelain -- . ':(exclude)artifacts' ':(exclude).claude')"
 python3 -c 'import json,sys; print(json.dumps({"source":{"commit":sys.argv[1] or None,"branch":sys.argv[2] or None,"dirty":bool(sys.argv[3])}}))' \
     "$commit" "$branch" "$dirty" > "$runs"
 # Wall clock for artifact freshness; monotonic clock for elapsed time, because
